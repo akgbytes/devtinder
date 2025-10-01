@@ -7,9 +7,8 @@ connectDB();
 const app = express();
 const port = process.env.PORT ?? 8080;
 
-app.use("/hello", (req, res) => {
-  res.send("hello there");
-});
+import healthRoutes from "routes/health.route";
+app.use("/api/v1/health", healthRoutes);
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
