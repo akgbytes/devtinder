@@ -18,6 +18,14 @@ export const getProfile = asyncHandler(async (req, res) => {
   res.status(response.statusCode).json(response);
 });
 
-export const updateProfile = asyncHandler(async (req, res) => {});
+export const updateProfile = asyncHandler(async (req, res) => {
+  const response = new ApiResponse(
+    StatusCodes.OK,
+    "Profile updated successfully",
+    null
+  );
+
+  res.status(response.statusCode).json(response);
+});
 
 export const changePassword = asyncHandler(async (req, res) => {});

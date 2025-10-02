@@ -63,8 +63,9 @@ const userSchema = new Schema<IUser>(
       type: String,
       enum: {
         values: Object.values(Gender),
-        message:
-          "Invalid value '{VALUE}'. Please select between male, female, or other.",
+        message: `Invalid value '{VALUE}'. Please select between ${Object.values(
+          Gender
+        ).join(" | ")}`,
       },
     },
 
