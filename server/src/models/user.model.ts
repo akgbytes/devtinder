@@ -104,4 +104,12 @@ userSchema.methods.generateJWT = function (): string {
   );
 };
 
+userSchema.set("toJSON", {
+  transform(doc, ret) {
+    delete (ret as any).password;
+    delete (ret as any).__v;
+    return ret;
+  },
+});
+
 export const User = model("User", userSchema);
