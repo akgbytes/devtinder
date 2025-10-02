@@ -1,22 +1,45 @@
 import { User } from "@/models/user.model";
-import { ApiError } from "@/utils/core/ApiError";
-import { ApiResponse } from "@/utils/core/ApiResponse";
-import asyncHandler from "@/utils/core/asyncHandler";
-import { handleZodError } from "@/utils/core/handleZodError";
+import {
+  ApiError,
+  ApiResponse,
+  asyncHandler,
+  handleZodError,
+} from "@/utils/core";
 import { validateSignup } from "@/validations/auth.validations";
-import { Request, Response, RequestHandler } from "express";
 import { StatusCodes } from "http-status-codes";
+import { SignOptions } from "jsonwebtoken";
 
-export const signup = asyncHandler(async (req: Request, res: Response) => {
-  const data = handleZodError(validateSignup(req.body));
-  const user = await User.create({ ...data });
-  console.log("User created: ", user);
+export const register = asyncHandler(async (req, res) => {
+  const { firstname, lastname, email, password } = handleZodError(
+    validateSignup(req.body)
+  );
+
+  const existingUser = await User.findOne({ email });
+
+  if (existingUser)
+    throw new ApiError(
+      StatusCodes.CONFLICT,
+      "An account with this email already exists"
+    );
+
+  const user = await User.create({ firstname, lastname, email, password });
+
+  const token = user.generateJWT();
+
+  res.cookie("token", token, {
+    maxAge: 60 * 60 * 1000, // 1 hour
+  });
 
   const response = new ApiResponse(
     StatusCodes.CREATED,
-    "Signup successfully",
+    "User registered successfully",
     user
   );
 
+  res.status(response.statusCode).json(response);
+});
+
+export const login = asyncHandler(async (req, res) => {
+  const response = new ApiResponse(StatusCodes.OK, "Login successful", null);
   res.status(response.statusCode).json(response);
 });

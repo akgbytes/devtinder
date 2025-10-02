@@ -1,9 +1,9 @@
-import { ApiError } from "@/utils/core/ApiError";
+import { ApiError } from "@/utils/core";
 import { ErrorRequestHandler, Request, Response, NextFunction } from "express";
 import { StatusCodes } from "http-status-codes";
 
 export const errorHandler: ErrorRequestHandler = (
-  err: Error | ApiError,
+  err: any,
   req: Request,
   res: Response,
   next: NextFunction
@@ -12,6 +12,12 @@ export const errorHandler: ErrorRequestHandler = (
 
   if (err instanceof ApiError) {
     error = err;
+  } else if (err.code === 11000) {
+    const field = Object.keys(err?.keyValue)[0];
+    error = new ApiError(
+      StatusCodes.CONFLICT,
+      `Duplicate value for field: ${field}`
+    );
   } else {
     const statusCode = StatusCodes.INTERNAL_SERVER_ERROR;
     const message = err.message || "Something went wrong";

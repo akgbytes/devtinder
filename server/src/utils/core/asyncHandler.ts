@@ -6,10 +6,8 @@ type AsyncRequestHandler<T> = (
   next: NextFunction
 ) => Promise<T>;
 
-const asyncHandler =
+export const asyncHandler =
   <T>(fn: AsyncRequestHandler<T>): RequestHandler =>
   (req, res, next) => {
     Promise.resolve(fn(req, res, next)).catch(next);
   };
-
-export default asyncHandler;
