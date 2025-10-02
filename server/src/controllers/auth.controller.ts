@@ -64,3 +64,15 @@ export const login = asyncHandler(async (req, res) => {
   const response = new ApiResponse(StatusCodes.OK, "Login successful", null);
   res.status(response.statusCode).json(response);
 });
+
+export const logout = asyncHandler(async (req, res) => {
+  res.clearCookie("token");
+
+  const response = new ApiResponse(
+    StatusCodes.OK,
+    "Logged out successfully",
+    null
+  );
+
+  res.status(response.statusCode).json(response);
+});
