@@ -12,6 +12,9 @@ app.use("/api/v1/health", healthRoutes);
 import authRoutes from "@/routes/auth.routes";
 app.use("/api/v1/auth", authRoutes);
 
+import userRoutes from "@/routes/user.routes";
+app.use("/api/v1/users", userRoutes);
+
 import { errorHandler } from "@/middlewares/error.middleware";
 app.use(errorHandler);
 
