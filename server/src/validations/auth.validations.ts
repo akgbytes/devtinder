@@ -1,6 +1,6 @@
 import * as z from "zod";
 
-const signupSchema = z.object({
+const registerSchema = z.object({
   firstname: z
     .string()
     .min(3, { error: "First name must be at least 3 characters" })
@@ -19,4 +19,12 @@ const signupSchema = z.object({
     .max(128, { error: "Password must not exceed 128 characters" }),
 });
 
-export const validateSignup = (data: unknown) => signupSchema.safeParse(data);
+const loginSchema = registerSchema.pick({
+  email: true,
+  password: true,
+});
+
+export const validateRegister = (data: unknown) =>
+  registerSchema.safeParse(data);
+
+export const validateLogin = (data: unknown) => loginSchema.safeParse(data);
