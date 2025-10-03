@@ -1,10 +1,11 @@
 import { ConnectionRequest } from "@/models/connectionRequest.model";
 import { User } from "@/models/user.model";
+import { ConnectionRequestStatusType } from "@/utils/constants";
 import { ApiError, ApiResponse, asyncHandler } from "@/utils/core";
 import { validateObjectId } from "@/utils/helper";
 import { StatusCodes } from "http-status-codes";
 
-export const sendConnectionRequest = asyncHandler(async (req, res) => {
+export const createConnectionRequest = asyncHandler(async (req, res) => {
   const status = req.params.status as string;
   const toUserId = req.params.toUserId as string;
   const fromUserId = req.user._id as string;
@@ -59,10 +60,55 @@ export const sendConnectionRequest = asyncHandler(async (req, res) => {
     status,
   });
 
+  const message =
+    status === "interested"
+      ? "Connection request sent successfully"
+      : "Connection request ignored";
+
+  const response = new ApiResponse(StatusCodes.CREATED, message, null);
+
+  res.status(response.statusCode).json(response);
+});
+
+export const reviewConnectionRequest = asyncHandler(async (req, res) => {
+  const requestId = req.params.requestId as string;
+  const status = req.params.status as string;
+  const userId = req.user._id as string;
+
+  // validate object id
+  validateObjectId(requestId, "request");
+
+  // validate status
+  const allowedStatus = ["accepted", "rejected"];
+  if (!allowedStatus.includes(status)) {
+    throw new ApiError(
+      StatusCodes.BAD_REQUEST,
+      `Invalid request status: ${status}. Only ${allowedStatus.join(
+        " or "
+      )} is allowed.`
+    );
+  }
+
+  // check if request exists
+  const connectionRequest = await ConnectionRequest.findOne({
+    _id: requestId,
+    toUserId: userId,
+    status: "interested",
+  });
+
+  if (!connectionRequest)
+    throw new ApiError(
+      StatusCodes.NOT_FOUND,
+      "Connection request does not exist"
+    );
+
+  connectionRequest.status = status as ConnectionRequestStatusType;
+  await connectionRequest.save();
+
   const response = new ApiResponse(
-    StatusCodes.CREATED,
-    "Connection request created successfully",
-    null
+    StatusCodes.OK,
+    `Connection request ${status} successfully.`,
+    connectionRequest
   );
 
   res.status(response.statusCode).json(response);
