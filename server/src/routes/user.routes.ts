@@ -1,10 +1,10 @@
+import { Router } from "express";
+import { isLoggedIn } from "@/middlewares/auth.middleware";
 import {
   getProfile,
   updateProfile,
   changePassword,
 } from "@/controllers/user.controller";
-import { isLoggedIn } from "@/middlewares/auth.middleware";
-import { Router } from "express";
 
 const router = Router();
 

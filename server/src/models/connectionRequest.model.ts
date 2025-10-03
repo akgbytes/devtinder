@@ -33,6 +33,19 @@ const connectionRequestSchema = new Schema<IConnectionRequest>({
   },
 });
 
+// Pre-save hook to normalize user pair
+connectionRequestSchema.pre("save", function (next) {
+  if (this.fromUserId.toString() > this.toUserId.toString()) {
+    const temp = this.fromUserId;
+    this.fromUserId = this.toUserId;
+    this.toUserId = temp;
+  }
+  next();
+});
+
+// Unique compound index on normalized pair
+connectionRequestSchema.index({ fromUserId: 1, toUserId: 1 }, { unique: true });
+
 export const ConnectionRequest = model(
   "connectionRequest",
   connectionRequestSchema

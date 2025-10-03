@@ -7,7 +7,7 @@ export const Gender = {
 export type GenderType = (typeof Gender)[keyof typeof Gender];
 
 export const ConnectionRequestStatus = {
-  ignore: "ignore",
+  ignored: "ignored",
   interested: "interested",
   accepted: "accepted",
   rejected: "rejected",
