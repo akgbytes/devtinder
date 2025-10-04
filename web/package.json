@@ -13,12 +13,14 @@
     "@heroui/react": "^2.8.4",
     "@reduxjs/toolkit": "^2.9.0",
     "@tailwindcss/vite": "^4.1.14",
+    "clsx": "^2.1.1",
     "framer-motion": "^12.23.22",
     "motion": "^12.23.22",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-redux": "^9.2.0",
     "react-router": "^7.9.3",
+    "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.1.14"
   },
   "devDependencies": {
