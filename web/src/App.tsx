@@ -1,12 +1,12 @@
-import { Button } from "@heroui/react";
+import { BrowserRouter } from "react-router";
+import AppRoutes from "@/routes/AppRoutes";
 
-const App = () => {
+function App() {
   return (
-    <div>
-      <Button color="primary">Click Me</Button>
-      <h1 className="text-green-600">Hello World</h1>
-    </div>
+    <BrowserRouter>
+      <AppRoutes />
+    </BrowserRouter>
   );
-};
+}
 
 export default App;
