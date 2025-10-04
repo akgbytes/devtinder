@@ -4,14 +4,17 @@ import { useLoginMutation } from "@/services/authApi";
 import { tryCatch } from "@/utils/try-catch";
 import { handleApiError } from "@/utils/error";
 import { useNavigate } from "react-router";
-import { customToast } from "@/utils/customToast";
+import { toast } from "@/utils/toast";
+import { useAppDispatch } from "@/store/hooks";
+import { setUser } from "@/store/slices/authSlice";
 
 export default function Login() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("aman@gmail.com");
+  const [password, setPassword] = useState("123456");
 
   const navigate = useNavigate();
   const [login, { isLoading }] = useLoginMutation();
+  const dispatch = useAppDispatch();
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -24,8 +27,8 @@ export default function Login() {
     }
 
     if (data) {
-      customToast(data.message, "success");
-
+      toast(data.message, "success");
+      dispatch(setUser(data.data));
       navigate("/");
       console.log("success :", data);
     }

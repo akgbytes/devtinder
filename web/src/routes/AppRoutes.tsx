@@ -1,13 +1,44 @@
 import AuthLayout from "@/layouts/AuthLayout";
+import MainLayout from "@/layouts/MainLayout";
 import Home from "@/pages/Home";
 import Login from "@/pages/Login";
 import NotFound from "@/pages/NotFound";
+import { useLazyGetUserProfileQuery } from "@/services/userApi";
+import { useAppDispatch } from "@/store/hooks";
+import { clearUser, setUser } from "@/store/slices/authSlice";
+import { handleApiError } from "@/utils/error";
+import { tryCatch } from "@/utils/try-catch";
+import { useEffect } from "react";
 import { Routes, Route } from "react-router";
 
 const AppRoutes = () => {
+  const [getUser, { isLoading }] = useLazyGetUserProfileQuery();
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      const { data, error } = await tryCatch(getUser().unwrap());
+      if (error) {
+        dispatch(clearUser());
+      }
+      if (data) {
+        console.log("data got: ", data);
+        dispatch(setUser(data.data));
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
+
+  if (isLoading) {
+    return <div>Loading application...</div>;
+  }
+
   return (
     <Routes>
-      <Route index element={<Home />} />
+      <Route element={<MainLayout />}>
+        <Route index element={<Home />} />
+      </Route>
 
       {/* Auth routes */}
       <Route element={<AuthLayout />}>

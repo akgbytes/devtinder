@@ -8,7 +8,7 @@ type ToastOptions = {
   classNames: ToastProps["classNames"];
 };
 
-export const customToast = (message: string, toastType: ToastType) => {
+export const toast = (message: string, toastType: ToastType) => {
   let toastOptions: ToastOptions;
 
   switch (toastType) {

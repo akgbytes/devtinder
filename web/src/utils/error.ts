@@ -1,7 +1,7 @@
 import type { ApiError } from "@/types/api";
 import type { SerializedError } from "@reduxjs/toolkit";
 import { type FetchBaseQueryError } from "@reduxjs/toolkit/query";
-import { customToast } from "./customToast";
+import { toast } from "./toast";
 
 export function isFetchBaseQueryError(
   error: unknown
@@ -30,8 +30,8 @@ export function handleApiError(
       "error" in error
         ? error.error
         : (error.data as ApiError)?.message || "Unknown error occured";
-    customToast(errMsg, "error");
+    toast(errMsg, "error");
   } else if (isErrorWithMessage(error)) {
-    customToast(error.message, "error");
+    toast(error.message, "error");
   }
 }

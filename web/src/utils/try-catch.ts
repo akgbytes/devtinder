@@ -13,7 +13,7 @@ type Failure = {
 
 type Result<T> = Success<T> | Failure;
 
-export async function tryCatch<T>(promise: Promise<T>): Promise<Result<T>> {
+export const tryCatch = async <T>(promise: Promise<T>): Promise<Result<T>> => {
   try {
     const data = await promise;
     return { data, error: null };
@@ -23,4 +23,4 @@ export async function tryCatch<T>(promise: Promise<T>): Promise<Result<T>> {
       error: error as FetchBaseQueryError | SerializedError,
     };
   }
-}
+};
