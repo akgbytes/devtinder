@@ -61,7 +61,7 @@ export const login = asyncHandler(async (req, res) => {
     maxAge: 60 * 60 * 1000, // 1 hour
   });
 
-  const response = new ApiResponse(StatusCodes.OK, "Login successful", null);
+  const response = new ApiResponse(StatusCodes.OK, "Login successful", user);
   res.status(response.statusCode).json(response);
 });
 

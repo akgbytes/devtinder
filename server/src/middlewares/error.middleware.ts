@@ -19,14 +19,15 @@ export const errorHandler: ErrorRequestHandler = (
       `Duplicate value for field: ${field}`
     );
   } else {
-    const statusCode = StatusCodes.INTERNAL_SERVER_ERROR;
-    const message = err.message || "Something went wrong";
-    error = new ApiError(statusCode, message);
+    error = new ApiError(
+      StatusCodes.INTERNAL_SERVER_ERROR,
+      "Something went wrong"
+    );
   }
 
   const response = error.toJSON();
 
-  console.log("Error \n: ", response);
+  console.log("Error \n: ", error);
 
   res.status(error.statusCode).json(response);
 };

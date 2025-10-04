@@ -21,7 +21,7 @@ export class ApiResponse<T> {
   }
 }
 
-export interface IApiResponse<T = any> {
+export interface IApiResponse<T = unknown> {
   success: boolean;
   statusCode: number;
   message: string;

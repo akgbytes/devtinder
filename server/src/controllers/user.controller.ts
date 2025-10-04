@@ -77,3 +77,5 @@ export const getConnections = asyncHandler(async (req, res) => {
 
   res.status(response.statusCode).json(response);
 });
+
+export const getUserFeed = asyncHandler(async (req, res) => {});

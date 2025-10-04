@@ -13,6 +13,8 @@ export interface IUser extends Document {
   gender: GenderType;
   about: string;
   skills: string[];
+  createdAt: Date;
+  updatedAt: Date;
 
   isPasswordCorrect(password: string): Promise<boolean>;
   generateJWT(): string;
@@ -24,16 +26,16 @@ const userSchema = new Schema<IUser>(
       type: String,
       required: true,
       trim: true,
-      minLength: 3,
-      maxLength: 50,
+      minLength: [3, "First name must be at least 3 characters long"],
+      maxLength: [50, "First name cannot exceed 50 characters"],
     },
 
     lastname: {
       type: String,
       required: true,
       trim: true,
-      minLength: 3,
-      maxLength: 50,
+      minLength: [3, "Last name must be at least 3 characters long"],
+      maxLength: [50, "Last name cannot exceed 50 characters"],
     },
 
     email: {
@@ -47,16 +49,19 @@ const userSchema = new Schema<IUser>(
     password: {
       type: String,
       required: true,
+      minLength: [6, "Password must be at least 6 characters long"],
     },
 
     avatar: {
       type: String,
-      default: "",
+      default:
+        "https://res.cloudinary.com/dmnh10etf/image/upload/v1750270944/default_epnleu.png",
     },
 
     age: {
       type: Number,
-      min: 18,
+      min: [18, "You must be at least 18 years old"],
+      max: [120, "Please provide a valid age"],
     },
 
     gender: {
@@ -72,11 +77,18 @@ const userSchema = new Schema<IUser>(
     about: {
       type: String,
       default: "Default about of the user",
+      maxLength: [500, "About section cannot exceed 500 characters"],
     },
 
     skills: {
       type: [String],
       default: [],
+      validate: {
+        validator: function (v: string[]) {
+          return v.length <= 20;
+        },
+        message: "You cannot add more than 20 skills",
+      },
     },
   },
   { timestamps: true }
@@ -95,21 +107,50 @@ userSchema.methods.isPasswordCorrect = async function (
 };
 
 userSchema.methods.generateJWT = function (): string {
-  return jwt.sign(
-    {
-      _id: this._id,
-      email: this.email,
-    },
-    process.env.JWT_SECRET as string,
-    { expiresIn: process.env.JWT_EXPIRES_IN as SignOptions["expiresIn"] }
-  );
+  const payload = {
+    _id: this._id,
+    email: this.email,
+  };
+
+  const secret = process.env.JWT_SECRET as string;
+  const expiresIn = process.env.JWT_EXPIRES_IN as SignOptions["expiresIn"];
+
+  return jwt.sign(payload, secret, { expiresIn });
 };
 
 userSchema.set("toJSON", {
   transform(doc, ret) {
-    delete (ret as any).password;
-    delete (ret as any).__v;
-    return ret;
+    return {
+      _id: ret._id,
+      firstname: ret.firstname,
+      lastname: ret.lastname,
+      email: ret.email,
+      avatar: ret.avatar,
+      age: ret.age,
+      gender: ret.gender,
+      about: ret.about,
+      skills: ret.skills,
+      createdAt: ret.createdAt,
+      updatedAt: ret.updatedAt,
+    };
+  },
+});
+
+userSchema.set("toObject", {
+  transform(doc, ret) {
+    return {
+      _id: ret._id,
+      firstname: ret.firstname,
+      lastname: ret.lastname,
+      email: ret.email,
+      avatar: ret.avatar,
+      age: ret.age,
+      gender: ret.gender,
+      about: ret.about,
+      skills: ret.skills,
+      createdAt: ret.createdAt,
+      updatedAt: ret.updatedAt,
+    };
   },
 });
 
