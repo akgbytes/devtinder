@@ -1,50 +1,61 @@
-import { Gender, GenderType } from "@/utils/constants";
-import { Schema, model, Document } from "mongoose";
+import { Schema, model, Document, Model } from "mongoose";
 import bcrypt from "bcryptjs";
 import jwt, { SignOptions } from "jsonwebtoken";
+import crypto from "crypto";
 
-export interface IUser extends Document {
-  // registration details
+import { Gender, GenderType, onboardingSteps } from "@/utils/constants";
+
+const validSteps = onboardingSteps.map((s) => s.step);
+
+export interface IUser {
+  name: string;
   email: string;
   password: string;
 
-  // email verification
   isEmailVerified: boolean;
-  emailVerificationCode: string;
-  emailVerificationCodeExpiry: Date;
+  otp: string | null;
+  otpExpiry: Date | null;
 
-  // onboarding process track
   onboardingCompleted: boolean;
   onboardingStep: number;
 
-  // optional fields filled during onboarding
-  name?: string;
-  profilePicture?: string;
-  age?: number;
-  gender?: GenderType;
-  about?: string;
-  skills?: string[];
-  location?: string;
+  profilePicture: string;
+  age: number;
+  gender: GenderType;
+  about: string;
+  skills: string[];
+  location: string;
 
-  // timestamps
   createdAt: Date;
   updatedAt: Date;
-
-  // user methods
-  isPasswordCorrect(password: string): Promise<boolean>;
-  generateJWT(): string;
 }
 
-const userSchema = new Schema<IUser>(
+export interface IUserMethods {
+  isPasswordCorrect(password: string): Promise<boolean>;
+  generateJWT(): string;
+  generateOtpWithExpiry(): { otp: string; otpExpiry: Date };
+  verifyOtp(otp: string): boolean;
+  clearOtp(): void;
+  advanceOnboarding(): void;
+  getOnboardingProgress(): {
+    onboardingStep: number;
+    onboardingStepDescription: string;
+    onboardingCompleted: boolean;
+    totalSteps: number;
+  };
+}
+
+export type UserModel = Model<IUser, {}, IUserMethods>;
+
+const userSchema = new Schema<IUser, UserModel, IUserMethods>(
   {
     name: {
       type: String,
-      required: true,
       trim: true,
-      minLength: [3, "First name must be at least 3 characters long"],
-      maxLength: [50, "First name cannot exceed 50 characters"],
+      required: true,
+      minlength: 3,
+      maxlength: 50,
     },
-
     email: {
       type: String,
       required: true,
@@ -52,41 +63,47 @@ const userSchema = new Schema<IUser>(
       trim: true,
       lowercase: true,
     },
+    password: { type: String, required: true, minlength: 6, maxlength: 128 },
 
-    password: {
-      type: String,
-      required: true,
-      minLength: [6, "Password must be at least 6 characters long"],
+    isEmailVerified: { type: Boolean, default: false },
+    otp: { type: String, default: null },
+    otpExpiry: { type: Date, default: null },
+
+    onboardingStep: {
+      type: Number,
+      default: 0,
+      enum: {
+        values: validSteps,
+        message: `Invalid onboarding step. Must be one of: ${validSteps.join(
+          ", "
+        )}`,
+      },
     },
+    onboardingCompleted: { type: Boolean, default: false },
 
     profilePicture: {
       type: String,
       default:
         "https://res.cloudinary.com/dmnh10etf/image/upload/v1750270944/default_epnleu.png",
     },
-
     age: {
       type: Number,
-      min: [18, "You must be at least 18 years old"],
-      max: [120, "Please provide a valid age"],
+      min: 18,
+      max: 120,
     },
-
     gender: {
       type: String,
       enum: {
         values: Object.values(Gender),
-        message: `Invalid value '{VALUE}'. Please select between ${Object.values(
+        message: `Invalid gender value. Must be one of: ${Object.values(
           Gender
-        ).join(" | ")}`,
+        ).join(", ")}`,
       },
     },
-
     about: {
       type: String,
-      default: "Default about of the user",
-      maxLength: [500, "About section cannot exceed 500 characters"],
+      maxlength: 500,
     },
-
     skills: {
       type: [String],
       default: [],
@@ -96,6 +113,10 @@ const userSchema = new Schema<IUser>(
         },
         message: "You cannot add more than 20 skills",
       },
+    },
+    location: {
+      type: String,
+      trim: true,
     },
   },
   { timestamps: true }
@@ -123,6 +144,48 @@ userSchema.methods.generateJWT = function (): string {
   const expiresIn = process.env.JWT_EXPIRES_IN as SignOptions["expiresIn"];
 
   return jwt.sign(payload, secret, { expiresIn });
+};
+
+userSchema.methods.generateOtpWithExpiry = function () {
+  const otp = crypto.randomInt(100000, 999999).toString();
+  const otpExpiry = new Date(Date.now() + 15 * 60 * 1000); // 15 min
+
+  this.otp = crypto.createHash("sha256").update(otp).digest("hex");
+  this.otpExpiry = otpExpiry;
+
+  return { otp, otpExpiry };
+};
+
+userSchema.methods.verifyOtp = function (otp) {
+  if (new Date() > this.otpExpiry!) {
+    return false;
+  }
+  const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
+  return hashedOtp === this.otp;
+};
+
+userSchema.methods.clearOtp = function (): void {
+  this.otp = null;
+  this.otpExpiry = null;
+};
+
+userSchema.methods.advanceOnboarding = function (): void {
+  const maxStep = onboardingSteps.length - 1;
+  if (this.onboardingStep < maxStep) {
+    this.onboardingStep += 1;
+  }
+  this.onboardingCompleted = this.onboardingStep === maxStep;
+};
+
+userSchema.methods.getOnboardingProgress = function () {
+  const stepDescription =
+    onboardingSteps[this.onboardingStep]?.description || "Unknown step";
+  return {
+    onboardingStep: this.onboardingStep,
+    onboardingStepDescription: stepDescription,
+    onboardingCompleted: this.onboardingCompleted,
+    totalSteps: onboardingSteps.length,
+  };
 };
 
 userSchema.set("toJSON", {
@@ -159,4 +222,4 @@ userSchema.set("toObject", {
   },
 });
 
-export const User = model("User", userSchema);
+export const User = model<IUser, UserModel>("User", userSchema);

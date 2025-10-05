@@ -1,18 +1,13 @@
 import * as z from "zod";
 
 const registerSchema = z.object({
-  firstname: z
+  name: z
     .string()
-    .min(3, { error: "First name must be at least 3 characters" })
-    .max(50, { error: "First name must not exceed 50 characters" }),
+    .trim()
+    .min(3, { message: "Name must be at least 3 characters long" })
+    .max(50, { message: "Name must not exceed 50 characters" }),
 
-  lastname: z
-    .string()
-    .min(3, { error: "Last name must be at least 3 characters" })
-    .max(50, { error: "Last name must not exceed 50 characters" }),
-
-  email: z.email({ error: "Invalid email address" }),
-
+  email: z.email({ error: "Invalid email address" }).toLowerCase(),
   password: z
     .string()
     .min(6, { error: "Password must be at least 6 characters long" })

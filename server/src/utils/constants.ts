@@ -22,3 +22,17 @@ export const NodeEnv = {
 } as const;
 
 export type NodeEnvType = (typeof NodeEnv)[keyof typeof NodeEnv];
+
+export type OnboardingStepType = 0 | 1 | 2 | 3;
+
+export type Onboarding = {
+  step: OnboardingStepType;
+  description: string;
+}[];
+
+export const onboardingSteps: Onboarding = [
+  { step: 0, description: "Not started" },
+  { step: 1, description: "Verify email" },
+  { step: 2, description: "Fill profile details" },
+  { step: 3, description: "Completed" },
+];

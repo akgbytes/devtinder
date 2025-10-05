@@ -12,9 +12,7 @@ import {
 import { StatusCodes } from "http-status-codes";
 
 export const register = asyncHandler(async (req, res) => {
-  const { firstname, lastname, email, password } = handleZodError(
-    validateRegister(req.body)
-  );
+  const { name, email, password } = handleZodError(validateRegister(req.body));
 
   const existingUser = await User.findOne({ email });
 
@@ -24,18 +22,12 @@ export const register = asyncHandler(async (req, res) => {
       "An account with this email already exists"
     );
 
-  const user = await User.create({ firstname, lastname, email, password });
-
-  const token = user.generateJWT();
-
-  res.cookie("token", token, {
-    maxAge: 60 * 60 * 1000, // 1 hour
-  });
+  const user = await User.create({ name, email, password });
 
   const response = new ApiResponse(
     StatusCodes.CREATED,
     "User registered successfully",
-    user
+    null
   );
 
   res.status(response.statusCode).json(response);
