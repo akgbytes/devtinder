@@ -19,7 +19,18 @@ const loginSchema = registerSchema.pick({
   password: true,
 });
 
+const verifyEmailSchema = registerSchema
+  .pick({
+    email: true,
+  })
+  .extend({
+    otp: z.string().trim().length(6, "OTP must be of 6 digits"),
+  });
+
 export const validateRegister = (data: unknown) =>
   registerSchema.safeParse(data);
 
 export const validateLogin = (data: unknown) => loginSchema.safeParse(data);
+
+export const validateVerifyEmail = (data: unknown) =>
+  verifyEmailSchema.safeParse(data);

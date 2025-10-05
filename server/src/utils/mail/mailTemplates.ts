@@ -3,7 +3,7 @@ export const otpVerificationTemplate = (
   otp: string,
   brandColor: string = "#E94057"
 ) => ({
-  subject: "Your DevTinder Verification Code",
+  subject: "DevTinder Verification Code",
   text: `Hi ${username},
 
 Your verification code for DevTinder is: ${otp}

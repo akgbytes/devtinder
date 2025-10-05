@@ -9,6 +9,7 @@ import {
 import {
   validateLogin,
   validateRegister,
+  validateVerifyEmail,
 } from "@/validations/auth.validations";
 import { StatusCodes } from "http-status-codes";
 
@@ -50,6 +51,60 @@ export const register = asyncHandler(async (req, res) => {
         _id: user._id,
         name: user.name,
         email: user.email,
+        isEmailVerified: user.isEmailVerified,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      },
+      onboarding,
+    }
+  );
+
+  res.status(response.statusCode).json(response);
+});
+
+export const verifyEmail = asyncHandler(async (req, res) => {
+  const { email, otp } = handleZodError(validateVerifyEmail(req.body));
+
+  const user = await User.findOne({ email });
+
+  // check if user exists
+  if (!user)
+    throw new ApiError(
+      StatusCodes.NOT_FOUND,
+      "No account found with this email"
+    );
+
+  // check if already verified
+  if (user.isEmailVerified) {
+    throw new ApiError(StatusCodes.BAD_REQUEST, "Email is already verified");
+  }
+
+  const isOtpCorrect = user.verifyOtp(otp);
+  if (!isOtpCorrect) {
+    throw new ApiError(
+      StatusCodes.UNAUTHORIZED,
+      "Invalid or expired OTP. Please request a new one."
+    );
+  }
+
+  // mark verified and update onboarding
+  user.clearOtp();
+  user.isEmailVerified = true;
+
+  user.advanceOnboarding();
+  const onboarding = user.getOnboardingProgress();
+
+  await user.save();
+
+  const response = new ApiResponse(
+    StatusCodes.CREATED,
+    "Email verified successfully",
+    {
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        isEmailVerified: user.isEmailVerified,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
       },
