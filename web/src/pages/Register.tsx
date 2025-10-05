@@ -59,7 +59,7 @@ const Register = () => {
   };
 
   return (
-    <Card className="w-full rounded-xl max-w-sm px-2 py-4 sm:max-w-md sm:px-6 sm:py-8">
+    <Card className="rounded-xl px-2 py-4sm:px-6 sm:py-8">
       <CardHeader className="text-center gap-0">
         <CardTitle>
           <h2 className="text-lg font-bold text-foreground">
@@ -68,7 +68,7 @@ const Register = () => {
         </CardTitle>
         <CardDescription>
           <p className="text-muted-foreground text-sm pt-1">
-            Welcome! Please fill in the details to get started.
+            Please fill in the details to get started
           </p>
         </CardDescription>
       </CardHeader>
@@ -100,11 +100,11 @@ const Register = () => {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email address</FormLabel>
+                      <FormLabel>Email</FormLabel>
                       <FormControl>
                         <Input
                           type="email"
-                          placeholder="Enter your email address"
+                          placeholder="Enter your email"
                           {...field}
                         />
                       </FormControl>
@@ -141,7 +141,7 @@ const Register = () => {
                     <Spinner />
                   </>
                 ) : (
-                  "Continue"
+                  "Create Account"
                 )}
               </Button>
             </div>
@@ -152,7 +152,7 @@ const Register = () => {
           <p className="text-sm text-muted-foreground">
             Already have an account?{" "}
             <Link
-              to="/signin"
+              to="/login"
               className="text-primary hover:underline font-medium"
             >
               Sign in

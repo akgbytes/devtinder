@@ -1,6 +1,7 @@
 import AuthLayout from "@/layouts/AuthLayout";
 import MainLayout from "@/layouts/MainLayout";
 import Home from "@/pages/Home";
+import Login from "@/pages/Login";
 import NotFound from "@/pages/NotFound";
 import Register from "@/pages/Register";
 import { useLazyGetUserProfileQuery } from "@/services/userApi";
@@ -41,8 +42,8 @@ const AppRoutes = () => {
 
       {/* Auth routes */}
       <Route element={<AuthLayout />}>
-        {/* <Route path="/login" element={<Login />} /> */}
         <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />

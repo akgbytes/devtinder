@@ -4,7 +4,7 @@ import { Link, Outlet } from "react-router";
 const AuthLayout = () => {
   return (
     <div className="flex items-center justify-center min-h-svh">
-      <div className="flex flex-col gap-4 w-full max-w-md sm:max-w-lg rounded-xl px-6 py-8">
+      <div className="flex flex-col gap-4 w-full max-w-sm sm:max-w-md">
         <Link
           to="/"
           className="flex items-center gap-2 self-center font-medium"

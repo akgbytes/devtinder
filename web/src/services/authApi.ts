@@ -1,7 +1,7 @@
 import type { ApiResponse } from "@/types/api";
 import { api } from "./api";
 import type { User } from "@/types/user";
-import type { RegisterFormValues } from "@/utils/validations";
+import type { LoginFormValues, RegisterFormValues } from "@/utils/validations";
 
 const authApi = api.injectEndpoints({
   endpoints: (builder) => ({
@@ -14,10 +14,7 @@ const authApi = api.injectEndpoints({
       invalidatesTags: ["User"],
     }),
 
-    login: builder.mutation<
-      ApiResponse<User>,
-      { email: string; password: string }
-    >({
+    login: builder.mutation<ApiResponse<User>, LoginFormValues>({
       query: (credentials) => ({
         url: "/auth/login",
         method: "POST",
