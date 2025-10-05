@@ -15,3 +15,10 @@ export const ConnectionRequestStatus = {
 
 export type ConnectionRequestStatusType =
   (typeof ConnectionRequestStatus)[keyof typeof ConnectionRequestStatus];
+
+export const NodeEnv = {
+  development: "development",
+  production: "production",
+} as const;
+
+export type NodeEnvType = (typeof NodeEnv)[keyof typeof NodeEnv];

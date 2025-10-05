@@ -4,38 +4,45 @@ import bcrypt from "bcryptjs";
 import jwt, { SignOptions } from "jsonwebtoken";
 
 export interface IUser extends Document {
-  firstname: string;
-  lastname: string;
+  // registration details
   email: string;
   password: string;
-  avatar: string;
-  age: number;
-  gender: GenderType;
-  about: string;
-  skills: string[];
+
+  // email verification
+  isEmailVerified: boolean;
+  emailVerificationCode: string;
+  emailVerificationCodeExpiry: Date;
+
+  // onboarding process track
+  onboardingCompleted: boolean;
+  onboardingStep: number;
+
+  // optional fields filled during onboarding
+  name?: string;
+  profilePicture?: string;
+  age?: number;
+  gender?: GenderType;
+  about?: string;
+  skills?: string[];
+  location?: string;
+
+  // timestamps
   createdAt: Date;
   updatedAt: Date;
 
+  // user methods
   isPasswordCorrect(password: string): Promise<boolean>;
   generateJWT(): string;
 }
 
 const userSchema = new Schema<IUser>(
   {
-    firstname: {
+    name: {
       type: String,
       required: true,
       trim: true,
       minLength: [3, "First name must be at least 3 characters long"],
       maxLength: [50, "First name cannot exceed 50 characters"],
-    },
-
-    lastname: {
-      type: String,
-      required: true,
-      trim: true,
-      minLength: [3, "Last name must be at least 3 characters long"],
-      maxLength: [50, "Last name cannot exceed 50 characters"],
     },
 
     email: {
@@ -52,7 +59,7 @@ const userSchema = new Schema<IUser>(
       minLength: [6, "Password must be at least 6 characters long"],
     },
 
-    avatar: {
+    profilePicture: {
       type: String,
       default:
         "https://res.cloudinary.com/dmnh10etf/image/upload/v1750270944/default_epnleu.png",
@@ -122,10 +129,9 @@ userSchema.set("toJSON", {
   transform(doc, ret) {
     return {
       _id: ret._id,
-      firstname: ret.firstname,
-      lastname: ret.lastname,
+      name: ret.name,
       email: ret.email,
-      avatar: ret.avatar,
+      profilePicture: ret.profilePicture,
       age: ret.age,
       gender: ret.gender,
       about: ret.about,
@@ -140,10 +146,9 @@ userSchema.set("toObject", {
   transform(doc, ret) {
     return {
       _id: ret._id,
-      firstname: ret.firstname,
-      lastname: ret.lastname,
+      name: ret.name,
       email: ret.email,
-      avatar: ret.avatar,
+      profilePicture: ret.profilePicture,
       age: ret.age,
       gender: ret.gender,
       about: ret.about,

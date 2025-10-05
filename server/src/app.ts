@@ -1,12 +1,13 @@
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import { env } from "@/config/env";
 
 const app = express();
 
 app.use(
   cors({
-    origin: process.env.APP_URL,
+    origin: env.APP_URL,
     credentials: true,
     methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
   })
@@ -27,6 +28,7 @@ import connectionRequestRoutes from "@/routes/connectionRequest.routes";
 app.use("/api/v1/connections", connectionRequestRoutes);
 
 import { errorHandler } from "@/middlewares/error.middleware";
+
 app.use(errorHandler);
 
 export default app;

@@ -1,4 +1,4 @@
-import { ApiError } from "./ApiError";
+import { ApiError, ValidationError } from "./ApiError";
 import { StatusCodes } from "http-status-codes";
 import { ZodSafeParseResult } from "zod";
 
@@ -12,11 +12,18 @@ type Issue = {
 export const handleZodError = <T>(result: ZodSafeParseResult<T>) => {
   if (result.success && result.data) return result.data;
 
-  const issue = result.error?.issues[0] as Issue;
-  const path = issue.path[0] || "";
-  const message = issue.message;
+  const errors: ValidationError[] = (result.error?.issues as Issue[]).map(
+    (issue) => {
+      return {
+        field: issue.path[0] || "",
+        message: issue.message,
+      };
+    }
+  );
 
-  throw new ApiError(StatusCodes.BAD_REQUEST, "Validation failed", [
-    { field: path, message },
-  ]);
+  throw new ApiError(
+    StatusCodes.BAD_REQUEST,
+    "Invalid input data. Please check your details and try again.",
+    errors
+  );
 };

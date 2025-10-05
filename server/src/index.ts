@@ -1,11 +1,13 @@
 import "dotenv/config";
+import { env } from "./config/env";
 import { connectDB } from "@/config/db";
+import { logger } from "@/config/logger";
 import app from "@/app";
 
 connectDB();
 
-const port = process.env.PORT ?? 8080;
+const port = env.PORT;
 
 app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
+  logger.info(`Server listening on port ${port}`);
 });
