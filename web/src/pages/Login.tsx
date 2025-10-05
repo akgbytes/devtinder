@@ -1,14 +1,22 @@
 import { useState } from "react";
-import { Form, Input, Button, Card, CardHeader, CardBody } from "@heroui/react";
+import {
+  Form,
+  Input,
+  Button,
+  Card,
+  CardHeader,
+  CardBody,
+  CardFooter,
+} from "@heroui/react";
 import { useLoginMutation } from "@/services/authApi";
 import { tryCatch } from "@/utils/try-catch";
 import { handleApiError } from "@/utils/error";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { toast } from "@/utils/toast";
 import { useAppDispatch } from "@/store/hooks";
 import { setUser } from "@/store/slices/authSlice";
 
-export default function Login() {
+const Login = () => {
   const [email, setEmail] = useState("aman@gmail.com");
   const [password, setPassword] = useState("123456");
 
@@ -35,9 +43,10 @@ export default function Login() {
   };
 
   return (
-    <Card className="bg-transparent p-6">
-      <CardHeader className="flex justify-center text-2xl font-bold">
-        Log in to your account
+    <Card className="bg-transparent p-5">
+      <CardHeader className="flex flex-col justify-center">
+        <h2 className="text-xl font-bold">Welcome Back</h2>
+        <p className="text-sm">Please sign in to continue</p>
       </CardHeader>
       <CardBody>
         <Form
@@ -89,6 +98,19 @@ export default function Login() {
           </div>
         </Form>
       </CardBody>
+      <CardFooter className="flex justify-center">
+        <div className="text-center text-sm">
+          <span className="text-zinc-400">Don't have an account? </span>
+          <Link
+            to="/register"
+            className="hover:underline hover:text-primary text-zinc-200 font-medium transition-colors duration-200"
+          >
+            Sign up
+          </Link>
+        </div>
+      </CardFooter>
     </Card>
   );
-}
+};
+
+export default Login;

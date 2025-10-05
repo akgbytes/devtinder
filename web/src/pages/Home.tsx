@@ -1,13 +1,12 @@
-import Navbar from "@/components/Navbar";
-import { Button } from "@heroui/react";
+import { Link } from "react-router";
 
 const Home = () => {
   return (
     <div className="">
       <h1>Home</h1>
-      <Button variant="solid" color="danger">
-        Danger
-      </Button>
+      <Link className="text-primary" to={"/login"}>
+        Login
+      </Link>
     </div>
   );
 };

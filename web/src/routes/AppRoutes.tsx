@@ -3,10 +3,10 @@ import MainLayout from "@/layouts/MainLayout";
 import Home from "@/pages/Home";
 import Login from "@/pages/Login";
 import NotFound from "@/pages/NotFound";
+import Register from "@/pages/Register";
 import { useLazyGetUserProfileQuery } from "@/services/userApi";
 import { useAppDispatch } from "@/store/hooks";
 import { clearUser, setUser } from "@/store/slices/authSlice";
-import { handleApiError } from "@/utils/error";
 import { tryCatch } from "@/utils/try-catch";
 import { useEffect } from "react";
 import { Routes, Route } from "react-router";
@@ -43,6 +43,7 @@ const AppRoutes = () => {
       {/* Auth routes */}
       <Route element={<AuthLayout />}>
         <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />
