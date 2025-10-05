@@ -1,3 +1,4 @@
+import "dotenv/config";
 import { NodeEnv } from "@/utils/constants";
 import * as z from "zod";
 import { logger } from "./logger";

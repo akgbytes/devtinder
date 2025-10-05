@@ -1,3 +1,4 @@
+import { emailQueue } from "@/jobs/queues/email.queue";
 import { User } from "@/models/user.model";
 import {
   ApiError,
@@ -24,10 +25,36 @@ export const register = asyncHandler(async (req, res) => {
 
   const user = await User.create({ name, email, password });
 
+  // generate otp
+  const { otp, otpExpiry } = user.generateOtpWithExpiry();
+
+  // add email to queue
+  await emailQueue.add("sendVerificationMail", {
+    email: user.email,
+    name: user.name,
+    otp,
+  });
+
+  // advance onboarding
+  user.advanceOnboarding();
+  const onboarding = user.getOnboardingProgress();
+
+  // save user to db
+  await user.save();
+
   const response = new ApiResponse(
     StatusCodes.CREATED,
     "User registered successfully",
-    null
+    {
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      },
+      onboarding,
+    }
   );
 
   res.status(response.statusCode).json(response);

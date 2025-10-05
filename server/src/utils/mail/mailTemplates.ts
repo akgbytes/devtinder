@@ -31,11 +31,6 @@ Happy coding and connecting!
             <!-- Header with Logo -->
             <tr>
               <td align="center" style="background:linear-gradient(135deg, ${brandColor} 0%, #ff6b6b 100%); padding:40px 20px;">
-                <div style="display:inline-block; background:#ffffff; border-radius:50%; padding:15px; margin-bottom:15px;">
-                  <div style="width:50px; height:50px; background:${brandColor}; border-radius:50%; display:flex; align-items:center; justify-content:center;">
-                    <span style="font-size:28px; font-weight:bold; color:#ffffff;">👨‍💻</span>
-                  </div>
-                </div>
                 <h1 style="margin:0; font-size:28px; font-weight:bold; color:#ffffff; letter-spacing:-0.5px;">DevTinder</h1>
                 <p style="margin:8px 0 0; font-size:14px; color:rgba(255,255,255,0.9);">Where Developers Connect</p>
               </td>
@@ -70,7 +65,7 @@ Happy coding and connecting!
                   <tr>
                     <td align="center" style="background:#fff3cd; border-left:4px solid #ffc107; padding:15px; border-radius:6px;">
                       <p style="margin:0; font-size:14px; color:#856404; line-height:1.5;">
-                        ⏱️ <strong>Important:</strong> This code expires in <strong>10 minutes</strong>
+                      <strong>Important:</strong> This code expires in <strong>15 minutes</strong>
                       </p>
                     </td>
                   </tr>
@@ -80,28 +75,6 @@ Happy coding and connecting!
                   If you didn't request this code, please ignore this email or 
                   <a href="mailto:support@devtinder.com" style="color:${brandColor}; text-decoration:none; font-weight:600;">contact our support team</a>.
                 </p>
-              </td>
-            </tr>
-            
-            <!-- Divider -->
-            <tr>
-              <td style="padding:0 30px;">
-                <div style="border-top:1px solid #e0e0e0;"></div>
-              </td>
-            </tr>
-            
-            <!-- Tips Section -->
-            <tr>
-              <td style="padding:30px; background:#f8f9fa;">
-                <h3 style="margin:0 0 15px; font-size:16px; font-weight:600; color:#333333;">
-                  🎯 Getting Started with DevTinder
-                </h3>
-                <ul style="margin:0; padding:0 0 0 20px; font-size:14px; color:#555555; line-height:1.8;">
-                  <li>Complete your profile to stand out</li>
-                  <li>Add your skills and tech stack</li>
-                  <li>Start connecting with fellow developers</li>
-                  <li>Build your network and collaborate</li>
-                </ul>
               </td>
             </tr>
             

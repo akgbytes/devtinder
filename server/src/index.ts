@@ -1,5 +1,4 @@
-import "dotenv/config";
-import { env } from "./config/env";
+import { env } from "@/config/env";
 import { connectDB } from "@/config/db";
 import { logger } from "@/config/logger";
 import app from "@/app";

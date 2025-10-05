@@ -6,8 +6,9 @@ import { logger } from "@/config/logger";
 const emailWorker = new Worker(
   "emailQueue",
   async (job) => {
-    const { email, username, otp } = job.data;
-    await sendVerificationMail(email, username, otp);
+    console.log("job data recieved: ", job.data);
+    const { email, name, otp } = job.data;
+    await sendVerificationMail(email, name, otp);
     logger.info(`Verification email sent to ${email}`);
   },
   {

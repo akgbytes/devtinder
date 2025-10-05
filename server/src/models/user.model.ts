@@ -199,8 +199,6 @@ userSchema.set("toJSON", {
       gender: ret.gender,
       about: ret.about,
       skills: ret.skills,
-      createdAt: ret.createdAt,
-      updatedAt: ret.updatedAt,
     };
   },
 });
@@ -216,8 +214,6 @@ userSchema.set("toObject", {
       gender: ret.gender,
       about: ret.about,
       skills: ret.skills,
-      createdAt: ret.createdAt,
-      updatedAt: ret.updatedAt,
     };
   },
 });
