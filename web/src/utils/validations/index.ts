@@ -19,5 +19,14 @@ export const loginSchema = registerSchema.pick({
   password: true,
 });
 
+export const verifyEmailSchema = registerSchema
+  .pick({
+    email: true,
+  })
+  .extend({
+    otp: z.string().trim().length(6, "OTP must be of 6 digits"),
+  });
+
 export type RegisterFormValues = z.infer<typeof registerSchema>;
 export type LoginFormValues = z.infer<typeof loginSchema>;
+export type VerifyEmailFormValues = z.infer<typeof verifyEmailSchema>;

@@ -3,6 +3,7 @@ import MainLayout from "@/layouts/MainLayout";
 import Home from "@/pages/Home";
 import Login from "@/pages/Login";
 import NotFound from "@/pages/NotFound";
+import ProfileDetails from "@/pages/ProfileDetails";
 import Register from "@/pages/Register";
 import { useLazyGetUserProfileQuery } from "@/services/userApi";
 import { useAppDispatch } from "@/store/hooks";
@@ -45,6 +46,7 @@ const AppRoutes = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
       </Route>
+      <Route path="/app/onboarding" element={<ProfileDetails />} />
 
       <Route path="*" element={<NotFound />} />
     </Routes>
