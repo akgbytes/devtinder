@@ -1,4 +1,4 @@
-import { AcmeLogo } from "@/components/Navbar";
+import AppLogo from "@/components/AppLogo";
 import { Link, Outlet } from "react-router";
 
 const AuthLayout = () => {
@@ -9,7 +9,7 @@ const AuthLayout = () => {
           to="/"
           className="flex items-center gap-2 self-center font-medium"
         >
-          <AcmeLogo />
+          <AppLogo />
           <span className="text-2xl">devtinder</span>
         </Link>
         <Outlet />

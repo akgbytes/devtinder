@@ -1,18 +1,11 @@
 import type { ApiResponse } from "@/types/api";
 import { api } from "./api";
 import type { User } from "@/types/user";
+import type { RegisterFormValues } from "@/utils/validations";
 
 const authApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    register: builder.mutation<
-      ApiResponse<User>,
-      {
-        firstname: string;
-        lastname: string;
-        email: string;
-        password: string;
-      }
-    >({
+    register: builder.mutation<ApiResponse<User>, RegisterFormValues>({
       query: (userData) => ({
         url: "/auth/register",
         method: "POST",

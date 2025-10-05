@@ -1,37 +1,50 @@
-import { useState } from "react";
-import {
-  Form,
-  Input,
-  Button,
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
-} from "@heroui/react";
 import { useRegisterMutation } from "@/services/authApi";
 import { tryCatch } from "@/utils/try-catch";
 import { handleApiError } from "@/utils/error";
 import { Link, useNavigate } from "react-router";
-import { toast } from "@/utils/toast";
 import { useAppDispatch } from "@/store/hooks";
 import { setUser } from "@/store/slices/authSlice";
 
-const Register = () => {
-  const [firstname, setFirstname] = useState("");
-  const [lastname, setLastname] = useState("");
-  const [email, setEmail] = useState("aman@gmail.com");
-  const [password, setPassword] = useState("123456");
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { useSnackbar } from "notistack";
+import { Spinner } from "@/components/ui/spinner";
+import { registerSchema, type RegisterFormValues } from "@/utils/validations";
 
+const Register = () => {
+  const form = useForm<RegisterFormValues>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+      password: "",
+    },
+  });
+
+  const { enqueueSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const [register, { isLoading }] = useRegisterMutation();
   const dispatch = useAppDispatch();
 
-  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    const { data, error } = await tryCatch(
-      register({ firstname, lastname, email, password }).unwrap()
-    );
+  const onSubmit = async (values: RegisterFormValues) => {
+    const { data, error } = await tryCatch(register(values).unwrap());
 
     if (error) {
       handleApiError(error);
@@ -39,106 +52,114 @@ const Register = () => {
     }
 
     if (data) {
-      toast(data.message, "success");
+      enqueueSnackbar(data.message, { variant: "success" });
       dispatch(setUser(data.data));
       navigate("/");
-      console.log("success :", data);
     }
   };
 
   return (
-    <Card className="bg-transparent p-6">
-      <CardHeader className="flex flex-col justify-center">
-        <h2 className="text-xl font-bold">Create Account</h2>
-        <p className="text-sm">Please fill in the details to get started</p>
+    <Card className="w-full rounded-xl max-w-sm px-2 py-4 sm:max-w-md sm:px-6 sm:py-8">
+      <CardHeader className="text-center gap-0">
+        <CardTitle>
+          <h2 className="text-lg font-bold text-foreground">
+            Create your account
+          </h2>
+        </CardTitle>
+        <CardDescription>
+          <p className="text-muted-foreground text-sm pt-1">
+            Welcome! Please fill in the details to get started.
+          </p>
+        </CardDescription>
       </CardHeader>
-      <CardBody>
-        <Form
-          className="w-full justify-center items-center space-y-4"
-          onSubmit={onSubmit}
-        >
-          <div className="flex flex-col gap-4 w-full">
-            <Input
-              variant="bordered"
-              isRequired
-              errorMessage="Please enter your first name"
-              label="First Name"
-              labelPlacement="outside"
-              name="firstName"
-              placeholder="Enter your first name"
-              type="text"
-              value={firstname}
-              onValueChange={setFirstname}
-            />
 
-            <Input
-              variant="bordered"
-              isRequired
-              errorMessage="Please enter your last name"
-              label="Last Name"
-              labelPlacement="outside"
-              name="lastName"
-              placeholder="Enter your last name"
-              type="text"
-              value={lastname}
-              onValueChange={setLastname}
-            />
-
-            <Input
-              variant="bordered"
-              isRequired
-              errorMessage={({ validationDetails }) => {
-                if (validationDetails.valueMissing) {
-                  return "Please enter your email";
-                }
-                if (validationDetails.typeMismatch) {
-                  return "Please enter a valid email address";
-                }
-              }}
-              label="Email"
-              labelPlacement="outside"
-              name="email"
-              placeholder="Enter your email"
-              type="email"
-              value={email}
-              onValueChange={setEmail}
-            />
-
-            <Input
-              variant="bordered"
-              isRequired
-              errorMessage="Please enter your password"
-              label="Password"
-              labelPlacement="outside"
-              name="password"
-              placeholder="Enter your password"
-              type="password"
-              value={password}
-              onValueChange={setPassword}
-            />
-
-            <Button
-              className="w-full"
-              color="primary"
-              type="submit"
-              isLoading={isLoading}
-            >
-              Log in
-            </Button>
-          </div>
+      <CardContent className="space-y-4">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <div className="flex flex-col gap-6">
+              <div className="grid gap-4">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Name</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="text"
+                          placeholder="Enter your name"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email address</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="email"
+                          placeholder="Enter your email address"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="password"
+                          placeholder="Enter a strong password"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <Button
+                size="sm"
+                type="submit"
+                className="w-full"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <>
+                    <Spinner />
+                  </>
+                ) : (
+                  "Continue"
+                )}
+              </Button>
+            </div>
+          </form>
         </Form>
-      </CardBody>
-      <CardFooter className="flex justify-center">
-        <div className="text-center text-sm">
-          <span className="text-zinc-400">Already have an account? </span>
-          <Link
-            to="/login"
-            className="hover:underline hover:text-primary transition-colors duration-200 text-zinc-200 font-medium"
-          >
-            Sign in
-          </Link>
+
+        <div className="text-center">
+          <p className="text-sm text-muted-foreground">
+            Already have an account?{" "}
+            <Link
+              to="/signin"
+              className="text-primary hover:underline font-medium"
+            >
+              Sign in
+            </Link>
+          </p>
         </div>
-      </CardFooter>
+      </CardContent>
     </Card>
   );
 };
