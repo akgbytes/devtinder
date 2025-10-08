@@ -1,0 +1,129 @@
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { BadgeCheck, X } from "lucide-react";
+import { useDebounce } from "@/hooks/useDebounce";
+import { useGetAllSkillsQuery, type Skill } from "@/services/skillsApi";
+import type { CompleteProfileFormValues } from "@/utils/validations";
+import { useEffect, useState } from "react";
+import type { UseFormReturn } from "react-hook-form";
+import { Badge } from "@/components/ui/badge";
+
+interface SkillsInputProps {
+  form: UseFormReturn<CompleteProfileFormValues>;
+}
+
+const SkillsInput = ({ form }: SkillsInputProps) => {
+  const { data } = useGetAllSkillsQuery();
+  const [skillsData, setSkillsData] = useState<Skill[]>([]);
+  const [filteredSkills, setFilteredSkills] = useState<Skill[]>([]);
+  const [inputSkill, setInputSkill] = useState("");
+  const [show, setShow] = useState(false);
+  const debouncedInputSkill = useDebounce(inputSkill, 100);
+
+  const [skills, setSkills] = useState<Skill[]>([]);
+
+  useEffect(() => {
+    if (data) {
+      setSkillsData(data.data);
+      setFilteredSkills(data.data);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (!debouncedInputSkill) {
+      setFilteredSkills(skillsData);
+      setShow(false);
+      return;
+    }
+
+    const filtered = skillsData.filter((val) =>
+      val.name.toLowerCase().includes(debouncedInputSkill.toLowerCase())
+    );
+    setFilteredSkills(filtered);
+    setShow(filtered.length > 0);
+  }, [debouncedInputSkill, skillsData]);
+
+  const handleSelect = (skill: Skill) => {
+    setInputSkill("");
+    setSkills((prev) => [...prev, skill]);
+    setSkillsData((prev) => {
+      const removed = prev.filter((s) => s.name !== skill.name);
+      return removed;
+    });
+    setShow(false);
+  };
+
+  return (
+    <FormField
+      control={form.control}
+      name="skills"
+      render={() => (
+        <FormItem className="relative">
+          <FormLabel>Skill</FormLabel>
+          <FormControl>
+            <Input
+              placeholder="Enter your skill"
+              value={inputSkill}
+              onChange={(e) => {
+                setInputSkill(e.target.value);
+                setShow(true);
+              }}
+              autoComplete="off"
+            />
+          </FormControl>
+
+          {show && filteredSkills.length > 0 && (
+            <div className="absolute left-0 right-0 bottom-full mb-2 z-50 rounded-md border bg-popover shadow-md max-h-60 overflow-auto transition-all duration-150 ease-in-out">
+              {filteredSkills.map((skill) => (
+                <button
+                  key={skill._id}
+                  type="button"
+                  onClick={() => handleSelect(skill)}
+                  className="flex w-full items-center gap-2 px-4 py-2 text-left text-sm hover:bg-accent"
+                >
+                  <BadgeCheck className="h-4 w-4" />
+                  {skill.name}
+                </button>
+              ))}
+            </div>
+          )}
+
+          <div className="flex flex-wrap gap-2 mt-2">
+            {skills.map((skill) => (
+              <Badge
+                key={skill._id}
+                className="flex items-center h-full gap-1 bg-amber-700"
+              >
+                <BadgeCheck />
+                <span> {skill.name}</span>
+                <button
+                  key={skill._id}
+                  type="button"
+                  onClick={() => {
+                    setSkills((prev) => {
+                      const removed = prev.filter((s) => s.name !== skill.name);
+                      return removed;
+                    });
+                  }}
+                  className="cursor-pointer"
+                >
+                  <X className="w-3 h-3 hover:opacity-70" />
+                </button>
+              </Badge>
+            ))}
+          </div>
+
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+};
+
+export default SkillsInput;

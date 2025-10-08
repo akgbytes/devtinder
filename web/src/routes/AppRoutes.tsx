@@ -3,7 +3,7 @@ import MainLayout from "@/layouts/MainLayout";
 import Home from "@/pages/Home";
 import Login from "@/pages/Login";
 import NotFound from "@/pages/NotFound";
-import CompleteProfile from "@/pages/CompleteProfile";
+import CompleteProfile from "@/pages/CompleteProfile/index";
 import Register from "@/pages/Register";
 import { useLazyGetUserProfileQuery } from "@/services/userApi";
 import { useAppDispatch } from "@/store/hooks";

@@ -70,6 +70,9 @@ export const completeProfileSchema = z.object({
     .min(3, { error: "Name must be at least 3 characters long" })
     .max(50, { error: "Name must not exceed 50 characters" }),
 
+  role: z.string(),
+  skills: z.string(),
+
   about: z.string(),
   gender: z.enum(Gender),
   dateOfBirth: z.date(),
