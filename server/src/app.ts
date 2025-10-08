@@ -27,8 +27,14 @@ app.use("/api/v1/users", userRoutes);
 import connectionRequestRoutes from "@/routes/connectionRequest.routes";
 app.use("/api/v1/connections", connectionRequestRoutes);
 
-import placesRoutes from "@/routes/place.routes";
-app.use("/api/v1/places", placesRoutes);
+import skillRoutes from "@/routes/place.routes";
+app.use("/api/v1/skills", skillRoutes);
+
+import roleRoutes from "@/routes/place.routes";
+app.use("/api/v1/roles", roleRoutes);
+
+import placeRoutes from "@/routes/place.routes";
+app.use("/api/v1/places", placeRoutes);
 
 import { errorHandler } from "@/middlewares/error.middleware";
 
