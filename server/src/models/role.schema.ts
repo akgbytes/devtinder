@@ -22,8 +22,6 @@ const roleSchema = new Schema<IRole, RoleModel>(
   { timestamps: true }
 );
 
-roleSchema.index({ name: 1 });
-
 roleSchema.set("toJSON", {
   transform(doc, ret) {
     return {

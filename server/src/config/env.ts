@@ -25,6 +25,7 @@ const envSchema = z.object({
   REDIS_PORT: validNumber("REDIS_PORT"),
 
   GOOGLE_MAPS_API_KEY: validString("GOOGLE_MAPS_API_KEY"),
+  UPLOADTHING_TOKEN: validString("UPLOADTHING_TOKEN"),
 
   NODE_ENV: z.enum(Object.values(NodeEnv), {
     error: () => "NODE_ENV must be 'development' or 'production'",

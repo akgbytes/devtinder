@@ -94,11 +94,11 @@ const SkillsInput = ({ form }: SkillsInputProps) => {
             </div>
           )}
 
-          <div className="flex flex-wrap gap-2 mt-2">
+          <div className="flex flex-wrap gap-2 mb-4 mt-1 md:mb-0">
             {skills.map((skill) => (
               <Badge
                 key={skill._id}
-                className="flex items-center h-full gap-1 bg-amber-700"
+                className="flex items-center h-fit gap-1 bg-amber-700"
               >
                 <BadgeCheck />
                 <span> {skill.name}</span>

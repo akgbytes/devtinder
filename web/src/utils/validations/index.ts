@@ -77,6 +77,8 @@ export const completeProfileSchema = z.object({
   gender: z.enum(Gender),
   dateOfBirth: z.date(),
   location: z.string(),
+
+  profilePicture: z.string(),
 });
 
 export type RegisterFormValues = z.infer<typeof registerSchema>;

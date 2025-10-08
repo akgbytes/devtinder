@@ -9,6 +9,14 @@ app.use(
   cors({
     origin: env.APP_URL,
     credentials: true,
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+      "x-uploadthing-package",
+      "x-uploadthing-version",
+      "traceparent",
+      "b3",
+    ],
     methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
   })
 );
@@ -27,14 +35,24 @@ app.use("/api/v1/users", userRoutes);
 import connectionRequestRoutes from "@/routes/connectionRequest.routes";
 app.use("/api/v1/connections", connectionRequestRoutes);
 
-import skillRoutes from "@/routes/place.routes";
+import skillRoutes from "@/routes/skill.routes";
 app.use("/api/v1/skills", skillRoutes);
 
-import roleRoutes from "@/routes/place.routes";
+import roleRoutes from "@/routes/role.routes";
 app.use("/api/v1/roles", roleRoutes);
 
 import placeRoutes from "@/routes/place.routes";
 app.use("/api/v1/places", placeRoutes);
+
+import { createRouteHandler } from "uploadthing/express";
+
+import { fileRouter } from "@/config/uploadThing";
+app.use(
+  "/api/v1/uploadthing",
+  createRouteHandler({
+    router: fileRouter,
+  })
+);
 
 import { errorHandler } from "@/middlewares/error.middleware";
 

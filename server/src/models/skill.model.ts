@@ -15,14 +15,12 @@ const skillSchema = new Schema<ISkill, SkillModel>(
       required: true,
       unique: true,
       trim: true,
-      minlength: 2,
-      maxlength: 50,
+      minLength: 1,
+      maxlength: 100,
     },
   },
   { timestamps: true }
 );
-
-skillSchema.index({ name: 1 });
 
 skillSchema.set("toJSON", {
   transform(doc, ret) {
@@ -34,3 +32,5 @@ skillSchema.set("toJSON", {
 });
 
 export const Skill = model<ISkill, SkillModel>("Skill", skillSchema);
+
+// npx tsx .\src\scripts\seed-skills.ts
