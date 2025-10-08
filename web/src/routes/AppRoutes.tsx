@@ -3,7 +3,7 @@ import MainLayout from "@/layouts/MainLayout";
 import Home from "@/pages/Home";
 import Login from "@/pages/Login";
 import NotFound from "@/pages/NotFound";
-import ProfileDetails from "@/pages/ProfileDetails";
+import CompleteProfile from "@/pages/CompleteProfile";
 import Register from "@/pages/Register";
 import { useLazyGetUserProfileQuery } from "@/services/userApi";
 import { useAppDispatch } from "@/store/hooks";
@@ -13,27 +13,27 @@ import { useEffect } from "react";
 import { Routes, Route } from "react-router";
 
 const AppRoutes = () => {
-  const [getUser, { isLoading }] = useLazyGetUserProfileQuery();
-  const dispatch = useAppDispatch();
+  // const [getUser, { isLoading }] = useLazyGetUserProfileQuery();
+  // const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    const fetchUserProfile = async () => {
-      const { data, error } = await tryCatch(getUser().unwrap());
-      if (error) {
-        dispatch(clearUser());
-      }
-      if (data) {
-        console.log("data got: ", data);
-        dispatch(setUser(data.data));
-      }
-    };
+  // useEffect(() => {
+  //   const fetchUserProfile = async () => {
+  //     const { data, error } = await tryCatch(getUser().unwrap());
+  //     if (error) {
+  //       dispatch(clearUser());
+  //     }
+  //     if (data) {
+  //       console.log("data got: ", data);
+  //       dispatch(setUser(data.data));
+  //     }
+  //   };
 
-    fetchUserProfile();
-  }, []);
+  //   fetchUserProfile();
+  // }, []);
 
-  if (isLoading) {
-    return <div>Loading application...</div>;
-  }
+  // if (isLoading) {
+  //   return <div>Loading application...</div>;
+  // }
 
   return (
     <Routes>
@@ -46,7 +46,7 @@ const AppRoutes = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
       </Route>
-      <Route path="/app/onboarding" element={<ProfileDetails />} />
+      <Route path="/app/onboarding" element={<CompleteProfile />} />
 
       <Route path="*" element={<NotFound />} />
     </Routes>

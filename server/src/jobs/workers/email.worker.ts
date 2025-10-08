@@ -13,6 +13,9 @@ const emailWorker = new Worker(
   },
   {
     connection: redis,
+    prefix: "bullmq",
+    removeOnComplete: { age: 3600 }, // remove after 1hr
+    removeOnFail: { count: 500 }, // keep last 500 failed
   }
 );
 

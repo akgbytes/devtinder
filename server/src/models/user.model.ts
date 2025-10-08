@@ -4,6 +4,7 @@ import jwt, { SignOptions } from "jsonwebtoken";
 import crypto from "crypto";
 
 import { Gender, GenderType, onboardingSteps } from "@/utils/constants";
+import { env } from "@/config/env";
 
 const validSteps = onboardingSteps.map((s) => s.step);
 
@@ -20,7 +21,7 @@ export interface IUser {
   onboardingStep: number;
 
   profilePicture: string;
-  age: number;
+  dateOfBirth: Date;
   gender: GenderType;
   about: string;
   skills: string[];
@@ -34,7 +35,7 @@ export interface IUserMethods {
   isPasswordCorrect(password: string): Promise<boolean>;
   generateJWT(): string;
   generateOtpWithExpiry(): { otp: string; otpExpiry: Date };
-  verifyOtp(otp: string): boolean;
+  verifyOtp(providedOtp: string): boolean;
   clearOtp(): void;
   advanceOnboarding(): void;
   getOnboardingProgress(): {
@@ -86,10 +87,17 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
       default:
         "https://res.cloudinary.com/dmnh10etf/image/upload/v1750270944/default_epnleu.png",
     },
-    age: {
-      type: Number,
-      min: 18,
-      max: 120,
+    dateOfBirth: {
+      type: Date,
+      validate: {
+        validator: function (value: Date) {
+          // Must be at least 18 years old
+          const eighteenYearsAgo = new Date();
+          eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18);
+          return value <= eighteenYearsAgo;
+        },
+        message: "You must be at least 18 years old",
+      },
     },
     gender: {
       type: String,
@@ -148,7 +156,7 @@ userSchema.methods.generateJWT = function (): string {
 
 userSchema.methods.generateOtpWithExpiry = function () {
   const otp = crypto.randomInt(100000, 999999).toString();
-  const otpExpiry = new Date(Date.now() + 15 * 60 * 1000); // 15 min
+  const otpExpiry = new Date(Date.now() + env.OTP_EXPIRY_MINUTES * 60 * 1000); // 15 min
 
   this.otp = crypto.createHash("sha256").update(otp).digest("hex");
   this.otpExpiry = otpExpiry;
@@ -156,12 +164,21 @@ userSchema.methods.generateOtpWithExpiry = function () {
   return { otp, otpExpiry };
 };
 
-userSchema.methods.verifyOtp = function (otp) {
+userSchema.methods.verifyOtp = function (providedOtp) {
   if (new Date() > this.otpExpiry!) {
     return false;
   }
-  const hashedOtp = crypto.createHash("sha256").update(otp).digest("hex");
-  return hashedOtp === this.otp;
+
+  const hashedProvidedOtp = crypto
+    .createHash("sha256")
+    .update(providedOtp)
+    .digest("hex");
+
+  // timing-safe comparison
+  return crypto.timingSafeEqual(
+    Buffer.from(hashedProvidedOtp),
+    Buffer.from(this.otp!)
+  );
 };
 
 userSchema.methods.clearOtp = function (): void {
@@ -195,7 +212,6 @@ userSchema.set("toJSON", {
       name: ret.name,
       email: ret.email,
       profilePicture: ret.profilePicture,
-      age: ret.age,
       gender: ret.gender,
       about: ret.about,
       skills: ret.skills,
@@ -210,7 +226,6 @@ userSchema.set("toObject", {
       name: ret.name,
       email: ret.email,
       profilePicture: ret.profilePicture,
-      age: ret.age,
       gender: ret.gender,
       about: ret.about,
       skills: ret.skills,

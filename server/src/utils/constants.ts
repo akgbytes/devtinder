@@ -7,18 +7,18 @@ export const Gender = {
 export type GenderType = (typeof Gender)[keyof typeof Gender];
 
 export const ConnectionRequestStatus = {
-  ignored: "ignored",
-  interested: "interested",
-  accepted: "accepted",
-  rejected: "rejected",
+  Ignored: "ignored",
+  Interested: "interested",
+  Accepted: "accepted",
+  Rejected: "rejected",
 } as const;
 
 export type ConnectionRequestStatusType =
   (typeof ConnectionRequestStatus)[keyof typeof ConnectionRequestStatus];
 
 export const NodeEnv = {
-  development: "development",
-  production: "production",
+  Development: "development",
+  Production: "production",
 } as const;
 
 export type NodeEnvType = (typeof NodeEnv)[keyof typeof NodeEnv];

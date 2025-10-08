@@ -4,6 +4,7 @@ import type { User } from "@/types/user";
 import type {
   LoginFormValues,
   RegisterFormValues,
+  ResendOtpFormValues,
   VerifyEmailFormValues,
 } from "@/utils/validations";
 
@@ -21,6 +22,14 @@ const authApi = api.injectEndpoints({
     verifyEmail: builder.mutation<ApiResponse<null>, VerifyEmailFormValues>({
       query: (data) => ({
         url: "/auth/verify",
+        method: "POST",
+        body: data,
+      }),
+    }),
+
+    resendOtp: builder.mutation<ApiResponse<null>, ResendOtpFormValues>({
+      query: (data) => ({
+        url: "/auth/resend/otp",
         method: "POST",
         body: data,
       }),
@@ -48,6 +57,7 @@ const authApi = api.injectEndpoints({
 export const {
   useRegisterMutation,
   useVerifyEmailMutation,
+  useResendOtpMutation,
   useLoginMutation,
   useLogoutMutation,
 } = authApi;

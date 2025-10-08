@@ -10,6 +10,8 @@ const envSchema = z.object({
   APP_URL: validUrl("APP_URL"),
   SERVER_URL: validUrl("SERVER_URL"),
 
+  OTP_EXPIRY_MINUTES: validNumber(" OTP_EXPIRY_MINUTES"),
+
   ACCESS_TOKEN_SECRET: validString("ACCESS_TOKEN_SECRET"),
   ACCESS_TOKEN_EXPIRY: validString("ACCESS_TOKEN_EXPIRY"),
 
@@ -21,6 +23,8 @@ const envSchema = z.object({
 
   REDIS_HOST: validString("REDIS_HOST"),
   REDIS_PORT: validNumber("REDIS_PORT"),
+
+  GOOGLE_MAPS_API_KEY: validString("GOOGLE_MAPS_API_KEY"),
 
   NODE_ENV: z.enum(Object.values(NodeEnv), {
     error: () => "NODE_ENV must be 'development' or 'production'",

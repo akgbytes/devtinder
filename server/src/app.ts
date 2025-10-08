@@ -27,6 +27,9 @@ app.use("/api/v1/users", userRoutes);
 import connectionRequestRoutes from "@/routes/connectionRequest.routes";
 app.use("/api/v1/connections", connectionRequestRoutes);
 
+import placesRoutes from "@/routes/place.routes";
+app.use("/api/v1/places", placesRoutes);
+
 import { errorHandler } from "@/middlewares/error.middleware";
 
 app.use(errorHandler);

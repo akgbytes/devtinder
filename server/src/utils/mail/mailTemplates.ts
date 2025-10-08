@@ -1,3 +1,5 @@
+import { env } from "@/config/env";
+
 export const otpVerificationTemplate = (
   username: string,
   otp: string,
@@ -8,7 +10,7 @@ export const otpVerificationTemplate = (
 
 Your verification code for DevTinder is: ${otp}
 
-This code will expire in 10 minutes.
+This code will expire in ${env.OTP_EXPIRY_MINUTES} minutes.
 
 If you didn't request this code, please ignore this email or contact our support team.
 
@@ -65,7 +67,9 @@ Happy coding and connecting!
                   <tr>
                     <td align="center" style="background:#fff3cd; border-left:4px solid #ffc107; padding:15px; border-radius:6px;">
                       <p style="margin:0; font-size:14px; color:#856404; line-height:1.5;">
-                      <strong>Important:</strong> This code expires in <strong>15 minutes</strong>
+                      <strong>Important:</strong> This code expires in <strong>${
+                        env.OTP_EXPIRY_MINUTES
+                      } minutes</strong>
                       </p>
                     </td>
                   </tr>

@@ -9,6 +9,7 @@ import {
 import {
   validateLogin,
   validateRegister,
+  validateResendOtp,
   validateVerifyEmail,
 } from "@/validations/auth.validations";
 import { StatusCodes } from "http-status-codes";
@@ -27,7 +28,7 @@ export const register = asyncHandler(async (req, res) => {
   const user = await User.create({ name, email, password });
 
   // generate otp
-  const { otp, otpExpiry } = user.generateOtpWithExpiry();
+  const { otp } = user.generateOtpWithExpiry();
 
   // add email to queue
   await emailQueue.add("sendVerificationMail", {
@@ -81,13 +82,10 @@ export const verifyEmail = asyncHandler(async (req, res) => {
 
   const isOtpCorrect = user.verifyOtp(otp);
   if (!isOtpCorrect) {
-    throw new ApiError(
-      StatusCodes.UNAUTHORIZED,
-      "Invalid or expired OTP. Please request a new one."
-    );
+    throw new ApiError(StatusCodes.BAD_REQUEST, "Invalid or expired OTP");
   }
 
-  // mark verified and update onboarding
+  // clear otp, mark verified and update onboarding
   user.clearOtp();
   user.isEmailVerified = true;
 
@@ -110,6 +108,35 @@ export const verifyEmail = asyncHandler(async (req, res) => {
       },
       onboarding,
     }
+  );
+
+  res.status(response.statusCode).json(response);
+});
+
+export const resendOtp = asyncHandler(async (req, res) => {
+  const { email } = handleZodError(validateResendOtp(req.body));
+
+  const user = await User.findOne({ email });
+
+  if (!user) throw new ApiError(4, "");
+
+  if (user.isEmailVerified) throw new ApiError(1, "");
+
+  // generate otp and save to db
+  const { otp } = user.generateOtpWithExpiry();
+
+  emailQueue.add("sendVerificationMail", {
+    name: user.baseModelName,
+    email: user.email,
+    otp,
+  });
+
+  await user.save();
+
+  const response = new ApiResponse(
+    StatusCodes.OK,
+    "OTP resent successfully to your email",
+    null
   );
 
   res.status(response.statusCode).json(response);

@@ -15,6 +15,7 @@
   "license": "ISC",
   "packageManager": "pnpm@10.11.1",
   "dependencies": {
+    "@googlemaps/google-maps-services-js": "^3.4.2",
     "bcryptjs": "^3.0.2",
     "bullmq": "^5.60.0",
     "cookie-parser": "^1.4.7",
