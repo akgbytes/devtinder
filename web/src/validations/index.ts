@@ -70,15 +70,47 @@ export const completeProfileSchema = z.object({
     .min(3, { error: "Name must be at least 3 characters long" })
     .max(50, { error: "Name must not exceed 50 characters" }),
 
-  role: z.string(),
-  skills: z.string(),
+  about: z
+    .string({
+      error: (issue) =>
+        issue.input === undefined
+          ? "About is required"
+          : "About must be a string",
+    })
+    .trim()
+    .min(10, { error: "About must be at least 10 characters long" })
+    .max(500, { error: "About must not exceed 500 characters" }),
 
-  about: z.string(),
-  gender: z.enum(Gender),
-  dateOfBirth: z.date(),
-  location: z.string(),
+  gender: z.enum(Gender, {
+    error: (issue) =>
+      issue.input === undefined ? "Gender is required" : "Invalid gender value",
+  }),
 
-  profilePicture: z.string(),
+  dateOfBirth: z.date({
+    error: (issue) =>
+      issue.input === undefined
+        ? "Date of birth is required"
+        : "Date of birth must be a valid date",
+  }),
+
+  location: z
+    .string({
+      error: (issue) =>
+        issue.input === undefined
+          ? "Location is required"
+          : "Location must be a string",
+    })
+    .trim()
+    .min(2, { error: "Location must be at least 3 characters long" }),
+
+  skills: z.string().optional(),
+
+  profilePicture: z.url({
+    error: (issue) =>
+      issue.input === undefined
+        ? "Profile picture is required"
+        : "Profile picture must be a valid URL",
+  }),
 });
 
 export type RegisterFormValues = z.infer<typeof registerSchema>;

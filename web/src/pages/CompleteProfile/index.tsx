@@ -18,7 +18,7 @@ import { cn } from "@/lib/utils";
 import {
   completeProfileSchema,
   type CompleteProfileFormValues,
-} from "@/utils/validations";
+} from "@/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { format } from "date-fns";
@@ -37,24 +37,72 @@ import { capitalize } from "@/utils/capitalize";
 import LocationInput from "./components/LocationInput";
 import SkillsInput from "./components/SkillsInput";
 
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import AppLogo from "@/components/AppLogo";
 import { Uploader } from "@/components/Uploader";
+import type { LocationSuggestion } from "@/services/placesApi";
+import { useState } from "react";
+import type { Skill } from "@/services/skillsApi";
+import { useSnackbar } from "notistack";
+import { useCompleteProfileMutation } from "@/services/userApi";
+import { tryCatch } from "@/utils/try-catch";
 
 const CompleteProfile = () => {
+  const { enqueueSnackbar } = useSnackbar();
+  const navigate = useNavigate();
+  const [selectedLocation, setSelectedLocation] =
+    useState<LocationSuggestion | null>(null);
+
+  const [skills, setSkills] = useState<Skill[]>([]);
+
   const form = useForm<CompleteProfileFormValues>({
     resolver: zodResolver(completeProfileSchema),
     defaultValues: {
       name: "Aman Gupta",
       about: "",
-      gender: "male",
-      dateOfBirth: new Date(),
       location: "",
     },
   });
 
+  const [submitProfile, { isLoading }] = useCompleteProfileMutation();
+
   const onSubmit = async (values: CompleteProfileFormValues) => {
     console.log("Form values:", values);
+    console.log("skills: ", skills);
+    console.log("selected location: ", selectedLocation);
+
+    // const today = new Date();
+    // const age = today.getFullYear() - values.dateOfBirth.getFullYear();
+
+    // maybe show a dialog with info terms n conditions -> with two button home and edit age
+    // if (age < 18) {
+    //   enqueueSnackbar({
+    //     variant: "info",
+    //     message:
+    //       "We are sorry to say that you need to at least 18 years old to use our platform",
+    //   });
+    // }
+
+    const { data, error } = await tryCatch(
+      submitProfile({
+        email: "akgbytes@gmail.com",
+        name: values.name,
+        about: values.about,
+        gender: values.gender,
+        dateOfBirth: values.dateOfBirth,
+        profilePicture: values.profilePicture,
+        skills,
+        location: selectedLocation!,
+      }).unwrap()
+    );
+
+    if (error) {
+      console.log("error from complete profile: ", error);
+    }
+
+    if (data) {
+      console.log("response from complete profile: ", data);
+    }
   };
 
   return (
@@ -103,7 +151,7 @@ const CompleteProfile = () => {
                           <FormLabel>About</FormLabel>
                           <FormControl>
                             <Textarea
-                              placeholder="Tell us a little bit about yourself"
+                              placeholder="Write a short intro mentioning who you are, what you build, what drives you 🔥"
                               className="resize-none"
                               {...field}
                             />
@@ -134,7 +182,7 @@ const CompleteProfile = () => {
                                     {field.value ? (
                                       format(field.value, "PPP")
                                     ) : (
-                                      <span>Pick a date</span>
+                                      <span>Pick your birth date</span>
                                     )}
                                     <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
                                   </Button>
@@ -192,11 +240,19 @@ const CompleteProfile = () => {
                     </div>
 
                     {/* location with autocomplete */}
-                    <LocationInput form={form} />
+                    <LocationInput
+                      form={form}
+                      selectedLocation={selectedLocation}
+                      setSelectedLocation={setSelectedLocation}
+                    />
 
                     {/* Skills */}
 
-                    <SkillsInput form={form} />
+                    <SkillsInput
+                      form={form}
+                      skills={skills}
+                      setSkills={setSkills}
+                    />
                   </div>
 
                   <div>
@@ -224,7 +280,7 @@ const CompleteProfile = () => {
                   type="submit"
                   className="w-full cursor-pointer"
                 >
-                  Submit
+                  Save & Continue
                 </Button>
               </div>
             </form>

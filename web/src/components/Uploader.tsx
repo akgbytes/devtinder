@@ -236,11 +236,8 @@ export function Uploader({ value, onChange }: UploaderProps) {
         {!fileState.file && !value && (
           <div className="flex flex-col items-center justify-center h-40 text-foreground">
             <CloudUpload className="size-6 mb-2" />
-            <p className="text-sm">
-              <span className="font-semibold">Click to upload</span> or drag &
-              drop
-            </p>
-            <p className="text-xs text-muted-foreground">Image (up to 5MB)</p>
+            <p className="text-sm">Upload your profile picture</p>
+            <p className="text-xs text-muted-foreground">(Max 5MB)</p>
             <Button className="mt-4" type="button">
               Select File
             </Button>

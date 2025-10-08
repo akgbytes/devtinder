@@ -28,7 +28,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { loginSchema, type LoginFormValues } from "@/utils/validations";
+import { loginSchema, type LoginFormValues } from "@/validations";
 
 const Login = () => {
   const form = useForm<LoginFormValues>({

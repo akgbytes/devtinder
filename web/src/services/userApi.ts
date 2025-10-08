@@ -1,6 +1,19 @@
 import type { ApiResponse } from "@/types/api";
 import { api } from "./api";
 import type { User } from "@/types/user";
+import * as z from "zod";
+import type { completeProfileSchema } from "@/validations";
+import type { Skill } from "./skillsApi";
+import type { LocationSuggestion } from "./placesApi";
+
+type CompleteProfilePayload = Omit<
+  z.infer<typeof completeProfileSchema>,
+  "location" | "skills"
+> & {
+  location: LocationSuggestion;
+  skills: Skill[];
+  email: string;
+};
 
 const userApi = api.injectEndpoints({
   endpoints: (builder) => ({
@@ -8,7 +21,22 @@ const userApi = api.injectEndpoints({
       query: () => "/users/profile",
       providesTags: ["User"],
     }),
+
+    completeProfile: builder.mutation<
+      ApiResponse<null>,
+      CompleteProfilePayload
+    >({
+      query: (payload) => ({
+        url: "/users/profile/complete",
+        method: "POST",
+        body: payload,
+      }),
+    }),
   }),
 });
 
-export const { useGetUserProfileQuery, useLazyGetUserProfileQuery } = userApi;
+export const {
+  useCompleteProfileMutation,
+  useGetUserProfileQuery,
+  useLazyGetUserProfileQuery,
+} = userApi;

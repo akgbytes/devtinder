@@ -1,11 +1,9 @@
 import type { ApiResponse } from "@/types/api";
 import { api } from "./api";
 
-interface LocationSuggestion {
+export interface LocationSuggestion {
   placeId: string;
   displayName: string;
-  lat: number;
-  lng: number;
   city: string | null | undefined;
   state: string | null | undefined;
   country: string | null;

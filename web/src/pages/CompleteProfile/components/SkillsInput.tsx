@@ -9,24 +9,24 @@ import { Input } from "@/components/ui/input";
 import { BadgeCheck, X } from "lucide-react";
 import { useDebounce } from "@/hooks/useDebounce";
 import { useGetAllSkillsQuery, type Skill } from "@/services/skillsApi";
-import type { CompleteProfileFormValues } from "@/utils/validations";
+import type { CompleteProfileFormValues } from "@/validations";
 import { useEffect, useState } from "react";
 import type { UseFormReturn } from "react-hook-form";
 import { Badge } from "@/components/ui/badge";
 
 interface SkillsInputProps {
   form: UseFormReturn<CompleteProfileFormValues>;
+  skills: Skill[];
+  setSkills: React.Dispatch<React.SetStateAction<Skill[]>>;
 }
 
-const SkillsInput = ({ form }: SkillsInputProps) => {
+const SkillsInput = ({ form, skills, setSkills }: SkillsInputProps) => {
   const { data } = useGetAllSkillsQuery();
   const [skillsData, setSkillsData] = useState<Skill[]>([]);
   const [filteredSkills, setFilteredSkills] = useState<Skill[]>([]);
   const [inputSkill, setInputSkill] = useState("");
   const [show, setShow] = useState(false);
   const debouncedInputSkill = useDebounce(inputSkill, 100);
-
-  const [skills, setSkills] = useState<Skill[]>([]);
 
   useEffect(() => {
     if (data) {
@@ -68,7 +68,7 @@ const SkillsInput = ({ form }: SkillsInputProps) => {
           <FormLabel>Skill</FormLabel>
           <FormControl>
             <Input
-              placeholder="Enter your skill"
+              placeholder="E.g. React, Node.js, LangChain..."
               value={inputSkill}
               onChange={(e) => {
                 setInputSkill(e.target.value);

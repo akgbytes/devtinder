@@ -12,27 +12,25 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useDebounce } from "@/hooks/useDebounce";
-import { useGetAutocompleteSuggestionsMutation } from "@/services/placesApi";
-import type { CompleteProfileFormValues } from "@/utils/validations";
+import {
+  useGetAutocompleteSuggestionsMutation,
+  type LocationSuggestion,
+} from "@/services/placesApi";
+import { tryCatch } from "@/utils/try-catch";
+import type { CompleteProfileFormValues } from "@/validations";
 import { Loader2, MapPin } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { UseFormReturn } from "react-hook-form";
 
-interface LocationSuggestion {
-  placeId: string;
-  displayName: string;
-  lat: number;
-  lng: number;
-  city: string | null | undefined;
-  state: string | null | undefined;
-  country: string | null;
-}
-
 interface LocationInputProps {
   form: UseFormReturn<CompleteProfileFormValues>;
+  selectedLocation: LocationSuggestion | null;
+  setSelectedLocation: React.Dispatch<
+    React.SetStateAction<LocationSuggestion | null>
+  >;
 }
 
-const LocationInput = ({ form }: LocationInputProps) => {
+const LocationInput = ({ form, setSelectedLocation }: LocationInputProps) => {
   const [suggestions, setSuggestions] = useState<LocationSuggestion[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
@@ -49,19 +47,23 @@ const LocationInput = ({ form }: LocationInputProps) => {
       return;
     }
 
-    try {
-      const response = await getAutocompleteSuggestions({
+    const { data, error } = await tryCatch(
+      getAutocompleteSuggestions({
         input: query,
-      }).unwrap();
+      }).unwrap()
+    );
 
-      console.log("API Response:", response);
-      const fetchedSuggestions = response.data || [];
-      setSuggestions(fetchedSuggestions);
-      setShowSuggestions(fetchedSuggestions.length > 0);
-    } catch (error) {
+    if (error) {
       console.error("Error fetching suggestions:", error);
       setSuggestions([]);
       setShowSuggestions(false);
+    }
+
+    if (data) {
+      console.log("API Response:", data);
+      const fetchedSuggestions = data.data || [];
+      setSuggestions(fetchedSuggestions);
+      setShowSuggestions(fetchedSuggestions.length > 0);
     }
   };
 
@@ -75,28 +77,20 @@ const LocationInput = ({ form }: LocationInputProps) => {
   }, [debouncedInputLocation]);
 
   const handleSelectSuggestion = (suggestion: LocationSuggestion) => {
+    setSelectedLocation(suggestion);
     const locationText = suggestion.displayName;
     setInputLocationValue(locationText);
     form.setValue("location", locationText);
 
     setShowSuggestions(false);
     setSuggestions([]);
-
-    // Store the complete location data
-    console.log("Selected location:", {
-      name: suggestion.displayName,
-      lat: suggestion.lat,
-      lng: suggestion.lng,
-      city: suggestion.city,
-      state: suggestion.state,
-      country: suggestion.country,
-    });
   };
+
   return (
     <FormField
       control={form.control}
       name="location"
-      render={({ field }) => (
+      render={() => (
         <FormItem className="flex flex-col">
           <FormLabel>Location</FormLabel>
           <Popover open={showSuggestions} onOpenChange={setShowSuggestions}>
@@ -104,7 +98,7 @@ const LocationInput = ({ form }: LocationInputProps) => {
               <FormControl>
                 <div className="relative">
                   <Input
-                    placeholder="Enter your location"
+                    placeholder="Where are you coding from?"
                     value={inputLocationValue}
                     onChange={(e) => setInputLocationValue(e.target.value)}
                     autoComplete="off"

@@ -26,7 +26,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useSnackbar } from "notistack";
 import { Spinner } from "@/components/ui/spinner";
-import { registerSchema, type RegisterFormValues } from "@/utils/validations";
+import { registerSchema, type RegisterFormValues } from "@/validations";
 import { useState } from "react";
 import VerifyEmailDialog from "@/components/VerifyEmailDialog";
 
@@ -46,17 +46,17 @@ const Register = () => {
   const [openEmailDialog, setOpenEmailDialog] = useState(false);
 
   const onSubmit = async (values: RegisterFormValues) => {
-    console.log("values: ", values);
-    // const { data, error } = await tryCatch(register(values).unwrap());
-    // if (error) {
-    //   handleApiError(error);
-    //   return;
-    // }
-    // if (data) {
-    //   console.log("Response from register \n", data);
-    //   enqueueSnackbar(data.message, { variant: "success" });
-    //   setOpenEmailDialog(true);
-    // }
+    console.log("register form values\n ", values);
+    const { data, error } = await tryCatch(register(values).unwrap());
+    if (error) {
+      handleApiError(error);
+      return;
+    }
+    if (data) {
+      console.log("Response from register \n", data);
+      enqueueSnackbar(data.message, { variant: "success" });
+      setOpenEmailDialog(true);
+    }
   };
 
   return (

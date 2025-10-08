@@ -70,7 +70,7 @@ const VerifyEmailDialog = ({
     }
 
     if (data) {
-      console.log("Response from verifyEmail \n", data);
+      console.log("Response from email verify \n", data);
       enqueueSnackbar(data.message, { variant: "success" });
       onOpenChange(false);
       navigate("/app/onboarding");

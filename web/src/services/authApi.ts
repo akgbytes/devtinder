@@ -6,7 +6,7 @@ import type {
   RegisterFormValues,
   ResendOtpFormValues,
   VerifyEmailFormValues,
-} from "@/utils/validations";
+} from "@/validations";
 
 const authApi = api.injectEndpoints({
   endpoints: (builder) => ({
@@ -21,7 +21,7 @@ const authApi = api.injectEndpoints({
 
     verifyEmail: builder.mutation<ApiResponse<null>, VerifyEmailFormValues>({
       query: (data) => ({
-        url: "/auth/verify",
+        url: "/auth/otp/verify",
         method: "POST",
         body: data,
       }),
@@ -29,7 +29,7 @@ const authApi = api.injectEndpoints({
 
     resendOtp: builder.mutation<ApiResponse<null>, ResendOtpFormValues>({
       query: (data) => ({
-        url: "/auth/resend/otp",
+        url: "/auth/otp/resend",
         method: "POST",
         body: data,
       }),
