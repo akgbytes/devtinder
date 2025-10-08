@@ -38,15 +38,12 @@ app.use("/api/v1/connections", connectionRequestRoutes);
 import skillRoutes from "@/routes/skill.routes";
 app.use("/api/v1/skills", skillRoutes);
 
-import roleRoutes from "@/routes/role.routes";
-app.use("/api/v1/roles", roleRoutes);
-
 import placeRoutes from "@/routes/place.routes";
 app.use("/api/v1/places", placeRoutes);
 
 import { createRouteHandler } from "uploadthing/express";
 
-import { fileRouter } from "@/config/uploadThing";
+import { fileRouter } from "@/config/uploadthing";
 app.use(
   "/api/v1/uploadthing",
   createRouteHandler({

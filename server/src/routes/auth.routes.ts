@@ -10,8 +10,8 @@ import {
 const router = Router();
 
 router.post("/register", register);
-router.post("/verify/otp", verifyEmail);
-router.post("/resend/otp", resendOtp);
+router.post("/otp/verify", verifyEmail);
+router.post("/otp/resend", resendOtp);
 router.post("/login", login);
 router.post("/logout", logout);
 

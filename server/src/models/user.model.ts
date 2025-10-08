@@ -1,10 +1,13 @@
-import { Schema, model, Model } from "mongoose";
+import { Schema, model, Model, Types } from "mongoose";
 import bcrypt from "bcryptjs";
 import jwt, { SignOptions } from "jsonwebtoken";
 import crypto from "crypto";
 
 import { Gender, GenderType, onboardingSteps } from "@/utils/constants";
 import { env } from "@/config/env";
+import { TokenPayload } from "@/types";
+import { StatusCodes } from "http-status-codes";
+import { ApiError } from "@/utils/core";
 
 const validSteps = onboardingSteps.map((s) => s.step);
 
@@ -24,8 +27,16 @@ export interface IUser {
   dateOfBirth: Date;
   gender: GenderType;
   about: string;
-  skills: string[];
-  location: string;
+  skills: Types.ObjectId[];
+  location: {
+    city: string;
+    state: string;
+    country: string;
+    coords: {
+      type: "Point";
+      coordinates: [number, number];
+    };
+  };
 
   createdAt: Date;
   updatedAt: Date;
@@ -33,7 +44,10 @@ export interface IUser {
 
 export interface IUserMethods {
   isPasswordCorrect(password: string): Promise<boolean>;
-  generateJWT(): string;
+  generateAccessToken(): string;
+  generateRefreshToken(): string;
+  verifyAccessToken(token: string): TokenPayload;
+  verifyRefreshToken(token: string): TokenPayload;
   generateOtpWithExpiry(): { otp: string; otpExpiry: Date };
   verifyOtp(providedOtp: string): boolean;
   clearOtp(): void;
@@ -72,7 +86,6 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
 
     onboardingStep: {
       type: Number,
-      default: 0,
       enum: {
         values: validSteps,
         message: `Invalid onboarding step. Must be one of: ${validSteps.join(
@@ -87,6 +100,7 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
       default:
         "https://res.cloudinary.com/dmnh10etf/image/upload/v1750270944/default_epnleu.png",
     },
+
     dateOfBirth: {
       type: Date,
       validate: {
@@ -99,6 +113,7 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
         message: "You must be at least 18 years old",
       },
     },
+
     gender: {
       type: String,
       enum: {
@@ -108,27 +123,35 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
         ).join(", ")}`,
       },
     },
+
     about: {
       type: String,
       maxlength: 500,
     },
+
     skills: {
-      type: [String],
-      default: [],
-      validate: {
-        validator: function (v: string[]) {
-          return v.length <= 20;
-        },
-        message: "You cannot add more than 20 skills",
-      },
+      type: [{ type: Types.ObjectId, ref: "Skill" }],
+      validate: [
+        (val: Types.ObjectId[]) => val.length <= 20,
+        "Maximum 20 skills allowed",
+      ],
     },
+
     location: {
-      type: String,
-      trim: true,
+      city: { type: String, default: "" },
+      state: { type: String, default: "" },
+      country: { type: String, default: "" },
+      coords: {
+        type: { type: String, enum: ["Point"], default: "Point" },
+        coordinates: { type: [Number], default: [0, 0] },
+      },
     },
   },
   { timestamps: true }
 );
+
+// 2dsphere index for geospatial queries
+userSchema.index({ "location.coords": "2dsphere" });
 
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
@@ -142,16 +165,46 @@ userSchema.methods.isPasswordCorrect = async function (
   return await bcrypt.compare(password, this.password);
 };
 
-userSchema.methods.generateJWT = function (): string {
+userSchema.methods.generateAccessToken = function () {
   const payload = {
     _id: this._id,
     email: this.email,
   };
 
-  const secret = process.env.JWT_SECRET as string;
-  const expiresIn = process.env.JWT_EXPIRES_IN as SignOptions["expiresIn"];
+  const secret = env.ACCESS_TOKEN_SECRET;
+  const expiresIn = env.ACCESS_TOKEN_EXPIRY as SignOptions["expiresIn"];
 
   return jwt.sign(payload, secret, { expiresIn });
+};
+
+userSchema.methods.generateRefreshToken = function () {
+  const payload = {
+    _id: this._id,
+    email: this.email,
+  };
+
+  const secret = env.REFRESH_TOKEN_SECRET;
+  const expiresIn = env.REFRESH_TOKEN_EXPIRY as SignOptions["expiresIn"];
+
+  return jwt.sign(payload, secret, { expiresIn });
+};
+
+userSchema.methods.verifyAccessToken = function (token) {
+  try {
+    const payload = jwt.verify(token, env.ACCESS_TOKEN_SECRET);
+    return payload as TokenPayload;
+  } catch (error: any) {
+    throw new ApiError(StatusCodes.UNAUTHORIZED, "Invalid access token");
+  }
+};
+
+userSchema.methods.verifyRefreshToken = function (token) {
+  try {
+    const payload = jwt.verify(token, env.REFRESH_TOKEN_SECRET);
+    return payload as TokenPayload;
+  } catch (error: any) {
+    throw new ApiError(StatusCodes.UNAUTHORIZED, "Invalid refresh token");
+  }
 };
 
 userSchema.methods.generateOtpWithExpiry = function () {
@@ -187,16 +240,21 @@ userSchema.methods.clearOtp = function (): void {
 };
 
 userSchema.methods.advanceOnboarding = function (): void {
-  const maxStep = onboardingSteps.length - 1;
-  if (this.onboardingStep < maxStep) {
-    this.onboardingStep += 1;
+  // During registration process
+  if (!this.onboardingStep) {
+    this.onboardingStep = 1;
+  } else {
+    const maxStep = onboardingSteps.length;
+    if (this.onboardingStep < maxStep) {
+      this.onboardingStep += 1;
+    }
+    this.onboardingCompleted = this.onboardingStep === maxStep;
   }
-  this.onboardingCompleted = this.onboardingStep === maxStep;
 };
 
 userSchema.methods.getOnboardingProgress = function () {
   const stepDescription =
-    onboardingSteps[this.onboardingStep]?.description || "Unknown step";
+    onboardingSteps[this.onboardingStep - 1]?.description || "Unknown step";
   return {
     onboardingStep: this.onboardingStep,
     onboardingStepDescription: stepDescription,
@@ -206,20 +264,6 @@ userSchema.methods.getOnboardingProgress = function () {
 };
 
 userSchema.set("toJSON", {
-  transform(doc, ret) {
-    return {
-      _id: ret._id,
-      name: ret.name,
-      email: ret.email,
-      profilePicture: ret.profilePicture,
-      gender: ret.gender,
-      about: ret.about,
-      skills: ret.skills,
-    };
-  },
-});
-
-userSchema.set("toObject", {
   transform(doc, ret) {
     return {
       _id: ret._id,

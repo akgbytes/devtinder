@@ -1,3 +1,4 @@
+import { logger } from "@/config/logger";
 import { emailQueue } from "@/jobs/queues/email.queue";
 import { User } from "@/models/user.model";
 import {
@@ -17,36 +18,53 @@ import { StatusCodes } from "http-status-codes";
 export const register = asyncHandler(async (req, res) => {
   const { name, email, password } = handleZodError(validateRegister(req.body));
 
-  const existingUser = await User.findOne({ email });
+  logger.info("User registration attempt", { email });
 
-  if (existingUser)
+  // Check if user already exists
+  const existingUser = await User.findOne({ email });
+  if (existingUser) {
+    logger.warn("Registration failed - email already exists", { email });
     throw new ApiError(
       StatusCodes.CONFLICT,
-      "An account with this email already exists"
+      "An account with this email already exists. Please sign in or use a different email address."
     );
+  }
 
   const user = await User.create({ name, email, password });
+  logger.info("User created successfully", { userId: user._id, email });
 
-  // generate otp
+  // Generate OTP
   const { otp } = user.generateOtpWithExpiry();
+  logger.info("OTP generated for user", { userId: user._id });
 
-  // add email to queue
-  await emailQueue.add("sendVerificationMail", {
-    email: user.email,
-    name: user.name,
-    otp,
-  });
+  // Queue verification email
+  try {
+    await emailQueue.add("sendVerificationMail", {
+      email: user.email,
+      name: user.name,
+      otp,
+    });
+    logger.info("Verification email queued", { userId: user._id });
+  } catch (error) {
+    logger.error("Failed to queue verification email", {
+      userId: user._id,
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
+  }
 
-  // advance onboarding
+  // Continue registration even if email fails as user can request resend
+
+  // Advance onboarding progress
   user.advanceOnboarding();
   const onboarding = user.getOnboardingProgress();
 
-  // save user to db
+  // Save user to db
   await user.save();
+  logger.info("User registration completed", { userId: user._id });
 
   const response = new ApiResponse(
     StatusCodes.CREATED,
-    "User registered successfully",
+    "Registration successful! A verification code has been sent to your email. Please check your inbox to verify your account.",
     {
       user: {
         _id: user._id,
@@ -66,37 +84,49 @@ export const register = asyncHandler(async (req, res) => {
 export const verifyEmail = asyncHandler(async (req, res) => {
   const { email, otp } = handleZodError(validateVerifyEmail(req.body));
 
-  const user = await User.findOne({ email });
+  logger.info("Email verification attempt", { email });
 
-  // check if user exists
-  if (!user)
+  // Find user
+  const user = await User.findOne({ email });
+  if (!user) {
+    logger.warn("Verification failed - user not found", { email });
     throw new ApiError(
       StatusCodes.NOT_FOUND,
-      "No account found with this email"
+      "No account found with this email address. Please check your email or register for a new account."
     );
-
-  // check if already verified
-  if (user.isEmailVerified) {
-    throw new ApiError(StatusCodes.BAD_REQUEST, "Email is already verified");
   }
 
+  // Check if already verified
+  if (user.isEmailVerified) {
+    logger.info("Email already verified", { userId: user._id });
+    throw new ApiError(
+      StatusCodes.BAD_REQUEST,
+      "Your email is already verified. You can proceed to complete your profile."
+    );
+  }
+
+  // Verify OTP
   const isOtpCorrect = user.verifyOtp(otp);
   if (!isOtpCorrect) {
-    throw new ApiError(StatusCodes.BAD_REQUEST, "Invalid or expired OTP");
+    logger.warn("Invalid OTP provided", { userId: user._id });
+    throw new ApiError(
+      StatusCodes.BAD_REQUEST,
+      "The verification code you entered is invalid or has expired. Please request a new code."
+    );
   }
 
-  // clear otp, mark verified and update onboarding
+  // Clear OTP and mark as verified
   user.clearOtp();
   user.isEmailVerified = true;
-
   user.advanceOnboarding();
   const onboarding = user.getOnboardingProgress();
 
   await user.save();
+  logger.info("Email verified successfully", { userId: user._id });
 
   const response = new ApiResponse(
-    StatusCodes.CREATED,
-    "Email verified successfully",
+    StatusCodes.OK,
+    "Email verified successfully! You can now complete your profile to get started.",
     {
       user: {
         _id: user._id,
@@ -156,11 +186,11 @@ export const login = asyncHandler(async (req, res) => {
     throw new ApiError(StatusCodes.UNAUTHORIZED, "Invalid credentials");
   }
 
-  const token = user.generateJWT();
+  // const token = user.generateJWT();
 
-  res.cookie("token", token, {
-    maxAge: 60 * 60 * 1000, // 1 hour
-  });
+  // res.cookie("token", token, {
+  //   maxAge: 60 * 60 * 1000, // 1 hour
+  // });
 
   const response = new ApiResponse(StatusCodes.OK, "Login successful", user);
   res.status(response.statusCode).json(response);

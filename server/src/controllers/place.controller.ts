@@ -1,4 +1,3 @@
-import { env } from "@/config/env";
 import { logger } from "@/config/logger";
 import { getCache, setCache } from "@/utils/cache";
 import {
@@ -7,14 +6,10 @@ import {
   asyncHandler,
   handleZodError,
 } from "@/utils/core";
+import { getPlacesAutoComplete } from "@/utils/google-maps";
 import { validateAutocompleteInput } from "@/validations/place.validations";
-import {
-  Client,
-  PlaceAutocompleteResponse,
-} from "@googlemaps/google-maps-services-js";
-import { StatusCodes } from "http-status-codes";
 
-const googleMapsClient = new Client({});
+import { StatusCodes } from "http-status-codes";
 
 type Suggestions = {
   placeId: string;
@@ -32,7 +27,7 @@ export const getAutocompleteSuggestions = asyncHandler(async (req, res) => {
   const cached = await getCache<Suggestions>(cacheKey);
 
   if (cached) {
-    logger.info("Cache hit");
+    logger.info("Places cache hit");
     const response = new ApiResponse(
       StatusCodes.OK,
       "Suggestions fetched successfully",
@@ -42,27 +37,14 @@ export const getAutocompleteSuggestions = asyncHandler(async (req, res) => {
     return res.status(response.statusCode).json(response);
   }
 
-  logger.info("Cache miss");
+  logger.info("Places cache miss");
 
-  let placesResponse: PlaceAutocompleteResponse;
-  try {
-    placesResponse = await googleMapsClient.placeAutocomplete({
-      params: {
-        input,
-        key: env.GOOGLE_MAPS_API_KEY,
-      },
-    });
-  } catch (error) {
-    throw new ApiError(
-      StatusCodes.INTERNAL_SERVER_ERROR,
-      "Failed to get suggestions"
-    );
-  }
+  let placesResponse = await getPlacesAutoComplete(input);
 
   const suggestions: Suggestions = placesResponse.data.predictions
     .slice(0, 5)
     .map((prediction) => {
-      // Extract city/state/country from description
+      // Extract city, state, country from description
       const parts = prediction.description.split(",").map((p) => p.trim());
       const country = parts[parts.length - 1] || null;
       const state = parts.length >= 2 ? parts[parts.length - 2] : null;
@@ -77,7 +59,7 @@ export const getAutocompleteSuggestions = asyncHandler(async (req, res) => {
       };
     });
 
-  // store in cache
+  // Store cache
   await setCache(cacheKey, suggestions);
 
   const response = new ApiResponse(

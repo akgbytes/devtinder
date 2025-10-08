@@ -1,4 +1,3 @@
-import { Gender } from "@/utils/constants";
 import * as z from "zod";
 
 const registerSchema = z.object({
@@ -56,35 +55,6 @@ const verifyEmailSchema = registerSchema
 
 const resendOtpSchema = registerSchema.pick({
   email: true,
-});
-
-const updateProfileSchema = z.object({
-  name: z
-    .string({
-      error: (issue) =>
-        issue.input === undefined
-          ? "Name is required"
-          : "Name must be a string",
-    })
-    .trim()
-    .min(3, { error: "Name must be at least 3 characters long" })
-    .max(50, { error: "Name must not exceed 50 characters" }),
-
-  about: z.string(),
-  gender: z.preprocess(
-    (val) => (typeof val === "string" ? val.toLowerCase() : val),
-    z.enum(Gender)
-  ),
-  dateOfBirth: z.date(),
-  location: z.string(),
-  skills: z.array(z.string()),
-  profilePicture: z.url(),
-
-  socialProfiles: z.object({
-    github: z.url(),
-    x: z.url(),
-    linkedIn: z.url(),
-  }),
 });
 
 export const validateRegister = (data: unknown) =>

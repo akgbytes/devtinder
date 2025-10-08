@@ -23,7 +23,7 @@ export const NodeEnv = {
 
 export type NodeEnvType = (typeof NodeEnv)[keyof typeof NodeEnv];
 
-export type OnboardingStepType = 0 | 1 | 2 | 3;
+export type OnboardingStepType = 1 | 2 | 3;
 
 export type Onboarding = {
   step: OnboardingStepType;
@@ -31,8 +31,10 @@ export type Onboarding = {
 }[];
 
 export const onboardingSteps: Onboarding = [
-  { step: 0, description: "Not started" },
   { step: 1, description: "Verify email" },
   { step: 2, description: "Fill profile details" },
   { step: 3, description: "Completed" },
 ];
+
+export const DEFAULT_LAT = 20.5937;
+export const DEFAULT_LNG = 78.9629;

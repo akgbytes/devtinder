@@ -1,6 +1,7 @@
 import { ApiError } from "@/utils/core";
 import { ErrorRequestHandler, Request, Response, NextFunction } from "express";
 import { StatusCodes } from "http-status-codes";
+import { MongooseError } from "mongoose";
 
 export const errorHandler: ErrorRequestHandler = (
   err: any,
@@ -26,8 +27,6 @@ export const errorHandler: ErrorRequestHandler = (
   }
 
   const response = error.toJSON();
-
-  console.log("Error \n: ", error);
 
   res.status(error.statusCode).json(response);
 };
