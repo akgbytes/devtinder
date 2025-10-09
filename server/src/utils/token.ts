@@ -31,15 +31,8 @@ export const generateRefreshToken = (user: User) => {
 };
 
 export const verifyAccessToken = (token: string): TokenPayload => {
-  try {
-    const payload = jwt.verify(token, env.ACCESS_TOKEN_SECRET);
-    return payload as TokenPayload;
-  } catch (error: any) {
-    if (error.name === "TokenExpiredError") {
-      throw new ApiError(StatusCodes.UNAUTHORIZED, "Access token has expired");
-    }
-    throw new ApiError(StatusCodes.UNAUTHORIZED, "Invalid access token");
-  }
+  const payload = jwt.verify(token, env.ACCESS_TOKEN_SECRET);
+  return payload as TokenPayload;
 };
 
 export const verifyRefreshToken = (token: string): TokenPayload => {

@@ -442,4 +442,4 @@ async function seedSkills() {
 
 seedSkills();
 
-// npx tsx .\src\scripts\seed-skills.ts
+// npx tsx .\src\scripts\seedSkills.ts

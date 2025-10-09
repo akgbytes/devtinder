@@ -12,7 +12,7 @@ import {
   handleZodError,
 } from "@/utils/core";
 import { getGeocodes } from "@/utils/google-maps";
-import { validateObjectId } from "@/utils/helper";
+import { generateHash, validateObjectId } from "@/utils/helper";
 import { generateAccessToken, generateRefreshToken } from "@/utils/token";
 import { validateCompleteProfile } from "@/validations/user.validations";
 import { LatLngLiteral } from "@googlemaps/google-maps-services-js";
@@ -130,23 +130,25 @@ export const completeProfile = asyncHandler(async (req, res) => {
         coordinates: [Number(geocodes.lng), Number(geocodes.lat)],
       },
     };
-
-    // Save user
-    await user.save({ session });
-    await session.commitTransaction();
-
-    logger.info("Profile completed successfully", { userId: user._id });
+    user.onboardingCompleted = true;
 
     // Generate auth tokens
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
+
+    // Save user
+    user.refreshToken = generateHash(refreshToken);
+    await user.save({ session });
+    await session.commitTransaction();
+
+    logger.info("Profile completed successfully", { userId: user._id });
 
     // Set auth cookies
     setAuthCookies(res, accessToken, refreshToken);
 
     const response = new ApiResponse(
       StatusCodes.OK,
-      "Profile completed successfully! Welcome aboard.",
+      "Profile completed successfully! Welcome aboard",
       user
     );
 

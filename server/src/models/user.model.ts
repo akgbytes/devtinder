@@ -1,12 +1,7 @@
 import { model, Model, Types, Schema } from "mongoose";
-import { TokenPayload } from "@/types";
-import { GenderType } from "@/utils/constants";
-import { Gender } from "@/utils/constants";
+import { Gender, GenderType } from "@/utils/constants";
 import bcrypt from "bcryptjs";
-import jwt, { SignOptions } from "jsonwebtoken";
 import { env } from "@/config/env";
-import { ApiError } from "@/utils/core";
-import { StatusCodes } from "http-status-codes";
 import crypto from "crypto";
 
 export interface IUser {
@@ -146,7 +141,6 @@ export const userSchema = new Schema<IUser, UserModel, IUserMethods>(
 
     refreshToken: {
       type: String,
-      unique: true,
     },
   },
 

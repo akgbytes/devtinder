@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { isLoggedIn } from "@/middlewares/auth.middleware";
+import { authMiddleware } from "@/middlewares/auth.middleware";
 import {
   getProfile,
   updateProfile,
@@ -12,13 +12,17 @@ import {
 
 const router = Router();
 
-router.route("/profile").all(isLoggedIn).get(getProfile).patch(updateProfile);
-router.patch("/profile/password", isLoggedIn, changePassword);
+router
+  .route("/profile")
+  .all(authMiddleware)
+  .get(getProfile)
+  .patch(updateProfile);
+router.patch("/profile/password", authMiddleware, changePassword);
 router.post("/profile/complete", completeProfile);
 
-router.get("/connections", isLoggedIn, getConnections);
-router.get("/connections/requests", isLoggedIn, getReceivedRequests);
+router.get("/connections", authMiddleware, getConnections);
+router.get("/connections/requests", authMiddleware, getReceivedRequests);
 
-router.get("/feed", isLoggedIn, getUserFeed);
+router.get("/feed", authMiddleware, getUserFeed);
 
 export default router;

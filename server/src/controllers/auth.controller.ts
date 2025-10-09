@@ -8,6 +8,7 @@ import {
   asyncHandler,
   handleZodError,
 } from "@/utils/core";
+import { generateHash } from "@/utils/helper";
 import { generateAccessToken, generateRefreshToken } from "@/utils/token";
 import {
   validateLogin,
@@ -120,7 +121,7 @@ export const verifyOtp = asyncHandler(async (req, res) => {
 
   const response = new ApiResponse(
     StatusCodes.OK,
-    "Email verified successfully! You can now complete your profile to get started.",
+    "Email verified successfully! You can now complete your profile to get started",
     {
       _id: user._id,
       name: user.name,
@@ -222,7 +223,7 @@ export const login = asyncHandler(async (req, res) => {
   logger.info("Login attempt", { email });
 
   // Find user
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }).populate("skills");
   if (!user) {
     logger.warn("Login failed - user not found", { email });
     throw new ApiError(StatusCodes.UNAUTHORIZED, "Invalid credentials");
@@ -242,7 +243,15 @@ export const login = asyncHandler(async (req, res) => {
     const response = new ApiResponse(
       StatusCodes.OK,
       "Please verify your email before logging in",
-      user
+      {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        isEmailVerified: user.isEmailVerified,
+        onboardingCompleted: user.onboardingCompleted,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      }
     );
 
     return res.status(response.statusCode).json(response);
@@ -257,7 +266,15 @@ export const login = asyncHandler(async (req, res) => {
     const response = new ApiResponse(
       StatusCodes.OK,
       "Please complete your profile to continue",
-      user
+      {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        isEmailVerified: user.isEmailVerified,
+        onboardingCompleted: user.onboardingCompleted,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      }
     );
     return res.status(response.statusCode).json(response);
   }
@@ -269,15 +286,12 @@ export const login = asyncHandler(async (req, res) => {
   // Set auth cookies
   setAuthCookies(res, accessToken, refreshToken);
 
+  user.refreshToken = generateHash(refreshToken);
   await user.save();
 
   logger.info("Login successful", { userId: user._id });
 
-  const response = new ApiResponse(
-    StatusCodes.OK,
-    "Login successful! Welcome back.",
-    user
-  );
+  const response = new ApiResponse(StatusCodes.OK, "Login successful!", user);
 
   res.status(response.statusCode).json(response);
 });
