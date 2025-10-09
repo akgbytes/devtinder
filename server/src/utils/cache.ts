@@ -8,6 +8,10 @@ export async function setCache(key: string, value: any) {
   }
 }
 
+export async function deleteCache(key: string) {
+  await redis.del(`cache:${key}`);
+}
+
 export async function getCache<T = unknown>(key: string) {
   const val = await redis.get(`cache:${key}`);
   if (!val) return null;

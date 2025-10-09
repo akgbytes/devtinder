@@ -14,41 +14,49 @@ import { StatusCodes } from "http-status-codes";
 type Suggestions = {
   placeId: string;
   displayName: string;
-  city: string | null | undefined;
-  state: string | null | undefined;
-  country: string | null;
+  city: string;
+  state: string;
+  country: string;
 }[];
 
 export const getAutocompleteSuggestions = asyncHandler(async (req, res) => {
   const { input } = handleZodError(validateAutocompleteInput(req.body));
 
+  logger.info("Autocomplete request", { input });
+
+  const cacheKey = `places:autocomplete:${input}`;
+
   // Check cache first
-  const cacheKey = `places:${input}`;
   const cached = await getCache<Suggestions>(cacheKey);
 
   if (cached) {
-    logger.info("Places cache hit");
+    logger.info("Autocomplete cache hit", { input });
     const response = new ApiResponse(
       StatusCodes.OK,
-      "Suggestions fetched successfully",
+      "Location suggestions retrieved successfully",
       cached
     );
 
     return res.status(response.statusCode).json(response);
   }
 
-  logger.info("Places cache miss");
+  logger.info("Autocomplete cache miss", { input });
 
   let placesResponse = await getPlacesAutoComplete(input);
-
   const suggestions: Suggestions = placesResponse.data.predictions
     .slice(0, 5)
     .map((prediction) => {
-      // Extract city, state, country from description
-      const parts = prediction.description.split(",").map((p) => p.trim());
-      const country = parts[parts.length - 1] || null;
-      const state = parts.length >= 2 ? parts[parts.length - 2] : null;
-      const city = parts.length >= 3 ? parts[parts.length - 3] : null;
+      // Parse location components from description
+      // "City, State, Country"
+      const parts = prediction.description
+        .split(",")
+        .map((part) => part.trim())
+        .filter((part) => part.length > 0);
+
+      const country = parts[parts.length - 1] || "";
+      const state =
+        parts.length >= 2 ? (parts[parts.length - 2] as string) : "";
+      const city = parts.length >= 3 ? (parts[parts.length - 3] as string) : "";
 
       return {
         placeId: prediction.place_id,
@@ -59,12 +67,27 @@ export const getAutocompleteSuggestions = asyncHandler(async (req, res) => {
       };
     });
 
+  // Return early if no results
+  if (suggestions.length === 0) {
+    logger.info("No autocomplete results found", { input });
+    const response = new ApiResponse(
+      StatusCodes.OK,
+      "No locations found matching your search",
+      suggestions
+    );
+
+    return res.status(response.statusCode).json(response);
+  }
+
   // Store cache
   await setCache(cacheKey, suggestions);
+  logger.info("Autocomplete results cached", {
+    input,
+  });
 
   const response = new ApiResponse(
     StatusCodes.OK,
-    "Suggestions fetched successfully",
+    "Location suggestions retrieved successfully",
     suggestions
   );
 

@@ -1,40 +1,24 @@
 export const Gender = {
-  Male: "male",
-  Female: "female",
-  Other: "other",
+  MALE: "male",
+  FEMALE: "female",
+  OTHER: "other",
 } as const;
 
 export type GenderType = (typeof Gender)[keyof typeof Gender];
 
 export const ConnectionRequestStatus = {
-  Ignored: "ignored",
-  Interested: "interested",
-  Accepted: "accepted",
-  Rejected: "rejected",
+  IGNORED: "ignored",
+  INTERESTED: "interested",
+  ACCEPTED: "accepted",
+  REJECTED: "rejected",
 } as const;
 
 export type ConnectionRequestStatusType =
   (typeof ConnectionRequestStatus)[keyof typeof ConnectionRequestStatus];
 
 export const NodeEnv = {
-  Development: "development",
-  Production: "production",
+  DEVELOPMENT: "development",
+  PRODUCTION: "production",
 } as const;
 
 export type NodeEnvType = (typeof NodeEnv)[keyof typeof NodeEnv];
-
-export type OnboardingStepType = 1 | 2 | 3;
-
-export type Onboarding = {
-  step: OnboardingStepType;
-  description: string;
-}[];
-
-export const onboardingSteps: Onboarding = [
-  { step: 1, description: "Verify email" },
-  { step: 2, description: "Fill profile details" },
-  { step: 3, description: "Completed" },
-];
-
-export const DEFAULT_LAT = 20.5937;
-export const DEFAULT_LNG = 78.9629;

@@ -1,7 +1,7 @@
+import { env } from "@/config/env";
 import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import { env } from "@/config/env";
 
 const app = express();
 
@@ -50,6 +50,14 @@ app.use(
     router: fileRouter,
   })
 );
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: `Route ${req.originalUrl} not found`,
+  });
+});
 
 import { errorHandler } from "@/middlewares/error.middleware";
 

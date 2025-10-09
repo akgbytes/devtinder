@@ -1,60 +1,35 @@
 import * as z from "zod";
+import {
+  createFieldError,
+  emailSchema,
+  nameSchema,
+  passwordSchema,
+} from "./helper";
 
 const registerSchema = z.object({
-  name: z
-    .string({
-      error: (issue) =>
-        issue.input === undefined
-          ? "Name is required"
-          : "Name must be a string",
-    })
-    .trim()
-    .min(3, { error: "Name must be at least 3 characters long" })
-    .max(50, { error: "Name must not exceed 50 characters" }),
+  name: nameSchema,
+  email: emailSchema,
+  password: passwordSchema,
+});
 
-  email: z
-    .email({
-      error: (issue) =>
-        issue.input === undefined
-          ? "Email is required"
-          : "Invalid email address",
-    })
-    .toLowerCase(),
-
+const loginSchema = z.object({
+  email: emailSchema,
   password: z
-    .string({
-      error: (issue) =>
-        issue.input === undefined
-          ? "Password is required"
-          : "Password must be a string",
-    })
-    .min(6, { error: "Password must be at least 6 characters long" })
-    .max(128, { error: "Password must not exceed 128 characters" }),
+    .string(createFieldError("Password"))
+    .nonempty("Password is required"),
 });
 
-const loginSchema = registerSchema.pick({
-  email: true,
-  password: true,
+export const verifyEmailSchema = z.object({
+  email: emailSchema,
+  otp: z
+    .string(createFieldError("OTP"))
+    .trim()
+    .length(6, "OTP must be exactly 6 digits")
+    .regex(/^\d{6}$/, "OTP must contain only numbers"),
 });
 
-const verifyEmailSchema = registerSchema
-  .pick({
-    email: true,
-  })
-  .extend({
-    otp: z
-      .string({
-        error: (issue) =>
-          issue.input === undefined
-            ? "OTP is required"
-            : "OTP must be a string",
-      })
-      .trim()
-      .length(6, { error: "OTP must be of 6 digits" }),
-  });
-
-const resendOtpSchema = registerSchema.pick({
-  email: true,
+export const resendOtpSchema = z.object({
+  email: emailSchema,
 });
 
 export const validateRegister = (data: unknown) =>

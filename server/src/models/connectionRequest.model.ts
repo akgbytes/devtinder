@@ -8,32 +8,37 @@ interface IConnectionRequest extends Document {
   fromUserId: Schema.Types.ObjectId;
   toUserId: Schema.Types.ObjectId;
   status: ConnectionRequestStatusType;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
-const connectionRequestSchema = new Schema<IConnectionRequest>({
-  fromUserId: {
-    type: Schema.Types.ObjectId,
-    required: true,
-    ref: "User",
-  },
+const connectionRequestSchema = new Schema<IConnectionRequest>(
+  {
+    fromUserId: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: "User",
+    },
 
-  toUserId: {
-    type: Schema.Types.ObjectId,
-    required: true,
-    ref: "User",
-  },
+    toUserId: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      ref: "User",
+    },
 
-  status: {
-    type: String,
-    required: true,
-    enum: {
-      values: Object.values(ConnectionRequestStatus),
-      message: `Invalid value '{VALUE}'. Please select between ${Object.values(
-        ConnectionRequestStatus
-      ).join(" | ")}`,
+    status: {
+      type: String,
+      required: true,
+      enum: {
+        values: Object.values(ConnectionRequestStatus),
+        message: `Invalid value '{VALUE}'. Please select between ${Object.values(
+          ConnectionRequestStatus
+        ).join(" | ")}`,
+      },
     },
   },
-});
+  { timestamps: true }
+);
 
 // Pre-save hook to normalize user pair
 connectionRequestSchema.pre("save", function (next) {

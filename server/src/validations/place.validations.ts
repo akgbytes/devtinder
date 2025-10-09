@@ -1,15 +1,12 @@
 import * as z from "zod";
+import { createFieldError } from "./helper";
 
 const autoCompleteInputSchema = z.object({
   input: z
-    .string({
-      error: (issue) =>
-        issue.input === undefined
-          ? "Input is required"
-          : "Input must be a string",
-    })
+    .string(createFieldError("Search query"))
     .trim()
-    .min(3, { error: "Input must be at least 3 characters long" })
+    .min(3, { error: "Search query must be at least 3 characters long" })
+    .max(200, "Search query is too long. Maximum 200 characters.")
     .toLowerCase(),
 });
 

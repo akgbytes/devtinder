@@ -1,15 +1,13 @@
-import { Schema, model, Model, Types } from "mongoose";
+import { model, Model, Types, Schema } from "mongoose";
+import { TokenPayload } from "@/types";
+import { GenderType } from "@/utils/constants";
+import { Gender } from "@/utils/constants";
 import bcrypt from "bcryptjs";
 import jwt, { SignOptions } from "jsonwebtoken";
-import crypto from "crypto";
-
-import { Gender, GenderType, onboardingSteps } from "@/utils/constants";
 import { env } from "@/config/env";
-import { TokenPayload } from "@/types";
-import { StatusCodes } from "http-status-codes";
 import { ApiError } from "@/utils/core";
-
-const validSteps = onboardingSteps.map((s) => s.step);
+import { StatusCodes } from "http-status-codes";
+import crypto from "crypto";
 
 export interface IUser {
   name: string;
@@ -21,12 +19,11 @@ export interface IUser {
   otpExpiry: Date | null;
 
   onboardingCompleted: boolean;
-  onboardingStep: number;
 
-  profilePicture: string;
-  dateOfBirth: Date;
-  gender: GenderType;
   about: string;
+  profilePicture: string;
+  gender: GenderType;
+  dateOfBirth: Date;
   skills: Types.ObjectId[];
   location: {
     city: string;
@@ -40,60 +37,59 @@ export interface IUser {
 
   createdAt: Date;
   updatedAt: Date;
+
+  refreshToken: string;
 }
 
 export interface IUserMethods {
   isPasswordCorrect(password: string): Promise<boolean>;
-  generateAccessToken(): string;
-  generateRefreshToken(): string;
-  verifyAccessToken(token: string): TokenPayload;
-  verifyRefreshToken(token: string): TokenPayload;
   generateOtpWithExpiry(): { otp: string; otpExpiry: Date };
   verifyOtp(providedOtp: string): boolean;
   clearOtp(): void;
-  advanceOnboarding(): void;
-  getOnboardingProgress(): {
-    onboardingStep: number;
-    onboardingStepDescription: string;
-    onboardingCompleted: boolean;
-    totalSteps: number;
-  };
 }
 
-export type UserModel = Model<IUser, {}, IUserMethods>;
+type UserModel = Model<IUser, {}, IUserMethods>;
 
-const userSchema = new Schema<IUser, UserModel, IUserMethods>(
+export const userSchema = new Schema<IUser, UserModel, IUserMethods>(
   {
     name: {
       type: String,
       trim: true,
-      required: true,
-      minlength: 3,
-      maxlength: 50,
+      required: [true, "Name is required"],
+      minlength: [3, "Name must be at least 3 characters"],
+      maxlength: [50, "Name must not exceed 50 characters"],
     },
     email: {
       type: String,
-      required: true,
+      required: [true, "Email is required"],
       unique: true,
       trim: true,
       lowercase: true,
     },
-    password: { type: String, required: true, minlength: 6, maxlength: 128 },
-
-    isEmailVerified: { type: Boolean, default: false },
-    otp: { type: String, default: null },
-    otpExpiry: { type: Date, default: null },
-
-    onboardingStep: {
-      type: Number,
-      enum: {
-        values: validSteps,
-        message: `Invalid onboarding step. Must be one of: ${validSteps.join(
-          ", "
-        )}`,
-      },
+    password: {
+      type: String,
+      required: [true, "Password is required"],
+      minlength: [6, "Password must be at least 6 characters"],
+      maxlength: 128,
     },
-    onboardingCompleted: { type: Boolean, default: false },
+
+    isEmailVerified: {
+      type: Boolean,
+      default: false,
+    },
+    otp: {
+      type: String,
+      default: null,
+    },
+    otpExpiry: {
+      type: Date,
+      default: null,
+    },
+
+    onboardingCompleted: {
+      type: Boolean,
+      default: false,
+    },
 
     profilePicture: {
       type: String,
@@ -105,7 +101,6 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
       type: Date,
       validate: {
         validator: function (value: Date) {
-          // Must be at least 18 years old
           const eighteenYearsAgo = new Date();
           eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18);
           return value <= eighteenYearsAgo;
@@ -126,11 +121,13 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
 
     about: {
       type: String,
-      maxlength: 500,
+      maxlength: [500, "About section must not exceed 500 characters"],
+      default: "",
     },
 
     skills: {
       type: [{ type: Types.ObjectId, ref: "Skill" }],
+      default: [],
       validate: [
         (val: Types.ObjectId[]) => val.length <= 20,
         "Maximum 20 skills allowed",
@@ -143,19 +140,25 @@ const userSchema = new Schema<IUser, UserModel, IUserMethods>(
       country: { type: String, default: "" },
       coords: {
         type: { type: String, enum: ["Point"], default: "Point" },
-        coordinates: { type: [Number], default: [0, 0] },
+        coordinates: { type: [Number], default: [0, 0], index: "2dsphere" },
       },
     },
-  },
-  { timestamps: true }
-);
 
-// 2dsphere index for geospatial queries
-userSchema.index({ "location.coords": "2dsphere" });
+    refreshToken: {
+      type: String,
+      unique: true,
+    },
+  },
+
+  {
+    timestamps: true,
+  }
+);
 
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
-  this.password = await bcrypt.hash(this.password, 10);
+
+  this.password = await bcrypt.hash(this.password, 12);
   next();
 });
 
@@ -165,51 +168,9 @@ userSchema.methods.isPasswordCorrect = async function (
   return await bcrypt.compare(password, this.password);
 };
 
-userSchema.methods.generateAccessToken = function () {
-  const payload = {
-    _id: this._id,
-    email: this.email,
-  };
-
-  const secret = env.ACCESS_TOKEN_SECRET;
-  const expiresIn = env.ACCESS_TOKEN_EXPIRY as SignOptions["expiresIn"];
-
-  return jwt.sign(payload, secret, { expiresIn });
-};
-
-userSchema.methods.generateRefreshToken = function () {
-  const payload = {
-    _id: this._id,
-    email: this.email,
-  };
-
-  const secret = env.REFRESH_TOKEN_SECRET;
-  const expiresIn = env.REFRESH_TOKEN_EXPIRY as SignOptions["expiresIn"];
-
-  return jwt.sign(payload, secret, { expiresIn });
-};
-
-userSchema.methods.verifyAccessToken = function (token) {
-  try {
-    const payload = jwt.verify(token, env.ACCESS_TOKEN_SECRET);
-    return payload as TokenPayload;
-  } catch (error: any) {
-    throw new ApiError(StatusCodes.UNAUTHORIZED, "Invalid access token");
-  }
-};
-
-userSchema.methods.verifyRefreshToken = function (token) {
-  try {
-    const payload = jwt.verify(token, env.REFRESH_TOKEN_SECRET);
-    return payload as TokenPayload;
-  } catch (error: any) {
-    throw new ApiError(StatusCodes.UNAUTHORIZED, "Invalid refresh token");
-  }
-};
-
 userSchema.methods.generateOtpWithExpiry = function () {
   const otp = crypto.randomInt(100000, 999999).toString();
-  const otpExpiry = new Date(Date.now() + env.OTP_EXPIRY_MINUTES * 60 * 1000); // 15 min
+  const otpExpiry = new Date(Date.now() + env.OTP_EXPIRY_MINUTES * 60 * 1000);
 
   this.otp = crypto.createHash("sha256").update(otp).digest("hex");
   this.otpExpiry = otpExpiry;
@@ -217,8 +178,12 @@ userSchema.methods.generateOtpWithExpiry = function () {
   return { otp, otpExpiry };
 };
 
-userSchema.methods.verifyOtp = function (providedOtp) {
-  if (new Date() > this.otpExpiry!) {
+userSchema.methods.verifyOtp = function (providedOtp: string): boolean {
+  if (!this.otp || !this.otpExpiry) {
+    return false;
+  }
+
+  if (new Date() > this.otpExpiry) {
     return false;
   }
 
@@ -227,40 +192,20 @@ userSchema.methods.verifyOtp = function (providedOtp) {
     .update(providedOtp)
     .digest("hex");
 
-  // timing-safe comparison
-  return crypto.timingSafeEqual(
-    Buffer.from(hashedProvidedOtp),
-    Buffer.from(this.otp!)
-  );
+  // throws error in case of different buffer lengths
+  try {
+    return crypto.timingSafeEqual(
+      Buffer.from(hashedProvidedOtp),
+      Buffer.from(this.otp)
+    );
+  } catch (error) {
+    return false;
+  }
 };
 
 userSchema.methods.clearOtp = function (): void {
   this.otp = null;
   this.otpExpiry = null;
-};
-
-userSchema.methods.advanceOnboarding = function (): void {
-  // During registration process
-  if (!this.onboardingStep) {
-    this.onboardingStep = 1;
-  } else {
-    const maxStep = onboardingSteps.length;
-    if (this.onboardingStep < maxStep) {
-      this.onboardingStep += 1;
-    }
-    this.onboardingCompleted = this.onboardingStep === maxStep;
-  }
-};
-
-userSchema.methods.getOnboardingProgress = function () {
-  const stepDescription =
-    onboardingSteps[this.onboardingStep - 1]?.description || "Unknown step";
-  return {
-    onboardingStep: this.onboardingStep,
-    onboardingStepDescription: stepDescription,
-    onboardingCompleted: this.onboardingCompleted,
-    totalSteps: onboardingSteps.length,
-  };
 };
 
 userSchema.set("toJSON", {
@@ -269,10 +214,16 @@ userSchema.set("toJSON", {
       _id: ret._id,
       name: ret.name,
       email: ret.email,
-      profilePicture: ret.profilePicture,
-      gender: ret.gender,
+      isEmailVerified: ret.isEmailVerified,
+      onboardingCompleted: ret.onboardingCompleted,
       about: ret.about,
+      profilePicture: ret.profilePicture,
+      location: ret.location,
+      dateOfBirth: ret.dateOfBirth,
+      gender: ret.gender,
       skills: ret.skills,
+      createdAt: ret.createdAt,
+      updatedAt: ret.updatedAt,
     };
   },
 });

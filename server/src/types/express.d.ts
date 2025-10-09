@@ -1,6 +1,9 @@
-import { IUser } from "@/models/user.model";
+import { Types } from "mongoose";
 
-export type User = Pick<IUser, "_id" | "email">;
+export type User = {
+  _id: Types.ObjectId;
+  email: string;
+};
 
 declare global {
   namespace Express {

@@ -32,5 +32,3 @@ skillSchema.set("toJSON", {
 });
 
 export const Skill = model<ISkill, SkillModel>("Skill", skillSchema);
-
-// npx tsx .\src\scripts\seed-skills.ts
