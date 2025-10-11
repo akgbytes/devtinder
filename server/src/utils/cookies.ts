@@ -7,7 +7,7 @@ const cookieOptions = {
   refreshTokenExpiryMs: ms(env.REFRESH_TOKEN_EXPIRY as ms.StringValue),
   secure: env.NODE_ENV === "production",
   httpOnly: true,
-  sameSite: "none",
+  sameSite: env.NODE_ENV === "production" ? "none" : "strict",
 };
 
 export const setAuthCookies = (
