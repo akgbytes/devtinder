@@ -5,7 +5,6 @@ import authReducer from "./slices/authSlice";
 
 export const store = configureStore({
   reducer: {
-    // Add the generated reducer as a specific top-level slice
     [api.reducerPath]: api.reducer,
     auth: authReducer,
   },

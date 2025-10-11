@@ -1,9 +1,9 @@
 import { Link } from "react-router";
 
-const Home = () => {
+const Landing = () => {
   return (
     <div className="">
-      <h1>Home</h1>
+      <h1>Landing Page</h1>
       <Link className="text-primary" to={"/login"}>
         Login
       </Link>
@@ -11,4 +11,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default Landing;

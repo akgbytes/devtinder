@@ -1,13 +1,5 @@
-import type { ApiResponse } from "@/types/api";
+import type { ApiResponse, LocationSuggestion } from "@/types/api";
 import { api } from "./api";
-
-export interface LocationSuggestion {
-  placeId: string;
-  displayName: string;
-  city: string | null | undefined;
-  state: string | null | undefined;
-  country: string | null;
-}
 
 const placesApi = api.injectEndpoints({
   endpoints: (builder) => ({

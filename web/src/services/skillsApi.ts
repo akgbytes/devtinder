@@ -1,10 +1,5 @@
-import type { ApiResponse } from "@/types/api";
+import type { ApiResponse, Skill } from "@/types/api";
 import { api } from "./api";
-
-export interface Skill {
-  _id: string;
-  name: string;
-}
 
 const skillsApi = api.injectEndpoints({
   endpoints: (builder) => ({

@@ -15,21 +15,25 @@ import {
   InputOTPSeparator,
   InputOTPSlot,
 } from "@/components/ui/input-otp";
-import { useVerifyEmailMutation } from "@/services/authApi";
+import {
+  useResendOtpMutation,
+  useVerifyEmailMutation,
+} from "@/services/authApi";
 import { tryCatch } from "@/utils/try-catch";
 import { handleApiError } from "@/utils/error";
 import { useNavigate } from "react-router";
 import { useSnackbar } from "notistack";
 import { Spinner } from "./ui/spinner";
+import type { TemporaryUserResponse } from "@/types/api";
 
 interface VerifyEmailDialogProps {
-  email: string;
+  user: TemporaryUserResponse | undefined;
   isOpen: boolean;
   onOpenChange: (val: boolean) => void;
 }
 
 const VerifyEmailDialog = ({
-  email,
+  user,
   isOpen,
   onOpenChange,
 }: VerifyEmailDialogProps) => {
@@ -39,6 +43,7 @@ const VerifyEmailDialog = ({
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const [verifyEmail, { isLoading }] = useVerifyEmailMutation();
+  const [resendOtp] = useResendOtpMutation();
 
   const startCountdown = (seconds: number) => {
     setTimer(seconds);
@@ -58,11 +63,29 @@ const VerifyEmailDialog = ({
     else setTimer(0);
   }, [isOpen]);
 
-  const handleResend = () => startCountdown(60);
+  if (!user) {
+    return null;
+  }
+
+  const handleResend = async () => {
+    const { data, error } = await tryCatch(
+      resendOtp({ email: user.email }).unwrap()
+    );
+
+    if (error) {
+      handleApiError(error);
+    }
+
+    if (data) {
+      console.log("Response from resend otp \n", data);
+      enqueueSnackbar({ variant: "success", message: data.message });
+      startCountdown(60);
+    }
+  };
 
   const handleVerify = async () => {
     const { data, error } = await tryCatch(
-      verifyEmail({ email, otp }).unwrap()
+      verifyEmail({ email: user.email, otp }).unwrap()
     );
 
     if (error) {
@@ -73,7 +96,7 @@ const VerifyEmailDialog = ({
       console.log("Response from email verify \n", data);
       enqueueSnackbar(data.message, { variant: "success" });
       onOpenChange(false);
-      navigate("/app/onboarding");
+      navigate(`/app/onboarding?name=${user.name}&email=${user.email}`);
     }
   };
 
@@ -84,7 +107,7 @@ const VerifyEmailDialog = ({
           <DialogTitle className="text-center">Verify Your Email</DialogTitle>
           <DialogDescription className="text-center">
             Please enter the OTP sent to{" "}
-            <span className="font-medium text-foreground/80">{email}</span>
+            <span className="font-medium text-foreground/80">{user.email}</span>
           </DialogDescription>
         </DialogHeader>
 
@@ -110,7 +133,7 @@ const VerifyEmailDialog = ({
         </div>
 
         <div className="flex justify-center items-center mb-2 text-sm text-muted-foreground">
-          <p className="mr-1">Didn’t receive the OTP?</p>
+          <p className="mr-1">Didn&apos;t receive the OTP?</p>
 
           {timer > 0 ? (
             <div className="text-foreground">

@@ -1,10 +1,7 @@
 import { useRegisterMutation } from "@/services/authApi";
 import { tryCatch } from "@/utils/try-catch";
 import { handleApiError } from "@/utils/error";
-import { Link, useNavigate } from "react-router";
-import { useAppDispatch } from "@/store/hooks";
-import { setUser } from "@/store/slices/authSlice";
-
+import { Link } from "react-router";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -40,10 +37,10 @@ const Register = () => {
     },
   });
 
-  const { enqueueSnackbar } = useSnackbar();
-  const [register, { isLoading }] = useRegisterMutation();
-
   const [openEmailDialog, setOpenEmailDialog] = useState(false);
+
+  const { enqueueSnackbar } = useSnackbar();
+  const [register, { isLoading, data: tempUser }] = useRegisterMutation();
 
   const onSubmit = async (values: RegisterFormValues) => {
     console.log("register form values\n ", values);
@@ -70,7 +67,7 @@ const Register = () => {
           </CardTitle>
           <CardDescription>
             <p className="text-muted-foreground text-sm pt-1">
-              Please fill in the details to get started
+              Fill in your details to join the dev community
             </p>
           </CardDescription>
         </CardHeader>
@@ -153,7 +150,7 @@ const Register = () => {
 
           <div className="text-center">
             <p className="text-sm text-muted-foreground">
-              Already have an account?{" "}
+              Already part of Devtinder?{" "}
               <Link
                 to="/login"
                 className="text-primary hover:underline font-medium"
@@ -166,7 +163,7 @@ const Register = () => {
       </Card>
 
       <VerifyEmailDialog
-        email={form.getValues("email")}
+        user={tempUser?.data}
         isOpen={openEmailDialog}
         onOpenChange={setOpenEmailDialog}
       />

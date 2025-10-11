@@ -4,7 +4,7 @@ import { setUser } from "@/store/slices/authSlice";
 import { handleApiError } from "@/utils/error";
 import { tryCatch } from "@/utils/try-catch";
 import { useSnackbar } from "notistack";
-import { useState } from "react";
+
 import { Link, useNavigate } from "react-router";
 
 import { Spinner } from "@/components/ui/spinner";
@@ -68,7 +68,7 @@ const Login = () => {
         </CardTitle>
         <CardDescription>
           <p className="text-muted-foreground text-sm pt-1">
-            Please sign in to continue
+            Sign in to connect with your fellow devs
           </p>
         </CardDescription>
       </CardHeader>
@@ -117,7 +117,7 @@ const Login = () => {
               <Button
                 size="sm"
                 type="submit"
-                className="w-full"
+                className="w-full cursor-pointer"
                 disabled={isLoading}
               >
                 {isLoading ? (
@@ -125,7 +125,7 @@ const Login = () => {
                     <Spinner />
                   </>
                 ) : (
-                  "Log In"
+                  "Sign In"
                 )}
               </Button>
             </div>
@@ -134,7 +134,7 @@ const Login = () => {
 
         <div className="text-center">
           <p className="text-sm text-muted-foreground">
-            Don&apos;t have an account?{" "}
+            New to Devtinder?{" "}
             <Link
               to="/register"
               className="text-primary hover:underline font-medium"

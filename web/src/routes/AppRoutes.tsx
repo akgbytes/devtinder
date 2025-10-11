@@ -1,6 +1,6 @@
 import AuthLayout from "@/layouts/AuthLayout";
 import MainLayout from "@/layouts/MainLayout";
-import Home from "@/pages/Home";
+import Landing from "@/pages/Landing";
 import Login from "@/pages/Login";
 import NotFound from "@/pages/NotFound";
 import CompleteProfile from "@/pages/CompleteProfile/index";
@@ -11,34 +11,36 @@ import { clearUser, setUser } from "@/store/slices/authSlice";
 import { tryCatch } from "@/utils/try-catch";
 import { useEffect } from "react";
 import { Routes, Route } from "react-router";
+import Feed from "@/pages/Feed";
 
 const AppRoutes = () => {
-  // const [getUser, { isLoading }] = useLazyGetUserProfileQuery();
-  // const dispatch = useAppDispatch();
+  const [getUser, { isLoading }] = useLazyGetUserProfileQuery();
+  const dispatch = useAppDispatch();
 
-  // useEffect(() => {
-  //   const fetchUserProfile = async () => {
-  //     const { data, error } = await tryCatch(getUser().unwrap());
-  //     if (error) {
-  //       dispatch(clearUser());
-  //     }
-  //     if (data) {
-  //       console.log("data got: ", data);
-  //       dispatch(setUser(data.data));
-  //     }
-  //   };
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      const { data, error } = await tryCatch(getUser().unwrap());
+      if (error) {
+        dispatch(clearUser());
+      }
+      if (data) {
+        console.log("data got: ", data);
+        dispatch(setUser(data.data));
+      }
+    };
 
-  //   fetchUserProfile();
-  // }, []);
+    fetchUserProfile();
+  }, []);
 
-  // if (isLoading) {
-  //   return <div>Loading application...</div>;
-  // }
+  if (isLoading) {
+    return <div>Loading application...</div>;
+  }
 
   return (
     <Routes>
       <Route element={<MainLayout />}>
-        <Route index element={<Home />} />
+        <Route index element={<Landing />} />
+        <Route path="/app" element={<Feed />} />
       </Route>
 
       {/* Auth routes */}

@@ -10,6 +10,8 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Provider store={store}>
       <SnackbarProvider
+        preventDuplicate
+        autoHideDuration={3000}
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
       >
         <App />

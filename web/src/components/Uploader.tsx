@@ -45,7 +45,7 @@ export function Uploader({ value, onChange }: UploaderProps) {
         });
 
         onChange(res[0].ufsUrl);
-        enqueueSnackbar("File uploaded successfully", { variant: "success" });
+        enqueueSnackbar("Image uploaded successfully", { variant: "success" });
       }
     },
 
@@ -202,7 +202,7 @@ export function Uploader({ value, onChange }: UploaderProps) {
 
         onChange(undefined);
 
-        enqueueSnackbar("File deleted successfully", { variant: "success" });
+        enqueueSnackbar("Image removed successfully", { variant: "success" });
       }
     } catch (err) {
       enqueueSnackbar("Failed to delete file, Please try again.", {

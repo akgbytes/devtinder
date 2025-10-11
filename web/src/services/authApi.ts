@@ -1,4 +1,4 @@
-import type { ApiResponse } from "@/types/api";
+import type { ApiResponse, TemporaryUserResponse } from "@/types/api";
 import { api } from "./api";
 import type { User } from "@/types/user";
 import type {
@@ -10,7 +10,10 @@ import type {
 
 const authApi = api.injectEndpoints({
   endpoints: (builder) => ({
-    register: builder.mutation<ApiResponse<User>, RegisterFormValues>({
+    register: builder.mutation<
+      ApiResponse<TemporaryUserResponse>,
+      RegisterFormValues
+    >({
       query: (userData) => ({
         url: "/auth/register",
         method: "POST",
@@ -19,7 +22,10 @@ const authApi = api.injectEndpoints({
       invalidatesTags: ["User"],
     }),
 
-    verifyEmail: builder.mutation<ApiResponse<null>, VerifyEmailFormValues>({
+    verifyEmail: builder.mutation<
+      ApiResponse<TemporaryUserResponse>,
+      VerifyEmailFormValues
+    >({
       query: (data) => ({
         url: "/auth/otp/verify",
         method: "POST",
@@ -35,7 +41,10 @@ const authApi = api.injectEndpoints({
       }),
     }),
 
-    login: builder.mutation<ApiResponse<User>, LoginFormValues>({
+    login: builder.mutation<
+      ApiResponse<TemporaryUserResponse | User>,
+      LoginFormValues
+    >({
       query: (credentials) => ({
         url: "/auth/login",
         method: "POST",

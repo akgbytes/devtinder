@@ -22,7 +22,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { format } from "date-fns";
-import { CalendarIcon } from "lucide-react";
+import { AlertTriangle, CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Select,
@@ -37,19 +37,36 @@ import { capitalize } from "@/utils/capitalize";
 import LocationInput from "./components/LocationInput";
 import SkillsInput from "./components/SkillsInput";
 
-import { Link, useNavigate } from "react-router";
+import { Link, Navigate, useNavigate, useSearchParams } from "react-router";
 import AppLogo from "@/components/AppLogo";
 import { Uploader } from "@/components/Uploader";
-import type { LocationSuggestion } from "@/services/placesApi";
 import { useState } from "react";
-import type { Skill } from "@/services/skillsApi";
 import { useSnackbar } from "notistack";
 import { useCompleteProfileMutation } from "@/services/userApi";
 import { tryCatch } from "@/utils/try-catch";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import type { LocationSuggestion, Skill } from "@/types/api";
+import { handleApiError } from "@/utils/error";
+import { useAppDispatch } from "@/store/hooks";
+import { setUser } from "@/store/slices/authSlice";
 
 const CompleteProfile = () => {
+  const [open, setOpen] = useState(false);
+
   const { enqueueSnackbar } = useSnackbar();
+  const [searchParams] = useSearchParams();
+  const nameFromParams = searchParams.get("name");
+  const emailFromParams = searchParams.get("email");
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+
   const [selectedLocation, setSelectedLocation] =
     useState<LocationSuggestion | null>(null);
 
@@ -58,7 +75,7 @@ const CompleteProfile = () => {
   const form = useForm<CompleteProfileFormValues>({
     resolver: zodResolver(completeProfileSchema),
     defaultValues: {
-      name: "Aman Gupta",
+      name: nameFromParams || "",
       about: "",
       location: "",
     },
@@ -66,22 +83,37 @@ const CompleteProfile = () => {
 
   const [submitProfile, { isLoading }] = useCompleteProfileMutation();
 
+  if (!nameFromParams || !emailFromParams) {
+    return <Navigate to="/" replace />;
+  }
+
   const onSubmit = async (values: CompleteProfileFormValues) => {
     console.log("Form values:", values);
     console.log("skills: ", skills);
     console.log("selected location: ", selectedLocation);
 
-    // const today = new Date();
-    // const age = today.getFullYear() - values.dateOfBirth.getFullYear();
+    //   const today = new Date();
+    //   const birthDate = new Date(values.dateOfBirth);
 
-    // maybe show a dialog with info terms n conditions -> with two button home and edit age
-    // if (age < 18) {
-    //   enqueueSnackbar({
-    //     variant: "info",
-    //     message:
-    //       "We are sorry to say that you need to at least 18 years old to use our platform",
-    //   });
-    // }
+    //   let age = today.getFullYear() - birthDate.getFullYear();
+    //   const monthDiff = today.getMonth() - birthDate.getMonth();
+
+    //   if (
+    //     monthDiff < 0 ||
+    //     (monthDiff === 0 && today.getDate() < birthDate.getDate())
+    //   ) {
+    //     age--;
+    //   }
+
+    //   if (age < 18) {
+    //     // 🛑 Show the dialog if user is below 18
+    //     setOpen(true);
+    //     return;
+    //   }
+
+    //   // ✅ Submit form normally if OK
+    //   console.log("Profile submitted:", values);
+    // };
 
     const { data, error } = await tryCatch(
       submitProfile({
@@ -97,11 +129,15 @@ const CompleteProfile = () => {
     );
 
     if (error) {
-      console.log("error from complete profile: ", error);
+      handleApiError(error);
+      console.log("error from complete profile\n ", error);
     }
 
     if (data) {
-      console.log("response from complete profile: ", data);
+      console.log("response from complete profile \n ", data);
+      enqueueSnackbar({ variant: "success", message: data.message });
+      dispatch(setUser(data.data));
+      navigate("/app");
     }
   };
 
@@ -115,7 +151,7 @@ const CompleteProfile = () => {
           <AppLogo />
           <span className="text-2xl">devtinder</span>
         </Link>
-        <h1 className="text-3xl">Complete Profile</h1>
+        <h1 className="text-3xl font-medium">Complete Your Profile</h1>
 
         <div className="mt-6">
           <Form {...form}>
@@ -151,7 +187,7 @@ const CompleteProfile = () => {
                           <FormLabel>About</FormLabel>
                           <FormControl>
                             <Textarea
-                              placeholder="Write a short intro mentioning who you are, what you build, what drives you 🔥"
+                              placeholder="Write a short intro that clearly tells who you are, what you build, what drives you 🔥"
                               className="resize-none"
                               {...field}
                             />
@@ -285,6 +321,44 @@ const CompleteProfile = () => {
               </div>
             </form>
           </Form>
+
+          {/* Underage Dialog */}
+          <Dialog open={open} onOpenChange={setOpen}>
+            <DialogContent className="sm:max-w-md text-center space-y-5">
+              <DialogHeader>
+                <div className="flex flex-col items-center gap-2">
+                  <div className="text-2xl">😔</div>
+                  <DialogTitle className="text-2xl font-semibold">
+                    You&apos;re Too Young
+                  </DialogTitle>
+                </div>
+
+                <DialogDescription className="text-base leading-relaxed mt-2">
+                  You must be at least{" "}
+                  <span className="font-semibold text-primary">
+                    18 years old{" "}
+                  </span>
+                  to join <span className="font-medium">Devtinder</span>. Please
+                  double-check your date of birth or come back when you&apos;re
+                  eligible.
+                </DialogDescription>
+              </DialogHeader>
+
+              <DialogFooter className="flex justify-center gap-3 mt-2">
+                <Button
+                  variant="outline"
+                  onClick={() => setOpen(false)}
+                  className="min-w-[120px]"
+                >
+                  Edit Age
+                </Button>
+
+                <Button onClick={() => navigate("/")} className="min-w-[120px]">
+                  Go Home
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </main>
     </div>

@@ -1,10 +1,8 @@
-import type { ApiResponse } from "@/types/api";
+import type { ApiResponse, LocationSuggestion, Skill } from "@/types/api";
 import { api } from "./api";
 import type { User } from "@/types/user";
 import * as z from "zod";
 import type { completeProfileSchema } from "@/validations";
-import type { Skill } from "./skillsApi";
-import type { LocationSuggestion } from "./placesApi";
 
 type CompleteProfilePayload = Omit<
   z.infer<typeof completeProfileSchema>,
@@ -23,7 +21,7 @@ const userApi = api.injectEndpoints({
     }),
 
     completeProfile: builder.mutation<
-      ApiResponse<null>,
+      ApiResponse<User>,
       CompleteProfilePayload
     >({
       query: (payload) => ({
