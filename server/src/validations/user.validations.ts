@@ -12,6 +12,30 @@ const completeProfileSchema = z.object({
   email: emailSchema,
   name: nameSchema,
 
+  profilePicture: z.url({
+    error: (issue) =>
+      issue.input === undefined
+        ? "Profile picture is required"
+        : "Profile picture must be a valid URL",
+  }),
+
+  about: z
+    .string(createFieldError("About"))
+    .trim()
+    .min(10, "About must be at least 10 characters long")
+    .max(1000, "About must not exceed 1000 characters"),
+
+  gender: z.enum(Gender, {
+    error: (issue) =>
+      issue.input === undefined
+        ? "Gender is required"
+        : `Invalid gender value. Must be one of: ${Object.values(Gender).join(
+            ", "
+          )}`,
+  }),
+
+  dateOfBirth: dateOfBirthSchema,
+
   skills: z.array(
     z.object({
       _id: z
@@ -26,23 +50,6 @@ const completeProfileSchema = z.object({
         .max(100, "Skill name must not exceed 100 characters"),
     })
   ),
-
-  about: z
-    .string(createFieldError("About"))
-    .trim()
-    .min(10, "About must be at least 10 characters long")
-    .max(500, "About must not exceed 500 characters"),
-
-  gender: z.enum(Gender, {
-    error: (issue) =>
-      issue.input === undefined
-        ? "Gender is required"
-        : `Invalid gender value. Must be one of: ${Object.values(Gender).join(
-            ", "
-          )}`,
-  }),
-
-  dateOfBirth: dateOfBirthSchema,
 
   location: z.object({
     placeId: z
@@ -70,13 +77,6 @@ const completeProfileSchema = z.object({
       .string(createFieldError("Country"))
       .trim()
       .max(50, { error: "Country must not exceed 50 characters" }),
-  }),
-
-  profilePicture: z.url({
-    error: (issue) =>
-      issue.input === undefined
-        ? "Profile picture is required"
-        : "Profile picture must be a valid URL",
   }),
 });
 

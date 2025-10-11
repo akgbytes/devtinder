@@ -570,7 +570,7 @@ export const dummyUsersData = [...maleWithPic, ...femaleWithPic].map(
     email: `${user.name.replace(" ", "")!.toLowerCase()}@devtinder.com`,
     password: "$2b$12$l28iPzQcY2rfzxCwTH4JUON1nt4e6j9DHkXTWLgLCFW8q5aCn7sGu",
     gender: user.gender,
-    isVerified: true,
+    isEmailVerified: true,
     onboardingCompleted: true,
     about: abouts[index],
     location: {

@@ -116,7 +116,7 @@ export const userSchema = new Schema<IUser, UserModel, IUserMethods>(
 
     about: {
       type: String,
-      maxlength: [500, "About section must not exceed 500 characters"],
+      maxlength: [1000, "About section must not exceed 1000 characters"],
       default: "",
     },
 
@@ -135,7 +135,7 @@ export const userSchema = new Schema<IUser, UserModel, IUserMethods>(
       country: { type: String, default: "" },
       coords: {
         type: { type: String, enum: ["Point"], default: "Point" },
-        coordinates: { type: [Number], default: [0, 0], index: "2dsphere" },
+        coordinates: { type: [Number], default: [0, 0] },
       },
     },
 
@@ -148,6 +148,14 @@ export const userSchema = new Schema<IUser, UserModel, IUserMethods>(
     timestamps: true,
   }
 );
+
+userSchema.index({ "location.coords": "2dsphere" });
+
+// Compound index for feed queries
+userSchema.index({
+  onboardingCompleted: 1,
+  isEmailVerified: 1,
+});
 
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();

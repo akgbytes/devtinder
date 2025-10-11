@@ -244,27 +244,6 @@ export const getConnections = asyncHandler(async (req, res) => {
   res.status(response.statusCode).json(response);
 });
 
-interface MatchWeights {
-  sharedSkills: number;
-  location: number;
-  ageRange: number;
-}
-
-const MATCH_WEIGHTS: MatchWeights = {
-  sharedSkills: 5, // 5 points per shared skill
-  location: 50, // Up to 50 points based on proximity
-  ageRange: 10, // Up to 10 points for similar age
-};
-
-// Distance thresholds in km
-const DISTANCE_THRESHOLDS = {
-  veryClose: 10,
-  close: 50,
-  moderate: 100,
-  far: 500,
-  veryFar: 1000,
-};
-
 export const getUserFeed = asyncHandler(async (req, res) => {
   const userId = req.user._id;
   const page = parseInt(req.query.page as string) || 1;
@@ -300,22 +279,24 @@ export const getUserFeed = asyncHandler(async (req, res) => {
     excludedUserIds.add(connection.toUserId.toString());
   });
 
+  const MATCH_WEIGHTS = {
+    sharedSkills: 5,
+    location: 50,
+    ageRange: 10,
+  };
+
+  // Distance thresholds in km
+  const DISTANCE_THRESHOLDS = {
+    veryClose: 10,
+    close: 50,
+    moderate: 100,
+    far: 500,
+    veryFar: 1000,
+  };
+
   // Pipeline for personalized feed
   const users = await User.aggregate([
-    // Stage 1: Filter out excluded users and incomplete profiles
-    {
-      $match: {
-        _id: {
-          $nin: Array.from(excludedUserIds).map(
-            (id) => new mongoose.Types.ObjectId(id)
-          ),
-        },
-        onboardingCompleted: true,
-        isEmailVerified: true,
-      },
-    },
-
-    // Stage 2: Add geospatial distance calculation
+    // Stage 1: Add geospatial distance calculation
     {
       $geoNear: {
         near: {
@@ -326,6 +307,19 @@ export const getUserFeed = asyncHandler(async (req, res) => {
         maxDistance: maxDistance ? maxDistance * 1000 : 100000000, // Convert km to meters and default very large distance
         spherical: true,
         key: "location.coords",
+      },
+    },
+
+    // Stage 2: Filter out excluded users and incomplete profiles
+    {
+      $match: {
+        _id: {
+          $nin: Array.from(excludedUserIds).map(
+            (id) => new mongoose.Types.ObjectId(id)
+          ),
+        },
+        onboardingCompleted: true,
+        isEmailVerified: true,
       },
     },
 
@@ -532,26 +526,34 @@ export const getUserFeed = asyncHandler(async (req, res) => {
       },
     },
 
-    // Stage 5: Filter by minimum match score
+    // Stage 5: Add random factor for diversity
+    {
+      $addFields: {
+        randomFactor: { $multiply: [{ $rand: {} }, 10] },
+      },
+    },
+
+    // Stage 6: Filter by minimum match score
     {
       $match: {
         matchScore: { $gte: minMatchScore },
       },
     },
 
-    // Stage 6: Sort by match score (highest first), then by distance
+    // Stage 7: Sort by match score, then random factor, then distance
     {
       $sort: {
         matchScore: -1,
+        randomFactor: -1,
         distanceKm: 1,
       },
     },
 
-    // Stage 7: Pagination
+    // Stage 8: Pagination
     { $skip: skip },
     { $limit: limit },
 
-    // Stage 8: Project only safe fields
+    // Stage 9: Project only safe fields
     {
       $project: {
         name: 1,
@@ -569,29 +571,6 @@ export const getUserFeed = asyncHandler(async (req, res) => {
         dateOfBirth: 1,
         distanceKm: 1,
         matchScore: 1,
-        // Add match details for transparency
-        matchDetails: {
-          distance: { $round: ["$distanceKm", 1] },
-          sharedSkills: {
-            $size: {
-              $setIntersection: ["$skills", currentUser.skills || []],
-            },
-          },
-          sameCity: {
-            $cond: [
-              { $eq: ["$location.city", currentUser.location.city] },
-              true,
-              false,
-            ],
-          },
-          sameState: {
-            $cond: [
-              { $eq: ["$location.state", currentUser.location.state] },
-              true,
-              false,
-            ],
-          },
-        },
       },
     },
   ]);
@@ -607,7 +586,6 @@ export const getUserFeed = asyncHandler(async (req, res) => {
         },
         onboardingCompleted: true,
         isEmailVerified: true,
-        isDeleted: { $ne: true },
       },
     },
     { $count: "total" },
@@ -637,11 +615,6 @@ export const getUserFeed = asyncHandler(async (req, res) => {
         totalPages: Math.ceil(total / limit),
         hasMore: page * limit < total,
       },
-      filters: {
-        maxDistance,
-        minMatchScore,
-      },
-      matchWeights: MATCH_WEIGHTS,
     }
   );
 
