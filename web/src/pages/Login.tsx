@@ -55,7 +55,7 @@ const Login = () => {
 
     if (data) {
       enqueueSnackbar(data.message, { variant: "success" });
-      dispatch(setUser(data.data));
+      // dispatch(setUser(data));
       navigate("/");
     }
   };

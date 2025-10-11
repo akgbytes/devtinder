@@ -12,10 +12,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useDebounce } from "@/hooks/useDebounce";
-import {
-  useGetAutocompleteSuggestionsMutation,
-  type LocationSuggestion,
-} from "@/services/placesApi";
+import { useGetAutocompleteSuggestionsMutation } from "@/services/placesApi";
+import type { LocationSuggestion } from "@/types/api";
 import { tryCatch } from "@/utils/try-catch";
 import type { CompleteProfileFormValues } from "@/validations";
 import { Loader2, MapPin } from "lucide-react";
@@ -33,6 +31,7 @@ interface LocationInputProps {
 const LocationInput = ({ form, setSelectedLocation }: LocationInputProps) => {
   const [suggestions, setSuggestions] = useState<LocationSuggestion[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [isSelecting, setIsSelecting] = useState(false);
 
   const [inputLocationValue, setInputLocationValue] = useState("");
   const debouncedInputLocation = useDebounce(inputLocationValue);
@@ -68,6 +67,7 @@ const LocationInput = ({ form, setSelectedLocation }: LocationInputProps) => {
   };
 
   useEffect(() => {
+    if (isSelecting) return;
     if (debouncedInputLocation.length >= 3) {
       fetchSuggestions(debouncedInputLocation);
     } else {
@@ -77,6 +77,7 @@ const LocationInput = ({ form, setSelectedLocation }: LocationInputProps) => {
   }, [debouncedInputLocation]);
 
   const handleSelectSuggestion = (suggestion: LocationSuggestion) => {
+    setIsSelecting(true);
     setSelectedLocation(suggestion);
     const locationText = suggestion.displayName;
     setInputLocationValue(locationText);

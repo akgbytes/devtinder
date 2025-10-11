@@ -12,6 +12,9 @@ import { tryCatch } from "@/utils/try-catch";
 import { useEffect } from "react";
 import { Routes, Route } from "react-router";
 import Feed from "@/pages/Feed";
+import ProtectedRoutes from "./ProtectedRoutes";
+import Connections from "@/pages/Connections";
+import Requests from "@/pages/Requests";
 
 const AppRoutes = () => {
   const [getUser, { isLoading }] = useLazyGetUserProfileQuery();
@@ -40,7 +43,12 @@ const AppRoutes = () => {
     <Routes>
       <Route element={<MainLayout />}>
         <Route index element={<Landing />} />
-        <Route path="/app" element={<Feed />} />
+        <Route element={<ProtectedRoutes />}>
+          <Route path="/app" element={<Feed />} />
+          <Route path="/app/user/profile" element={<Feed />} />
+          <Route path="/app/user/connections" element={<Connections />} />
+          <Route path="/app/user/requests" element={<Requests />} />
+        </Route>
       </Route>
 
       {/* Auth routes */}

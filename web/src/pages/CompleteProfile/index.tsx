@@ -22,7 +22,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { format } from "date-fns";
-import { AlertTriangle, CalendarIcon } from "lucide-react";
+import { CalendarIcon } from "lucide-react";
 import { Calendar } from "@/components/ui/calendar";
 import {
   Select,
@@ -92,28 +92,25 @@ const CompleteProfile = () => {
     console.log("skills: ", skills);
     console.log("selected location: ", selectedLocation);
 
-    //   const today = new Date();
-    //   const birthDate = new Date(values.dateOfBirth);
+    const today = new Date();
+    const birthDate = new Date(values.dateOfBirth);
 
-    //   let age = today.getFullYear() - birthDate.getFullYear();
-    //   const monthDiff = today.getMonth() - birthDate.getMonth();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDiff = today.getMonth() - birthDate.getMonth();
 
-    //   if (
-    //     monthDiff < 0 ||
-    //     (monthDiff === 0 && today.getDate() < birthDate.getDate())
-    //   ) {
-    //     age--;
-    //   }
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birthDate.getDate())
+    ) {
+      age--;
+    }
 
-    //   if (age < 18) {
-    //     // 🛑 Show the dialog if user is below 18
-    //     setOpen(true);
-    //     return;
-    //   }
+    if (age < 18) {
+      setOpen(true);
+      return;
+    }
 
-    //   // ✅ Submit form normally if OK
-    //   console.log("Profile submitted:", values);
-    // };
+    console.log("Profile submitted:", values);
 
     const { data, error } = await tryCatch(
       submitProfile({
@@ -335,8 +332,8 @@ const CompleteProfile = () => {
 
                 <DialogDescription className="text-base leading-relaxed mt-2">
                   You must be at least{" "}
-                  <span className="font-semibold text-primary">
-                    18 years old{" "}
+                  <span className="font-bold text-foreground">
+                    18 years old{"c "}
                   </span>
                   to join <span className="font-medium">Devtinder</span>. Please
                   double-check your date of birth or come back when you&apos;re
