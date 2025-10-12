@@ -53,6 +53,19 @@ connectionRequestSchema.pre("save", function (next) {
 // Unique compound index on normalized pair
 connectionRequestSchema.index({ fromUserId: 1, toUserId: 1 }, { unique: true });
 
+connectionRequestSchema.set("toJSON", {
+  transform(doc, ret) {
+    return {
+      _id: ret._id,
+      fromUserId: ret.fromUserId,
+      toUserId: ret.toUserId,
+      status: ret.status,
+      createdAt: ret.createdAt,
+      updatedAt: ret.updatedAt,
+    };
+  },
+});
+
 export const ConnectionRequest = model(
   "connectionRequest",
   connectionRequestSchema

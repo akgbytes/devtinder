@@ -115,15 +115,11 @@ export const createConnectionRequest = asyncHandler(async (req, res) => {
       ? "Connection request sent successfully!"
       : "User ignored successfully";
 
-  const response = new ApiResponse(StatusCodes.CREATED, message, {
-    connectionRequest: {
-      _id: connectionRequest._id,
-      fromUserId: connectionRequest.fromUserId,
-      toUserId: connectionRequest.toUserId,
-      status: connectionRequest.status,
-      createdAt: connectionRequest.createdAt,
-    },
-  });
+  const response = new ApiResponse(
+    StatusCodes.CREATED,
+    message,
+    connectionRequest
+  );
 
   res.status(response.statusCode).json(response);
 });
@@ -204,16 +200,7 @@ export const reviewConnectionRequest = asyncHandler(async (req, res) => {
       ? "Connection request accepted! You are now connected"
       : "Connection request rejected";
 
-  const response = new ApiResponse(StatusCodes.OK, message, {
-    connectionRequest: {
-      _id: connectionRequest._id,
-      fromUserId: connectionRequest.fromUserId,
-      toUserId: connectionRequest.toUserId,
-      status: connectionRequest.status,
-      createdAt: connectionRequest.createdAt,
-      updatedAt: connectionRequest.updatedAt,
-    },
-  });
+  const response = new ApiResponse(StatusCodes.OK, message, connectionRequest);
 
   res.status(response.statusCode).json(response);
 });

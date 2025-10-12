@@ -2,6 +2,7 @@ import { logger } from "@/config/logger";
 import { ConnectionRequest } from "@/models/connectionRequest.model";
 import { Skill } from "@/models/skill.model";
 import { User } from "@/models/user.model";
+import { FullUser } from "@/types";
 import { getCache, setCache } from "@/utils/cache";
 import { ConnectionRequestStatus } from "@/utils/constants";
 import { setAuthCookies } from "@/utils/cookies";
@@ -209,10 +210,12 @@ export const getReceivedRequests = asyncHandler(async (req, res) => {
     userId,
   });
 
+  const formattedRequests = requests.map((request) => request.fromUserId);
+
   const response = new ApiResponse(
     StatusCodes.OK,
     "Connection requests retrieved successfully",
-    requests
+    formattedRequests
   );
 
   res.status(response.statusCode).json(response);
@@ -235,10 +238,21 @@ export const getConnections = asyncHandler(async (req, res) => {
     userId,
   });
 
+  const set = new Set([
+    ...connections.map((c: any) => c.fromUserId),
+    ...connections.map((c: any) => c.toUserId),
+  ] as unknown as FullUser[]);
+
+  let currentUser = Array.from(set).find(
+    (c) => c._id.toString() === userId.toString()
+  );
+
+  const uniqueUsers = Array.from(set).filter((u) => u._id !== currentUser?._id);
+
   const response = new ApiResponse(
     StatusCodes.OK,
     "Connections retrieved successfully",
-    connections
+    uniqueUsers
   );
 
   res.status(response.statusCode).json(response);
