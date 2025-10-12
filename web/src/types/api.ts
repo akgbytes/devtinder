@@ -1,3 +1,6 @@
+import type { ConnectionRequestStatusType } from "@/constants";
+import type { User } from "./user";
+
 export interface ApiResponse<T = unknown> {
   success: boolean;
   statusCode: number;
@@ -23,8 +26,8 @@ export interface TemporaryUserResponse {
   email: string;
   isEmailVerified: boolean;
   onboardingCompleted: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface LocationSuggestion {
@@ -38,4 +41,13 @@ export interface LocationSuggestion {
 export interface Skill {
   _id: string;
   name: string;
+}
+
+export interface Connection {
+  _id: string;
+  fromUserId: User;
+  toUserId: User;
+  status: ConnectionRequestStatusType;
+  createdAt: string;
+  updatedAt: string;
 }

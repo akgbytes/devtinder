@@ -42,7 +42,7 @@ import AppLogo from "@/components/AppLogo";
 import { Uploader } from "@/components/Uploader";
 import { useState } from "react";
 import { useSnackbar } from "notistack";
-import { useCompleteProfileMutation } from "@/services/userApi";
+import { useCompleteProfileMutation } from "@/services/usersApi";
 import { tryCatch } from "@/utils/try-catch";
 import {
   Dialog,

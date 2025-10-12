@@ -1,17 +1,20 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { useEffect, useState } from "react";
-import { HeartHandshake } from "lucide-react";
 
-interface Connection {
-  id: string;
-  name: string;
-  avatar: string;
-}
+import { HeartHandshake } from "lucide-react";
+import { useGetConnectionsQuery } from "@/services/usersApi";
 
 const Connections = () => {
-  const [connections, setConnections] = useState<Connection[]>([]);
+  const { data, isLoading, isError } = useGetConnectionsQuery();
 
-  useEffect(() => {}, []);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (isError || !data) {
+    return <div>Error</div>;
+  }
+
+  console.log("connections: ", data);
 
   return (
     <div className="p-4">
@@ -19,16 +22,16 @@ const Connections = () => {
         <HeartHandshake className="h-6 w-6" /> Connections
       </h1>
       <div className="mt-4 flex flex-col gap-3">
-        {connections.length === 0 && <p>No connections yet.</p>}
-        {connections.map((c) => (
-          <Card key={c.id}>
+        {data.data.length === 0 && <p>No connections yet.</p>}
+        {data.data.map((connection) => (
+          <Card key={connection._id}>
             <CardContent className="flex items-center gap-3">
               <img
-                src={c.avatar}
-                alt={c.name}
+                src={connection.profilePicture}
+                alt={connection.name}
                 className="h-10 w-10 rounded-full object-cover"
               />
-              <span className="font-medium">{c.name}</span>
+              <span className="font-medium">{connection.name}</span>
             </CardContent>
           </Card>
         ))}

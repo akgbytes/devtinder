@@ -1,4 +1,9 @@
-import type { ApiResponse, LocationSuggestion, Skill } from "@/types/api";
+import type {
+  ApiResponse,
+  Connection,
+  LocationSuggestion,
+  Skill,
+} from "@/types/api";
 import { api } from "./api";
 import type { User } from "@/types/user";
 import * as z from "zod";
@@ -30,6 +35,18 @@ const userApi = api.injectEndpoints({
         body: payload,
       }),
     }),
+
+    getConnections: builder.query<ApiResponse<User[]>, void>({
+      query: () => "/users/connections",
+    }),
+
+    getRequests: builder.query<ApiResponse<User[]>, void>({
+      query: () => "/users/connections/requests",
+    }),
+
+    getFeed: builder.query({
+      query: () => "/users/feed",
+    }),
   }),
 });
 
@@ -37,4 +54,7 @@ export const {
   useCompleteProfileMutation,
   useGetUserProfileQuery,
   useLazyGetUserProfileQuery,
+  useGetConnectionsQuery,
+  useGetRequestsQuery,
+  useGetFeedQuery,
 } = userApi;

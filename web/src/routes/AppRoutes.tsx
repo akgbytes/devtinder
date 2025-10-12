@@ -5,7 +5,7 @@ import Login from "@/pages/Login";
 import NotFound from "@/pages/NotFound";
 import CompleteProfile from "@/pages/CompleteProfile/index";
 import Register from "@/pages/Register";
-import { useLazyGetUserProfileQuery } from "@/services/userApi";
+import { useLazyGetUserProfileQuery } from "@/services/usersApi";
 import { useAppDispatch } from "@/store/hooks";
 import { clearUser, setUser } from "@/store/slices/authSlice";
 import { tryCatch } from "@/utils/try-catch";
@@ -27,7 +27,7 @@ const AppRoutes = () => {
         dispatch(clearUser());
       }
       if (data) {
-        console.log("data got: ", data);
+        console.log("user profile: ", data);
         dispatch(setUser(data.data));
       }
     };

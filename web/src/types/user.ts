@@ -1,4 +1,4 @@
-export type GenderType = "male" | "female" | "other";
+import type { GenderType } from "@/constants";
 
 export interface User {
   _id: string;
@@ -20,6 +20,6 @@ export interface User {
   gender: GenderType;
   skills: string[];
   onboardingCompleted: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt: string;
+  updatedAt: string;
 }
