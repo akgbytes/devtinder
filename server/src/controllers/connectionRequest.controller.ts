@@ -14,6 +14,9 @@ export const createConnectionRequest = asyncHandler(async (req, res) => {
   const toUserId = req.params.toUserId as string;
   const fromUserId = req.user._id;
 
+  console.log("from : ", fromUserId);
+  console.log("to : ", toUserId);
+
   logger.info("Connection request attempt", { fromUserId, toUserId, status });
 
   // Validate target user ID
@@ -49,12 +52,12 @@ export const createConnectionRequest = asyncHandler(async (req, res) => {
     );
   }
 
-  // Check for existing connection request in either direction
+  // Create unique keypair to make sure request is created only once either from A-B or B-A
+  const pairKey = [fromUserId, toUserId].sort().join("_");
+
+  // Check for existing connection request
   const existingRequest = await ConnectionRequest.findOne({
-    $or: [
-      { fromUserId, toUserId },
-      { fromUserId: toUserId, toUserId: fromUserId },
-    ],
+    pairKey,
   });
 
   if (existingRequest) {
@@ -98,9 +101,10 @@ export const createConnectionRequest = asyncHandler(async (req, res) => {
 
   // Create connection request
   const connectionRequest = await ConnectionRequest.create({
-    fromUserId,
-    toUserId,
+    toUserId: toUserId,
+    fromUserId: fromUserId,
     status: status as ConnectionRequestStatusType,
+    pairKey,
   });
 
   logger.info("Connection request created", {

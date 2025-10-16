@@ -7,6 +7,7 @@ import { Document, model, Schema } from "mongoose";
 interface IConnectionRequest extends Document {
   fromUserId: Schema.Types.ObjectId;
   toUserId: Schema.Types.ObjectId;
+  pairKey: string;
   status: ConnectionRequestStatusType;
   createdAt: Date;
   updatedAt: Date;
@@ -26,6 +27,12 @@ const connectionRequestSchema = new Schema<IConnectionRequest>(
       ref: "User",
     },
 
+    pairKey: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+
     status: {
       type: String,
       required: true,
@@ -39,19 +46,6 @@ const connectionRequestSchema = new Schema<IConnectionRequest>(
   },
   { timestamps: true }
 );
-
-// Pre-save hook to normalize user pair
-connectionRequestSchema.pre("save", function (next) {
-  if (this.fromUserId.toString() > this.toUserId.toString()) {
-    const temp = this.fromUserId;
-    this.fromUserId = this.toUserId;
-    this.toUserId = temp;
-  }
-  next();
-});
-
-// Unique compound index on normalized pair
-connectionRequestSchema.index({ fromUserId: 1, toUserId: 1 }, { unique: true });
 
 connectionRequestSchema.set("toJSON", {
   transform(doc, ret) {
