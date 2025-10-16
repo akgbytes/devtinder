@@ -3,6 +3,7 @@ import { Navigate, Outlet } from "react-router";
 
 const AuthRoutes = () => {
   const { user, isLoading } = useAppSelector((state) => state.auth);
+
   if (isLoading) {
     return <div>Loading...</div>;
   }

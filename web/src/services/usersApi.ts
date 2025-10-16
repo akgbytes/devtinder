@@ -35,7 +35,10 @@ const userApi = api.injectEndpoints({
       query: () => "/users/connections",
     }),
 
-    getRequests: builder.query<ApiResponse<User[]>, void>({
+    getRequests: builder.query<
+      ApiResponse<{ requestId: string; user: User }[]>,
+      void
+    >({
       query: () => "/users/connections/requests",
     }),
 
