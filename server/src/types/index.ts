@@ -30,3 +30,9 @@ export interface FullUser {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface FeedCursor {
+  matchScore: number;
+  distanceKm: number;
+  _id: string;
+}

@@ -1,9 +1,4 @@
-import type {
-  ApiResponse,
-  Connection,
-  LocationSuggestion,
-  Skill,
-} from "@/types/api";
+import type { ApiResponse, Feed, LocationSuggestion, Skill } from "@/types/api";
 import { api } from "./api";
 import type { User } from "@/types/user";
 import * as z from "zod";
@@ -44,8 +39,13 @@ const userApi = api.injectEndpoints({
       query: () => "/users/connections/requests",
     }),
 
-    getFeed: builder.query({
-      query: () => "/users/feed",
+    getFeed: builder.query<
+      ApiResponse<Feed>,
+      { cursor?: string | null; limit: number }
+    >({
+      query: ({ cursor, limit }) =>
+        `/users/feed/?cursor=${cursor}&limit=${limit}`,
+      providesTags: ["Feed"],
     }),
   }),
 });
@@ -57,4 +57,5 @@ export const {
   useGetConnectionsQuery,
   useGetRequestsQuery,
   useGetFeedQuery,
+  usePrefetch,
 } = userApi;

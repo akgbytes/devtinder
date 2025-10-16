@@ -51,3 +51,13 @@ export interface Connection {
   createdAt: string;
   updatedAt: string;
 }
+
+export interface Feed {
+  users: User[];
+  pagination: {
+    cursor: string | null;
+    limit: number;
+    total: number;
+    hasMore: boolean;
+  };
+}

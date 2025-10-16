@@ -7,6 +7,6 @@ export const api = createApi({
     baseUrl: BASE_URL,
     credentials: "include",
   }),
-  tagTypes: ["User"],
+  tagTypes: ["User", "Feed"],
   endpoints: () => ({}),
 });

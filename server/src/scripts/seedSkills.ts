@@ -1,6 +1,7 @@
 import { env } from "@/config/env";
 import mongoose from "mongoose";
 import { Skill } from "@/models/skill.model";
+import fs from "fs";
 
 export const developerSkills = [
   // Frontend Frameworks & Libraries
@@ -427,7 +428,17 @@ async function seedSkills() {
     console.log("MongoDB connected");
 
     const uniqueSkills = Array.from(new Set([...developerSkills]));
-    const skillDocs = uniqueSkills.map((name) => ({ name }));
+    const skillDocs = uniqueSkills.map((name) => ({
+      name,
+      _id: new mongoose.Types.ObjectId(),
+    }));
+
+    fs.writeFileSync(
+      "skills.ts",
+      `export const skills = ${JSON.stringify(skillDocs, null, 2)};\n`,
+      "utf-8"
+    );
+
     const inserted = await Skill.insertMany(skillDocs);
 
     console.log(`Inserted ${inserted.length} skills`);

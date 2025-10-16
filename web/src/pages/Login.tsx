@@ -29,6 +29,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { loginSchema, type LoginFormValues } from "@/validations";
+import VerifyEmailDialog from "@/components/VerifyEmailDialog";
+import type { User } from "@/types/user";
+import { useState } from "react";
 
 const Login = () => {
   const form = useForm<LoginFormValues>({
@@ -39,10 +42,11 @@ const Login = () => {
     },
   });
 
+  const [openEmailDialog, setOpenEmailDialog] = useState(false);
   const { enqueueSnackbar } = useSnackbar();
 
   const navigate = useNavigate();
-  const [login, { isLoading }] = useLoginMutation();
+  const [login, { isLoading, data: userData }] = useLoginMutation();
   const dispatch = useAppDispatch();
 
   const onSubmit = async (values: LoginFormValues) => {
@@ -54,97 +58,119 @@ const Login = () => {
     }
 
     if (data) {
+      if (!data.data.isEmailVerified) {
+        enqueueSnackbar(data.message, { variant: "info" });
+        setOpenEmailDialog(true);
+        return;
+      }
+
+      if (!data.data.onboardingCompleted) {
+        enqueueSnackbar(data.message, { variant: "info" });
+        navigate(
+          `/app/onboarding?name=${data.data.name}&email=${data.data.email}`
+        );
+        return;
+      }
+
       enqueueSnackbar(data.message, { variant: "success" });
-      // dispatch(setUser(data));
+      dispatch(setUser(data.data as User));
       navigate("/");
     }
   };
 
   return (
-    <Card className="rounded-xl px-2 py-4sm:px-6 sm:py-8">
-      <CardHeader className="text-center gap-0">
-        <CardTitle>
-          <h2 className="text-lg font-bold text-foreground">Welcome back</h2>
-        </CardTitle>
-        <CardDescription>
-          <p className="text-muted-foreground text-sm pt-1">
-            Sign in to connect with your fellow devs
-          </p>
-        </CardDescription>
-      </CardHeader>
+    <>
+      <Card className="rounded-xl px-2 py-4sm:px-6 sm:py-8">
+        <CardHeader className="text-center gap-0">
+          <CardTitle>
+            <h2 className="text-lg font-bold text-foreground">Welcome back</h2>
+          </CardTitle>
+          <CardDescription>
+            <p className="text-muted-foreground text-sm pt-1">
+              Sign in to connect with your fellow devs
+            </p>
+          </CardDescription>
+        </CardHeader>
 
-      <CardContent className="space-y-4">
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div className="flex flex-col gap-6">
-              <div className="grid gap-4">
-                <FormField
-                  control={form.control}
-                  name="email"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Email</FormLabel>
-                      <FormControl>
-                        <Input
-                          type="email"
-                          placeholder="Enter your email"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="password"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Password</FormLabel>
+        <CardContent className="space-y-4">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)}>
+              <div className="flex flex-col gap-6">
+                <div className="grid gap-4">
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="email"
+                            placeholder="Enter your email"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Password</FormLabel>
 
-                      <FormControl>
-                        <Input
-                          type="password"
-                          placeholder="Enter your password"
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
+                        <FormControl>
+                          <Input
+                            type="password"
+                            placeholder="Enter your password"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <Button
+                  size="sm"
+                  type="submit"
+                  className="w-full cursor-pointer"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <>
+                      <Spinner />
+                    </>
+                  ) : (
+                    "Sign In"
                   )}
-                />
+                </Button>
               </div>
-              <Button
-                size="sm"
-                type="submit"
-                className="w-full cursor-pointer"
-                disabled={isLoading}
-              >
-                {isLoading ? (
-                  <>
-                    <Spinner />
-                  </>
-                ) : (
-                  "Sign In"
-                )}
-              </Button>
-            </div>
-          </form>
-        </Form>
+            </form>
+          </Form>
 
-        <div className="text-center">
-          <p className="text-sm text-muted-foreground">
-            New to Devtinder?{" "}
-            <Link
-              to="/register"
-              className="text-primary hover:underline font-medium"
-            >
-              Sign up
-            </Link>
-          </p>
-        </div>
-      </CardContent>
-    </Card>
+          <div className="text-center">
+            <p className="text-sm text-muted-foreground">
+              New to Devtinder?{" "}
+              <Link
+                to="/register"
+                className="text-primary hover:underline font-medium"
+              >
+                Sign up
+              </Link>
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
+      <VerifyEmailDialog
+        user={userData?.data}
+        isOpen={openEmailDialog}
+        onOpenChange={setOpenEmailDialog}
+      />
+    </>
   );
 };
 

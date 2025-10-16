@@ -83,21 +83,21 @@ const UserButton = () => {
             </DropdownMenuItem>
             <DropdownMenuItem
               className="cursor-pointer"
-              onClick={() => navigate("/app/user/profile")}
+              onClick={() => navigate("/user/profile")}
             >
               <User className="size-4" aria-hidden="true" />
               <span>Profile</span>
             </DropdownMenuItem>
             <DropdownMenuItem
               className="cursor-pointer"
-              onClick={() => navigate("/app/user/connections")}
+              onClick={() => navigate("/user/connections")}
             >
               <HeartHandshake className="size-4" aria-hidden="true" />
               <span>Connections</span>
             </DropdownMenuItem>
             <DropdownMenuItem
               className="cursor-pointer"
-              onClick={() => navigate("/app/user/requests")}
+              onClick={() => navigate("/user/requests")}
             >
               <Mail className="size-4" aria-hidden="true" />
               <span>Requests</span>

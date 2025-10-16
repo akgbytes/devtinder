@@ -134,7 +134,7 @@ const CompleteProfile = () => {
       console.log("response from complete profile \n ", data);
       enqueueSnackbar({ variant: "success", message: data.message });
       dispatch(setUser(data.data));
-      navigate("/app");
+      navigate("/");
     }
   };
 

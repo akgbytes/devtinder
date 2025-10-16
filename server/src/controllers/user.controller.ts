@@ -2,7 +2,7 @@ import { logger } from "@/config/logger";
 import { ConnectionRequest } from "@/models/connectionRequest.model";
 import { Skill } from "@/models/skill.model";
 import { User } from "@/models/user.model";
-import { FullUser } from "@/types";
+import { FeedCursor, FullUser } from "@/types";
 import { getCache, setCache } from "@/utils/cache";
 import { ConnectionRequestStatus } from "@/utils/constants";
 import { setAuthCookies } from "@/utils/cookies";
@@ -260,20 +260,13 @@ export const getConnections = asyncHandler(async (req, res) => {
 
 export const getUserFeed = asyncHandler(async (req, res) => {
   const userId = req.user._id;
-  const page = parseInt(req.query.page as string) || 1;
+  const cursor = req.query.cursor
+    ? JSON.parse(req.query.cursor as string)
+    : null;
   let limit = parseInt(req.query.limit as string) || 20;
   limit = limit > 50 ? 50 : limit;
-  const skip = (page - 1) * limit;
 
-  // Optional filters
-  const maxDistance = req.query.maxDistance
-    ? parseInt(req.query.maxDistance as string)
-    : null; // in km
-  const minMatchScore = req.query.minMatchScore
-    ? parseInt(req.query.minMatchScore as string)
-    : 0;
-
-  logger.info("Fetching user feed", { userId, page, limit });
+  logger.info("Fetching user feed", { userId, limit, cursor });
 
   // Get current user's full data
   const currentUser = await User.findById(userId).lean();
@@ -318,7 +311,7 @@ export const getUserFeed = asyncHandler(async (req, res) => {
           coordinates: currentUser.location.coords.coordinates,
         },
         distanceField: "distance",
-        maxDistance: maxDistance ? maxDistance * 1000 : 100000000, // Convert km to meters and default very large distance
+        maxDistance: 100_000_000, // in meters
         spherical: true,
         key: "location.coords",
       },
@@ -540,34 +533,42 @@ export const getUserFeed = asyncHandler(async (req, res) => {
       },
     },
 
-    // Stage 5: Add random factor for diversity
-    {
-      $addFields: {
-        randomFactor: { $multiply: [{ $rand: {} }, 10] },
-      },
-    },
+    // Stage 5: Filter out users before cursor
 
-    // Stage 6: Filter by minimum match score
-    {
-      $match: {
-        matchScore: { $gte: minMatchScore },
-      },
-    },
+    ...(cursor && mongoose.isValidObjectId(cursor._id)
+      ? [
+          {
+            $match: {
+              $or: [
+                { matchScore: { $lt: cursor.matchScore } },
+                {
+                  matchScore: cursor.matchScore,
+                  distanceKm: { $gt: cursor.distanceKm },
+                },
+                {
+                  matchScore: cursor.matchScore,
+                  distanceKm: cursor.distanceKm,
+                  _id: { $gt: new mongoose.Types.ObjectId(cursor._id) },
+                },
+              ],
+            },
+          },
+        ]
+      : []),
 
-    // Stage 7: Sort by match score, then random factor, then distance
+    // Stage 6: Sort by match score
     {
       $sort: {
         matchScore: -1,
-        randomFactor: -1,
         distanceKm: 1,
+        _id: 1,
       },
     },
 
-    // Stage 8: Pagination
-    { $skip: skip },
-    { $limit: limit },
+    // Stage 7: Pagination
+    { $limit: limit + 1 }, // +1 to determine hasMore
 
-    // Stage 9: Project only safe fields
+    // Stage 8: Project only safe fields
     {
       $project: {
         name: 1,
@@ -589,7 +590,16 @@ export const getUserFeed = asyncHandler(async (req, res) => {
     },
   ]);
 
-  // Pipeline for total counts
+  const hasMore = users.length > limit;
+  const usersToReturn = hasMore ? users.slice(0, limit) : users;
+  const nextCursor = hasMore
+    ? JSON.stringify({
+        matchScore: usersToReturn[usersToReturn.length - 1].matchScore,
+        distanceKm: usersToReturn[usersToReturn.length - 1].distanceKm,
+        _id: usersToReturn[usersToReturn.length - 1]._id.toString(),
+      })
+    : null;
+
   const countResult = await User.aggregate([
     {
       $match: {
@@ -607,27 +617,29 @@ export const getUserFeed = asyncHandler(async (req, res) => {
 
   const total = countResult[0]?.total || 0;
 
-  logger.info("User feed fetched", {
-    userId,
-    count: users.length,
-    total,
-    avgMatchScore:
-      users.length > 0
-        ? users.reduce((sum, u) => sum + u.matchScore, 0) / users.length
-        : 0,
-  });
+  // logger.info("User feed fetched", {
+  //   userId,
+  //   count: usersToReturn.length, // ✅ CHANGED: Log actual returned count
+  //   total,
+  //   cursor,
+  //   nextCursor, // ✅ NEW: Log next cursor
+  //   avgMatchScore:
+  //     usersToReturn.length > 0
+  //       ? usersToReturn.reduce((sum, u) => sum + u.matchScore, 0) /
+  //         usersToReturn.length
+  //       : 0,
+  // });
 
   const response = new ApiResponse(
     StatusCodes.OK,
     "User feed retrieved successfully.",
     {
-      users,
+      users: usersToReturn,
       pagination: {
-        page,
+        cursor: nextCursor,
         limit,
         total,
-        totalPages: Math.ceil(total / limit),
-        hasMore: page * limit < total,
+        hasMore,
       },
     }
   );

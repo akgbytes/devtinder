@@ -1,6 +1,5 @@
 import AuthLayout from "@/layouts/AuthLayout";
 import MainLayout from "@/layouts/MainLayout";
-import Landing from "@/pages/Landing";
 import Login from "@/pages/Login";
 import NotFound from "@/pages/NotFound";
 import CompleteProfile from "@/pages/CompleteProfile/index";
@@ -15,6 +14,7 @@ import Feed from "@/pages/Feed";
 import ProtectedRoutes from "./ProtectedRoutes";
 import Connections from "@/pages/Connections";
 import Requests from "@/pages/Requests";
+import AuthRoutes from "./AuthRoutes";
 
 const AppRoutes = () => {
   const [getUser, { isLoading }] = useLazyGetUserProfileQuery();
@@ -42,21 +42,22 @@ const AppRoutes = () => {
   return (
     <Routes>
       <Route element={<MainLayout />}>
-        <Route index element={<Landing />} />
         <Route element={<ProtectedRoutes />}>
-          <Route path="/app" element={<Feed />} />
-          <Route path="/app/user/profile" element={<Feed />} />
-          <Route path="/app/user/connections" element={<Connections />} />
-          <Route path="/app/user/requests" element={<Requests />} />
+          <Route path="/" element={<Feed />} />
+          <Route path="/user/profile" element={<Feed />} />
+          <Route path="/user/connections" element={<Connections />} />
+          <Route path="/user/requests" element={<Requests />} />
         </Route>
       </Route>
 
       {/* Auth routes */}
-      <Route element={<AuthLayout />}>
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
+      <Route element={<AuthRoutes />}>
+        <Route element={<AuthLayout />}>
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+        </Route>
+        <Route path="/app/onboarding" element={<CompleteProfile />} />
       </Route>
-      <Route path="/app/onboarding" element={<CompleteProfile />} />
 
       <Route path="*" element={<NotFound />} />
     </Routes>
