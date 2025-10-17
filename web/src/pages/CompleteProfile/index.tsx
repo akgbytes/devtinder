@@ -38,7 +38,6 @@ import LocationInput from "./components/LocationInput";
 import SkillsInput from "./components/SkillsInput";
 
 import { Link, Navigate, useNavigate, useSearchParams } from "react-router";
-import AppLogo from "@/components/AppLogo";
 import { Uploader } from "@/components/Uploader";
 import { useState } from "react";
 import { useSnackbar } from "notistack";
@@ -145,7 +144,7 @@ const CompleteProfile = () => {
           to="/"
           className="flex justify-center items-center gap-2 self-center font-medium mb-8"
         >
-          <AppLogo />
+          <img src="/logo.svg" alt="logo" className="size-5" />
           <span className="text-2xl">devtinder</span>
         </Link>
         <h1 className="text-3xl font-medium">Complete Your Profile</h1>

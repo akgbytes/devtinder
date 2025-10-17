@@ -1,6 +1,5 @@
 import { useAppSelector } from "@/store/hooks";
 import { useNavigate } from "react-router";
-import AppLogo from "./AppLogo";
 import UserButton from "./UserButton";
 import { Button } from "./ui/button";
 
@@ -11,7 +10,7 @@ const Navbar = () => {
     <header className="container mx-auto px-8 md:px-18 lg:px-24">
       <div className="flex h-16 items-center justify-between">
         <div className="flex items-center gap-2" onClick={() => navigate("/")}>
-          <AppLogo className="size-5" />
+          <img src="/logo.svg" alt="logo" className="size-5" />
           <h1 className="text-xl font-bold">devtinder</h1>
         </div>
 

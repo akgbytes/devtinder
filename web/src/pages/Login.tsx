@@ -66,9 +66,7 @@ const Login = () => {
 
       if (!data.data.onboardingCompleted) {
         enqueueSnackbar(data.message, { variant: "info" });
-        navigate(
-          `/app/onboarding?name=${data.data.name}&email=${data.data.email}`
-        );
+        navigate(`/onboarding?name=${data.data.name}&email=${data.data.email}`);
         return;
       }
 

@@ -15,6 +15,7 @@ import ProtectedRoutes from "./ProtectedRoutes";
 import Connections from "@/pages/Connections";
 import Requests from "@/pages/Requests";
 import AuthRoutes from "./AuthRoutes";
+import Pricing from "@/pages/Pricing";
 
 const AppRoutes = () => {
   const [getUser, { isLoading }] = useLazyGetUserProfileQuery();
@@ -48,6 +49,7 @@ const AppRoutes = () => {
           <Route path="/user/connections" element={<Connections />} />
           <Route path="/user/requests" element={<Requests />} />
         </Route>
+        <Route path="/pricing" element={<Pricing />} />
       </Route>
 
       {/* Auth routes */}
@@ -56,7 +58,7 @@ const AppRoutes = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
         </Route>
-        <Route path="/app/onboarding" element={<CompleteProfile />} />
+        <Route path="/onboarding" element={<CompleteProfile />} />
       </Route>
 
       <Route path="*" element={<NotFound />} />

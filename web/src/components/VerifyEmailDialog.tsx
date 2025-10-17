@@ -96,7 +96,7 @@ const VerifyEmailDialog = ({
       console.log("Response from email verify \n", data);
       enqueueSnackbar(data.message, { variant: "success" });
       onOpenChange(false);
-      navigate(`/app/onboarding?name=${user.name}&email=${user.email}`);
+      navigate(`/onboarding?name=${user.name}&email=${user.email}`);
     }
   };
 
