@@ -30,6 +30,9 @@ const envSchema = z.object({
   NODE_ENV: z.enum(Object.values(NodeEnv), {
     error: () => "NODE_ENV must be 'development' or 'production'",
   }),
+
+  RAZORPAY_KEY_ID: validString("RAZORPAY_KEY_ID"),
+  RAZORPAY_KEY_SECRET: validString("RAZORPAY_KEY_SECRET"),
 });
 
 const createEnv = (env: NodeJS.ProcessEnv) => {

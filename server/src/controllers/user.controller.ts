@@ -210,7 +210,10 @@ export const getReceivedRequests = asyncHandler(async (req, res) => {
     userId,
   });
 
-  const formattedRequests = requests.map((request) => request.fromUserId);
+  const formattedRequests = requests.map((request) => ({
+    requestId: request._id,
+    user: request.fromUserId,
+  }));
 
   const response = new ApiResponse(
     StatusCodes.OK,

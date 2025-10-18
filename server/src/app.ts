@@ -41,6 +41,9 @@ app.use("/api/v1/skills", skillRoutes);
 import placeRoutes from "@/routes/place.routes";
 app.use("/api/v1/places", placeRoutes);
 
+import paymentRoutes from "@/routes/payment.routes";
+app.use("/api/v1/payment", paymentRoutes);
+
 import { createRouteHandler } from "uploadthing/express";
 
 import { fileRouter } from "@/config/uploadthing";
