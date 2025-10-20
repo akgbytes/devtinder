@@ -1,13 +1,58 @@
 import { Button } from "@/components/ui/button";
+import { useCreateOrderMutation } from "@/services/paymentsApi";
 import { CheckIcon } from "lucide-react";
+import { tryCatch } from "@/utils/try-catch";
+import { handleApiError } from "@/utils/error";
+import { useSnackbar } from "notistack";
+import { RAZORPAY_KEY_ID } from "@/constants";
+
+const INCLUDED_FEATURES = [
+  "Verified blue tick badge",
+  "Chat with your connections",
+  "Unlimited connection requests per day",
+  "Priority profile visibility",
+];
 
 const Pricing = () => {
-  const INCLUDED_FEATURES = [
-    "Verified blue tick badge",
-    "Chat with your connections",
-    "Unlimited connection requests per day",
-    "Priority profile visibility",
-  ];
+  const { enqueueSnackbar } = useSnackbar();
+  const [createOrder, { isLoading }] = useCreateOrderMutation();
+  const onClick = async () => {
+    if (!window.Razorpay) {
+      enqueueSnackbar({
+        variant: "error",
+        message: "Razorpay script is missing",
+      });
+      return;
+    }
+
+    const { data, error } = await tryCatch(createOrder().unwrap());
+
+    if (error) {
+      handleApiError(error);
+    }
+
+    if (data) {
+      enqueueSnackbar({ variant: "success", message: data.message });
+
+      const order = data.data;
+
+      const options: RazorpayOptions = {
+        key: RAZORPAY_KEY_ID,
+        amount: order.amount,
+        currency: order.currency,
+        name: "DevTinder",
+        description: "Connect with fellow developers",
+        // image: "https://example.com/your_logo",
+        order_id: order.orderId,
+        // callback_url: "http://localhost:1769/verify",
+        notes: { address: "Razorpay Corporate Office" },
+        // theme: { color: "#3399cc" },
+      };
+
+      const paymentObject = new window.Razorpay(options);
+      paymentObject.open();
+    }
+  };
 
   return (
     <div className=" text-zinc-100 py-16 sm:py-24">
@@ -67,7 +112,8 @@ const Pricing = () => {
               </p>
 
               <Button
-                onClick={() => {}}
+                onClick={onClick}
+                disabled={isLoading}
                 className="mt-6 px-20 bg-rose-600 hover:bg-rose-700 text-white transition-all shadow-[0_0_12px_rgba(236,72,153,0.4)]"
               >
                 Get Devtinder Pro

@@ -33,6 +33,7 @@ const envSchema = z.object({
 
   RAZORPAY_KEY_ID: validString("RAZORPAY_KEY_ID"),
   RAZORPAY_KEY_SECRET: validString("RAZORPAY_KEY_SECRET"),
+  RAZORPAY_WEBHOOK_SECRET: validString("RAZORPAY_WEBHOOK_SECRET"),
 });
 
 const createEnv = (env: NodeJS.ProcessEnv) => {

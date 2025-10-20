@@ -36,3 +36,71 @@ export interface FeedCursor {
   distanceKm: number;
   _id: string;
 }
+
+export interface RazorpayPaymentEvent {
+  entity: "event";
+  account_id: string;
+  event: "payment.captured" | "payment.failed";
+  contains: string[];
+  created_at: number;
+  payload: {
+    payment: {
+      entity: RazorpayPaymentEntity;
+    };
+  };
+}
+
+export interface RazorpayPaymentEntity {
+  id: string;
+  entity: "payment";
+  amount: number;
+  currency: string;
+  status: "captured" | "failed" | string;
+  order_id: string | null;
+  invoice_id: string | null;
+  international: boolean;
+  method: "card" | "netbanking" | "wallet" | "upi" | string;
+  amount_refunded: number;
+  refund_status: string | null;
+  captured: boolean;
+  description: string | null;
+  card_id: string | null;
+  bank: string | null;
+  wallet: string | null;
+  vpa: string | null;
+  email: string;
+  contact: string;
+  notes: Record<string, string | number | boolean>[];
+  fee: number | null;
+  tax: number | null;
+  error_code: string | null;
+  error_description: string | null;
+  error_source: string | null;
+  error_step: string | null;
+  error_reason: string | null;
+  acquirer_data: RazorpayAcquirerData;
+  created_at: number;
+  // Optional extra fields for card-based payments
+  card?: RazorpayCard;
+  token_id?: string | null;
+}
+
+export interface RazorpayAcquirerData {
+  auth_code?: string;
+  rrn?: string;
+  bank_transaction_id?: string | null;
+}
+
+export interface RazorpayCard {
+  emi: boolean;
+  entity: "card";
+  id: string;
+  iin: string;
+  international: boolean;
+  issuer: string | null;
+  last4: string;
+  name: string;
+  network: "Visa" | "MasterCard" | "RuPay" | "Amex" | string;
+  sub_type: "business" | "consumer" | string;
+  type: "credit" | "debit" | string;
+}

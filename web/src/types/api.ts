@@ -61,3 +61,21 @@ export interface Feed {
     hasMore: boolean;
   };
 }
+
+export interface PaymentData {
+  _id: string;
+  userId: string;
+  amount: number;
+  currency: string;
+  metadata: {
+    plan: string;
+    userEmail: string;
+    userName: string;
+  };
+  orderId: string;
+  paymentId: string | null;
+  receipt: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+}

@@ -1,10 +1,15 @@
 import { Router } from "express";
 import { authMiddleware } from "@/middlewares/auth.middleware";
-import { createOrder } from "@/controllers/payment.controller";
+import {
+  createOrder,
+  verifyPayment,
+  verifyPaymentStatus,
+} from "@/controllers/payment.controller";
 
 const router = Router();
 
 router.post("/create", authMiddleware, createOrder);
-router.post("/verify", authMiddleware, createOrder);
+router.post("/webhook", verifyPayment);
+router.post("/verify", authMiddleware, verifyPaymentStatus);
 
 export default router;
