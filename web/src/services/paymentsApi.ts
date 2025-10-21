@@ -9,6 +9,10 @@ const paymentsApi = api.injectEndpoints({
         method: "POST",
       }),
     }),
+
+    getPaymentStatus: builder.query({
+      query: () => "/payment/status",
+    }),
   }),
 });
 

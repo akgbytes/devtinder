@@ -55,11 +55,11 @@ export interface RazorpayPaymentEntity {
   entity: "payment";
   amount: number;
   currency: string;
-  status: "captured" | "failed" | string;
+  status: "captured" | "failed";
   order_id: string | null;
   invoice_id: string | null;
   international: boolean;
-  method: "card" | "netbanking" | "wallet" | "upi" | string;
+  method: "card" | "netbanking" | "wallet" | "upi";
   amount_refunded: number;
   refund_status: string | null;
   captured: boolean;
@@ -100,7 +100,7 @@ export interface RazorpayCard {
   issuer: string | null;
   last4: string;
   name: string;
-  network: "Visa" | "MasterCard" | "RuPay" | "Amex" | string;
-  sub_type: "business" | "consumer" | string;
-  type: "credit" | "debit" | string;
+  network: "Visa" | "MasterCard" | "RuPay" | "Amex";
+  sub_type: "business" | "consumer";
+  type: "credit" | "debit";
 }

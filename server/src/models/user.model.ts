@@ -30,10 +30,11 @@ export interface IUser {
     };
   };
 
+  isPremium: boolean;
+  refreshToken: string;
+
   createdAt: Date;
   updatedAt: Date;
-
-  refreshToken: string;
 }
 
 export interface IUserMethods {
@@ -139,6 +140,12 @@ export const userSchema = new Schema<IUser, UserModel, IUserMethods>(
       },
     },
 
+    isPremium: {
+      type: Boolean,
+      default: false,
+      required: true,
+    },
+
     refreshToken: {
       type: String,
     },
@@ -224,6 +231,7 @@ userSchema.set("toJSON", {
       dateOfBirth: ret.dateOfBirth,
       gender: ret.gender,
       skills: ret.skills,
+      isPremium: ret.isPremium,
       createdAt: ret.createdAt,
       updatedAt: ret.updatedAt,
     };

@@ -19,7 +19,9 @@ const Navbar = () => {
 
           {!isAuthenticated && (
             <>
-              <Button variant="ghost">Sign in</Button>
+              <Button onClick={() => navigate("/login")} variant="ghost">
+                Sign in
+              </Button>
               <Button>Get Started</Button>
             </>
           )}

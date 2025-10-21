@@ -15,7 +15,7 @@ import { tryCatch } from "@/utils/try-catch";
 import { handleApiError } from "@/utils/error";
 import { useSnackbar } from "notistack";
 import { clearUser } from "@/store/slices/authSlice";
-import { HeartHandshake, Home, Mail, User } from "lucide-react";
+import { Gem, HeartHandshake, Home, Mail, User } from "lucide-react";
 import { IconLogout } from "@tabler/icons-react";
 
 const UserButton = () => {
@@ -76,18 +76,20 @@ const UserButton = () => {
           <DropdownMenuGroup>
             <DropdownMenuItem
               className="cursor-pointer"
-              onClick={() => navigate("/app")}
-            >
-              <Home className="size-4" aria-hidden="true" />
-              <span>Home</span>
-            </DropdownMenuItem>
-            <DropdownMenuItem
-              className="cursor-pointer"
               onClick={() => navigate("/user/profile")}
             >
               <User className="size-4" aria-hidden="true" />
               <span>Profile</span>
             </DropdownMenuItem>
+
+            <DropdownMenuItem
+              className="cursor-pointer"
+              onClick={() => navigate("/pricing")}
+            >
+              <Gem className="size-4" aria-hidden="true" />
+              <span>Premium</span>
+            </DropdownMenuItem>
+
             <DropdownMenuItem
               className="cursor-pointer"
               onClick={() => navigate("/user/connections")}
@@ -95,6 +97,7 @@ const UserButton = () => {
               <HeartHandshake className="size-4" aria-hidden="true" />
               <span>Connections</span>
             </DropdownMenuItem>
+
             <DropdownMenuItem
               className="cursor-pointer"
               onClick={() => navigate("/user/requests")}

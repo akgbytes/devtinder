@@ -5,6 +5,11 @@ import { tryCatch } from "@/utils/try-catch";
 import { handleApiError } from "@/utils/error";
 import { useSnackbar } from "notistack";
 import { RAZORPAY_KEY_ID } from "@/constants";
+import { useAppSelector } from "@/store/hooks";
+import { useNavigate } from "react-router";
+import { useEffect } from "react";
+import confetti from "canvas-confetti";
+import { useLazyGetUserProfileQuery } from "@/services/usersApi";
 
 const INCLUDED_FEATURES = [
   "Verified blue tick badge",
@@ -14,9 +19,20 @@ const INCLUDED_FEATURES = [
 ];
 
 const Pricing = () => {
+  const { user } = useAppSelector((state) => state.auth);
   const { enqueueSnackbar } = useSnackbar();
   const [createOrder, { isLoading }] = useCreateOrderMutation();
+  const [fetchUser, {}] = useLazyGetUserProfileQuery();
+
+  const navigate = useNavigate();
+
+  const verifyStatus = async (orderId: string) => {};
+
   const onClick = async () => {
+    if (!user) {
+      return navigate("/login");
+    }
+
     if (!window.Razorpay) {
       enqueueSnackbar({
         variant: "error",
@@ -33,40 +49,75 @@ const Pricing = () => {
 
     if (data) {
       enqueueSnackbar({ variant: "success", message: data.message });
-
       const order = data.data;
-
       const options: RazorpayOptions = {
         key: RAZORPAY_KEY_ID,
         amount: order.amount,
         currency: order.currency,
         name: "DevTinder",
         description: "Connect with fellow developers",
-        // image: "https://example.com/your_logo",
         order_id: order.orderId,
+        // image: "https://example.com/logo",
         // callback_url: "http://localhost:1769/verify",
-        notes: { address: "Razorpay Corporate Office" },
         // theme: { color: "#3399cc" },
       };
 
-      const paymentObject = new window.Razorpay(options);
+      const paymentObject = new window.Razorpay({
+        ...options,
+        handler: async (response) => {
+          // Verify payment status
+          // verifyStatus()
+
+          // if status is completed
+          const { data, error } = await tryCatch(fetchUser().unwrap());
+
+          if (error) {
+            handleApiError(error);
+          }
+
+          if (data) {
+            localStorage.setItem("justUpgraded", "true");
+          }
+        },
+      });
       paymentObject.open();
     }
   };
 
-  return (
-    <div className=" text-zinc-100 py-16 sm:py-24">
-      <div className="mx-auto max-w-2xl sm:text-center">
-        <h2 className="text-4xl sm:text-5xl font-heading font-semibold tracking-tight text-white text-center">
-          Level up your <span className="text-rose-500">Devtinder</span>{" "}
-          experience
-        </h2>
-        <p className="mt-6 text-base/7 text-zinc-400 max-w-prose text-center">
-          Get verified, chat freely, and connect without limits. Pay once and
-          own it forever. No subscriptions. No nonsense.
-        </p>
-      </div>
+  useEffect(() => {
+    if (user?.isPremium && localStorage.getItem("justUpgraded") === "true") {
+      confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
+      enqueueSnackbar({
+        variant: "success",
+        message: "Welcome to DevTinder Pro 🎉",
+      });
+      localStorage.removeItem("justUpgraded");
+    }
+  });
 
+  if (user?.isPremium) {
+    return (
+      <div className="flex flex-col items-center justify-center py-24 text-center text-white">
+        <h2 className="text-4xl font-semibold mb-4">
+          🎉 You're already{" "}
+          <span className="text-rose-500">a Premium member!</span>
+        </h2>
+        <p className="text-zinc-400 max-w-md">
+          Thanks for supporting DevTinder! You've unlocked all premium features
+          like verified badge, unlimited connections, and more.
+        </p>
+        <Button
+          onClick={() => (window.location.href = "/app")}
+          className="mt-6 bg-rose-600 hover:bg-rose-700 text-white cursor-pointer"
+        >
+          Go to Home
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <div className=" text-zinc-100">
       <div className="mx-auto mt-16 max-w-2xl rounded-3xl bg-zinc-900 ring-1 ring-zinc-800 shadow-2xl sm:mt-20 lg:mx-0 lg:flex lg:max-w-none overflow-hidden">
         <div className="p-8 sm:p-10 lg:flex-auto">
           <h3 className="text-3xl font-heading font-semibold tracking-tight text-white flex items-center gap-2">

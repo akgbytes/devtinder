@@ -17,6 +17,7 @@ export interface User {
     };
   };
   dateOfBirth: Date;
+  isPremium: boolean;
   gender: GenderType;
   skills: string[];
   onboardingCompleted: boolean;
