@@ -73,6 +73,7 @@ export const completeProfile = asyncHandler(async (req, res) => {
 
   // Verify that skill IDs actually exist in the Skills collection
   const existingSkills = await Skill.find({ _id: { $in: validatedSkills } });
+  console.log("exist", existingSkills);
   if (existingSkills.length !== validatedSkills.length) {
     throw new ApiError(
       StatusCodes.BAD_REQUEST,

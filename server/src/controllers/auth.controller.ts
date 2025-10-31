@@ -81,7 +81,7 @@ export const register = asyncHandler(async (req, res) => {
 export const verifyOtp = asyncHandler(async (req, res) => {
   const { email, otp } = handleZodError(validateVerifyEmail(req.body));
 
-  logger.info("Email verification attempt", { email });
+  logger.info("Email verification attempt", { email, otp });
 
   // Find user
   const user = await User.findOne({ email });
@@ -239,6 +239,27 @@ export const login = asyncHandler(async (req, res) => {
   // Check if email is verified
   if (!user.isEmailVerified) {
     logger.warn("Login failed - email not verified", { userId: user._id });
+
+    // Generate OTP
+    const { otp } = user.generateOtpWithExpiry();
+    logger.info("OTP generated for user", { userId: user._id });
+
+    // Queue verification email
+    try {
+      await emailQueue.add("sendVerificationMail", {
+        email: user.email,
+        name: user.name,
+        otp,
+      });
+      logger.info("Verification email queued", { userId: user._id });
+    } catch (error) {
+      logger.error("Failed to queue verification email", {
+        userId: user._id,
+        error: error instanceof Error ? error.message : "Unknown error",
+      });
+    }
+
+    await user.save();
 
     const response = new ApiResponse(
       StatusCodes.OK,

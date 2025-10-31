@@ -16,6 +16,7 @@ import Connections from "@/pages/Connections";
 import Requests from "@/pages/Requests";
 import AuthRoutes from "./AuthRoutes";
 import Pricing from "@/pages/Pricing";
+import AppLoader from "@/components/AppLoader";
 
 const AppRoutes = () => {
   const [getUser, { isLoading }] = useLazyGetUserProfileQuery();
@@ -37,7 +38,7 @@ const AppRoutes = () => {
   }, []);
 
   if (isLoading) {
-    return <div>Loading application...</div>;
+    return <AppLoader />;
   }
 
   return (

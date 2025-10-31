@@ -55,6 +55,7 @@ import type { LocationSuggestion, Skill } from "@/types/api";
 import { handleApiError } from "@/utils/error";
 import { useAppDispatch } from "@/store/hooks";
 import { setUser } from "@/store/slices/authSlice";
+import { Spinner } from "@/components/ui/spinner";
 
 const CompleteProfile = () => {
   const [open, setOpen] = useState(false);
@@ -145,9 +146,9 @@ const CompleteProfile = () => {
           className="flex justify-center items-center gap-2 self-center font-medium mb-8"
         >
           <img src="/logo.svg" alt="logo" className="size-5" />
-          <span className="text-2xl">devtinder</span>
+          <span className="text-xl">devtinder</span>
         </Link>
-        <h1 className="text-3xl font-medium">Complete Your Profile</h1>
+        <h1 className="text-2xl font-medium">Complete Your Profile</h1>
 
         <div className="mt-6">
           <Form {...form}>
@@ -311,8 +312,16 @@ const CompleteProfile = () => {
                   size="sm"
                   type="submit"
                   className="w-full cursor-pointer"
+                  disabled={isLoading}
                 >
-                  Save & Continue
+                  {isLoading ? (
+                    <>
+                      <Spinner />
+                      <span>Saving...</span>
+                    </>
+                  ) : (
+                    "Save & Continue"
+                  )}
                 </Button>
               </div>
             </form>
@@ -320,7 +329,7 @@ const CompleteProfile = () => {
 
           {/* Underage Dialog */}
           <Dialog open={open} onOpenChange={setOpen}>
-            <DialogContent className="sm:max-w-md text-center space-y-5">
+            <DialogContent className="sm:max-w-md text-center flex flex-col items-center justify-center space-y-4 py-6">
               <DialogHeader>
                 <div className="flex flex-col items-center gap-2">
                   <div className="text-2xl">😔</div>
@@ -332,7 +341,7 @@ const CompleteProfile = () => {
                 <DialogDescription className="text-base leading-relaxed mt-2">
                   You must be at least{" "}
                   <span className="font-bold text-foreground">
-                    18 years old{"c "}
+                    18 years old{" "}
                   </span>
                   to join <span className="font-medium">Devtinder</span>. Please
                   double-check your date of birth or come back when you&apos;re
@@ -340,16 +349,19 @@ const CompleteProfile = () => {
                 </DialogDescription>
               </DialogHeader>
 
-              <DialogFooter className="flex justify-center gap-3 mt-2">
+              <DialogFooter className="flex justify-center gap-3 mt-1 mb-0">
                 <Button
                   variant="outline"
                   onClick={() => setOpen(false)}
-                  className="min-w-[120px]"
+                  className="min-w-[120px] cursor-pointer"
                 >
                   Edit Age
                 </Button>
 
-                <Button onClick={() => navigate("/")} className="min-w-[120px]">
+                <Button
+                  onClick={() => navigate("/")}
+                  className="min-w-[120px] cursor-pointer"
+                >
                   Go Home
                 </Button>
               </DialogFooter>

@@ -18,6 +18,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Input } from "@/components/ui/input";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -26,6 +32,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { registerSchema, type RegisterFormValues } from "@/validations";
 import { useState } from "react";
 import VerifyEmailDialog from "@/components/VerifyEmailDialog";
+import { IconEye, IconEyeClosed } from "@tabler/icons-react";
 
 const Register = () => {
   const form = useForm<RegisterFormValues>({
@@ -38,19 +45,17 @@ const Register = () => {
   });
 
   const [openEmailDialog, setOpenEmailDialog] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const { enqueueSnackbar } = useSnackbar();
   const [register, { isLoading, data: tempUser }] = useRegisterMutation();
 
   const onSubmit = async (values: RegisterFormValues) => {
-    console.log("register form values\n ", values);
     const { data, error } = await tryCatch(register(values).unwrap());
     if (error) {
       handleApiError(error);
-      return;
     }
     if (data) {
-      console.log("Response from register \n", data);
       enqueueSnackbar(data.message, { variant: "success" });
       setOpenEmailDialog(true);
     }
@@ -61,7 +66,7 @@ const Register = () => {
       <Card className="rounded-xl px-2 py-4sm:px-6 sm:py-8">
         <CardHeader className="text-center gap-0">
           <CardTitle>
-            <h2 className="text-lg font-bold text-foreground">
+            <h2 className="text-2xl font-bold text-foreground">
               Create your account
             </h2>
           </CardTitle>
@@ -118,11 +123,42 @@ const Register = () => {
                       <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                          <Input
-                            type="password"
-                            placeholder="Enter a strong password"
-                            {...field}
-                          />
+                          <div className="relative">
+                            <Input
+                              type={showPassword ? "text" : "password"}
+                              placeholder="Enter your password"
+                              {...field}
+                              className="pr-10"
+                            />
+
+                            <button
+                              type="button"
+                              onClick={() => setShowPassword((prev) => !prev)}
+                              className="absolute top-1/2 right-3 -translate-y-1/2 text-neutral-400 hover:text-neutral-600"
+                            >
+                              <TooltipProvider
+                                delayDuration={100}
+                                skipDelayDuration={0}
+                              >
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    {showPassword ? (
+                                      <IconEyeClosed className="size-5" />
+                                    ) : (
+                                      <IconEye className="size-5" />
+                                    )}
+                                  </TooltipTrigger>
+                                  <TooltipContent className="text-xs px-2 py-1 rounded-md">
+                                    <p>
+                                      {showPassword
+                                        ? "Hide password"
+                                        : "Show password"}
+                                    </p>
+                                  </TooltipContent>
+                                </Tooltip>
+                              </TooltipProvider>
+                            </button>
+                          </div>
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -132,13 +168,13 @@ const Register = () => {
                 <Button
                   size="sm"
                   type="submit"
-                  className="w-full cursor-pointer"
                   disabled={isLoading}
+                  className="w-full cursor-pointer flex items-center justify-center gap-2"
                 >
                   {isLoading ? (
                     <>
                       <Spinner />
-                      <span className="ml-2">Creating</span>
+                      <span>Creating your account...</span>
                     </>
                   ) : (
                     "Create Account"

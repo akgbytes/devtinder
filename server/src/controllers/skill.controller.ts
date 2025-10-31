@@ -1,6 +1,6 @@
 import { logger } from "@/config/logger";
 import { Skill } from "@/models/skill.model";
-import { getCache, setCache } from "@/utils/cache";
+import { deleteCache, getCache, setCache } from "@/utils/cache";
 import { ApiResponse, asyncHandler } from "@/utils/core";
 import { StatusCodes } from "http-status-codes";
 

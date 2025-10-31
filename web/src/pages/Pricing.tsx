@@ -89,7 +89,7 @@ const Pricing = () => {
       confetti({ particleCount: 150, spread: 80, origin: { y: 0.6 } });
       enqueueSnackbar({
         variant: "success",
-        message: "Welcome to DevTinder Pro 🎉",
+        message: "Welcome to DevTinder Premium 🎉",
       });
       localStorage.removeItem("justUpgraded");
     }
@@ -121,7 +121,7 @@ const Pricing = () => {
       <div className="mx-auto mt-16 max-w-2xl rounded-3xl bg-zinc-900 ring-1 ring-zinc-800 shadow-2xl sm:mt-20 lg:mx-0 lg:flex lg:max-w-none overflow-hidden">
         <div className="p-8 sm:p-10 lg:flex-auto">
           <h3 className="text-3xl font-heading font-semibold tracking-tight text-white flex items-center gap-2">
-            Devtinder <span className="text-rose-500">Pro</span>
+            Devtinder <span className="text-rose-500">Premium</span>
           </h3>
 
           <p className="mt-6 text-base/7 text-zinc-400">
@@ -155,7 +155,7 @@ const Pricing = () => {
               </p>
               <p className="mt-6 flex items-baseline justify-center gap-x-2">
                 <span className="text-5xl font-bold tracking-tight text-white">
-                  $49
+                  $5
                 </span>
                 <span className="text-sm font-semibold leading-6 tracking-wide text-zinc-400">
                   USD
@@ -167,7 +167,7 @@ const Pricing = () => {
                 disabled={isLoading}
                 className="mt-6 px-20 bg-rose-600 hover:bg-rose-700 text-white transition-all shadow-[0_0_12px_rgba(236,72,153,0.4)]"
               >
-                Get Devtinder Pro
+                Get Devtinder Premium
               </Button>
 
               <p className="mt-6 text-xs leading-5 text-zinc-500">

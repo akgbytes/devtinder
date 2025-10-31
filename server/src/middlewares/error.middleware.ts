@@ -8,7 +8,7 @@ export const errorHandler: ErrorRequestHandler = (
   res: Response,
   next: NextFunction
 ): void => {
-  console.log("err from middleware \n", err);
+  // console.log("err from middleware \n", err);
   let error: ApiError;
 
   if (err instanceof ApiError) {

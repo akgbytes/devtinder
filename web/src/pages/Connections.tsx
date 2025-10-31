@@ -28,7 +28,6 @@ const Connections = () => {
           <Card key={connection._id}>
             <CardContent className="flex justify-between">
               <div className="flex items-center gap-3">
-                {" "}
                 <img
                   src={connection.profilePicture}
                   alt={connection.name}

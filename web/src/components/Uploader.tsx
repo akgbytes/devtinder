@@ -257,7 +257,7 @@ export function Uploader({ value, onChange }: UploaderProps) {
             <Button
               variant="destructive"
               size="icon"
-              className={cn("absolute top-0 right-2")}
+              className={cn("absolute top-0 right-2 cursor-pointer")}
               onClick={(e) => {
                 e.stopPropagation();
                 deleteFileHandler();

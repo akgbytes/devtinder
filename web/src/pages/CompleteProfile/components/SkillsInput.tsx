@@ -8,11 +8,12 @@ import {
 import { Input } from "@/components/ui/input";
 import { BadgeCheck, X } from "lucide-react";
 import { useDebounce } from "@/hooks/useDebounce";
-import { useGetAllSkillsQuery, type Skill } from "@/services/skillsApi";
+import { useGetAllSkillsQuery } from "@/services/skillsApi";
 import type { CompleteProfileFormValues } from "@/validations";
 import { useEffect, useState } from "react";
 import type { UseFormReturn } from "react-hook-form";
 import { Badge } from "@/components/ui/badge";
+import type { Skill } from "@/types/api";
 
 interface SkillsInputProps {
   form: UseFormReturn<CompleteProfileFormValues>;
@@ -98,19 +99,17 @@ const SkillsInput = ({ form, skills, setSkills }: SkillsInputProps) => {
             {skills.map((skill) => (
               <Badge
                 key={skill._id}
-                className="flex items-center h-fit gap-1 bg-amber-700"
+                className="flex items-center h-fit gap-1 bg-rose-600/20 text-rose-400 border border-rose-500/30 shadow-[0_0_10px_rgba(225,29,72,0.4)] hover:bg-rose-600/30 transition"
               >
-                <BadgeCheck />
-                <span> {skill.name}</span>
+                <BadgeCheck className="w-4 h-4" />
+                <span>{skill.name}</span>
                 <button
-                  key={skill._id}
                   type="button"
-                  onClick={() => {
-                    setSkills((prev) => {
-                      const removed = prev.filter((s) => s.name !== skill.name);
-                      return removed;
-                    });
-                  }}
+                  onClick={() =>
+                    setSkills((prev) =>
+                      prev.filter((s) => s.name !== skill.name)
+                    )
+                  }
                   className="cursor-pointer"
                 >
                   <X className="w-3 h-3 hover:opacity-70" />

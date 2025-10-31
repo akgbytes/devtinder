@@ -1,3 +1,4 @@
+import AppLoader from "@/components/AppLoader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useCreateConnectionMutation } from "@/services/connectionsApi";
@@ -6,6 +7,13 @@ import type { User } from "@/types/user";
 import { handleApiError } from "@/utils/error";
 import { tryCatch } from "@/utils/try-catch";
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { Flame, UserX, AlertTriangle } from "lucide-react";
+import {
+  IconAlertCircle,
+  IconAlertHexagon,
+  IconUserX,
+} from "@tabler/icons-react";
 
 const Feed = () => {
   const limit = 20;
@@ -70,13 +78,43 @@ const Feed = () => {
   };
 
   console.log("feed: ", feed);
-  if (isError) return <p>Error loading feed</p>;
 
-  if (isFetching && users.length === 0) return <p>Loading...</p>;
-  if (users.length === 0 && !feed?.data.pagination.hasMore) {
-    return <p>No more users left</p>;
+  if (isError) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen text-rose-400">
+        <div>
+          <IconAlertHexagon className="h-14 w-14 text-rose-500 drop-shadow-[0_0_12px_rgba(225,29,72,0.5)]" />
+        </div>
+        <h2>Oops! Something went wrong.</h2>
+        <p className="text-sm text-muted-foreground mt-1">
+          Couldn't load your feed. Please try again.
+        </p>
+      </div>
+    );
   }
-  if (users.length === 0) return <p>Loading...</p>;
+
+  if (isFetching && users.length === 0) return <AppLoader />;
+
+  if (users.length === 0 && !feed?.data.pagination.hasMore) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen text-center">
+        <div className="relative">
+          <div className="absolute inset-0 blur-xl rounded-full bg-rose-500/30" />
+          <IconUserX className="h-14 w-14 text-rose-500 relative z-10 drop-shadow-[0_0_10px_rgba(225,29,72,0.4)]" />
+        </div>
+
+        <h2 className="text-lg font-semibold mt-4 text-foreground">
+          No more devs nearby
+        </h2>
+
+        <p className="text-sm text-muted-foreground mt-1">
+          You've seen everyone for now, check back later!
+        </p>
+      </div>
+    );
+  }
+
+  if (users.length === 0) return <AppLoader />;
 
   return (
     <div className="mt-24 flex items-center justify-center">

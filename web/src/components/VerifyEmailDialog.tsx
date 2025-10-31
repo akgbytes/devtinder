@@ -151,14 +151,14 @@ const VerifyEmailDialog = ({
 
         <DialogFooter>
           <Button
-            className="w-full cursor-pointer"
+            className="w-full cursor-pointer flex items-center justify-center gap-2"
             disabled={isLoading || otp.length !== 6}
             onClick={handleVerify}
           >
             {isLoading ? (
               <>
                 <Spinner />
-                <span className="ml-2">Please wait</span>
+                <span>Please wait...</span>
               </>
             ) : (
               "Verify"
