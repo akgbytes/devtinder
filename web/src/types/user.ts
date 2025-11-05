@@ -16,10 +16,10 @@ export interface User {
       coordinates: [number, number];
     };
   };
-  dateOfBirth: Date;
+  dateOfBirth: string;
   isPremium: boolean;
   gender: GenderType;
-  skills: string[];
+  skills: { _id: string; name: string }[];
   onboardingCompleted: boolean;
   createdAt: string;
   updatedAt: string;

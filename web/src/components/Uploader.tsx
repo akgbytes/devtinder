@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { useUploadThing } from "@/lib/uploadthing";
 import { Progress } from "@/components/ui/progress";
-import { CloudUpload, Loader2, XIcon } from "lucide-react";
+import { CloudUpload, Loader2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
@@ -11,6 +11,8 @@ import { useSnackbar } from "notistack";
 type UploaderProps = {
   value: string | undefined;
   onChange: (val: string | undefined) => void;
+  successMessage?: string;
+  onUpload?: (img: string) => void;
 };
 
 interface UploaderState {
@@ -21,7 +23,12 @@ interface UploaderState {
   progress: number;
 }
 
-export function Uploader({ value, onChange }: UploaderProps) {
+export function Uploader({
+  value,
+  onChange,
+  onUpload,
+  successMessage,
+}: UploaderProps) {
   const { enqueueSnackbar } = useSnackbar();
 
   const [fileState, setFileState] = useState<UploaderState>({
@@ -31,7 +38,7 @@ export function Uploader({ value, onChange }: UploaderProps) {
     progress: 0,
   });
 
-  const { startUpload } = useUploadThing("courseUploader", {
+  const { startUpload } = useUploadThing("imageUploader", {
     onClientUploadComplete: (res) => {
       if (res.length > 0 && res[0]) {
         setFileState((prevState) => {
@@ -45,7 +52,10 @@ export function Uploader({ value, onChange }: UploaderProps) {
         });
 
         onChange(res[0].ufsUrl);
-        enqueueSnackbar("Image uploaded successfully", { variant: "success" });
+        onUpload?.(res[0].ufsUrl);
+        enqueueSnackbar(successMessage || "Image uploaded successfully", {
+          variant: "success",
+        });
       }
     },
 
@@ -152,7 +162,7 @@ export function Uploader({ value, onChange }: UploaderProps) {
       "image/*": [],
     },
     maxFiles: 1,
-    maxSize: 5 * 1024 * 1024,
+    maxSize: 4 * 1024 * 1024,
     onDropRejected: (fileRejection) => {
       if (fileRejection.length) {
         const tooManyFiles = fileRejection.find(
@@ -186,30 +196,30 @@ export function Uploader({ value, onChange }: UploaderProps) {
     },
   });
 
-  const deleteFileHandler = async () => {
-    try {
-      if (value) {
-        if (fileState.objectUrl && !fileState.objectUrl.startsWith("http")) {
-          URL.revokeObjectURL(fileState.objectUrl);
-        }
-        setFileState({
-          file: null,
-          key: undefined,
-          objectUrl: undefined,
-          uploading: false,
-          progress: 0,
-        });
+  // const deleteFileHandler = async () => {
+  //   try {
+  //     if (value) {
+  //       if (fileState.objectUrl && !fileState.objectUrl.startsWith("http")) {
+  //         URL.revokeObjectURL(fileState.objectUrl);
+  //       }
+  //       setFileState({
+  //         file: null,
+  //         key: undefined,
+  //         objectUrl: undefined,
+  //         uploading: false,
+  //         progress: 0,
+  //       });
 
-        onChange(undefined);
+  //       onChange(undefined);
 
-        enqueueSnackbar("Image removed successfully", { variant: "success" });
-      }
-    } catch (err) {
-      enqueueSnackbar("Failed to delete file, Please try again.", {
-        variant: "error",
-      });
-    }
-  };
+  //       enqueueSnackbar("Image removed successfully", { variant: "success" });
+  //     }
+  //   } catch (err) {
+  //     enqueueSnackbar("Failed to delete file, Please try again.", {
+  //       variant: "error",
+  //     });
+  //   }
+  // };
 
   useEffect(() => {
     return () => {
@@ -223,13 +233,13 @@ export function Uploader({ value, onChange }: UploaderProps) {
     <Card
       {...getRootProps()}
       className={cn(
-        "relative border-2 border-dashed transition-colors duration-200 ease-in-out w-full h-72 mt-0.5",
+        "relative border-2 border-dashed transition-colors duration-200 ease-in-out max-w-[360px] w-full mx-auto overflow-hidden",
         isDragActive
           ? "border-primary bg-primary/10 border-solid"
           : "border-border hover:border-primary/50"
       )}
     >
-      <CardContent className="flex flex-col items-center justify-center h-full w-full p-4">
+      <CardContent className="flex flex-col items-center justify-center p-2">
         <input {...getInputProps()} />
 
         {/* Default empty state */}
@@ -250,11 +260,11 @@ export function Uploader({ value, onChange }: UploaderProps) {
             <img
               src={fileState.objectUrl || value}
               alt="preview"
-              className="object-contain max-h-[200px] w-full rounded-md"
+              className="object-cover max-h-[200px] max-w-[200px] rounded-md mx-auto"
             />
 
             {/* Delete button */}
-            <Button
+            {/* <Button
               variant="destructive"
               size="icon"
               className={cn("absolute top-0 right-2 cursor-pointer")}
@@ -265,7 +275,7 @@ export function Uploader({ value, onChange }: UploaderProps) {
               type="button"
             >
               <XIcon className="size-4" />
-            </Button>
+            </Button> */}
           </div>
         )}
 
@@ -282,7 +292,7 @@ export function Uploader({ value, onChange }: UploaderProps) {
             {fileState.progress < 100 ? (
               <div className="flex gap-1 items-center justify-center text-sm text-muted-foreground pt-2">
                 <Loader2 className="h-3 w-3 animate-spin" />
-                Uploading {fileState.file?.name}...
+                Uploading {fileState.file?.name}
               </div>
             ) : (
               <div className="flex gap-1 items-center justify-center text-sm text-green-600 pt-2">

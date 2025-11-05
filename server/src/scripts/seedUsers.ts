@@ -21,3 +21,5 @@ async function seedUsers() {
 }
 
 seedUsers();
+
+// npx tsx .\src\scripts\seedUsers.ts

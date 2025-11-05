@@ -15,7 +15,12 @@ import {
 import { getGeocodes } from "@/utils/google-maps";
 import { generateHash, validateObjectId } from "@/utils/helper";
 import { generateAccessToken, generateRefreshToken } from "@/utils/token";
-import { validateCompleteProfile } from "@/validations/user.validations";
+import {
+  validateAbout,
+  validateCompleteProfile,
+  validateProfilePicture,
+  validateSkills,
+} from "@/validations/user.validations";
 import { LatLngLiteral } from "@googlemaps/google-maps-services-js";
 
 import { StatusCodes } from "http-status-codes";
@@ -173,7 +178,7 @@ export const getProfile = asyncHandler(async (req, res) => {
   logger.info("Profile fetch request", { userId });
 
   // Find user
-  const user = await User.findById(userId);
+  const user = await User.findById(userId).populate("skills");
 
   if (!user) {
     logger.error("User not found during profile fetch", { userId });
@@ -188,12 +193,57 @@ export const getProfile = asyncHandler(async (req, res) => {
     user
   );
 
-  res.status(200).json(response);
+  res.status(response.statusCode).json(response);
 });
 
-export const updateProfile = asyncHandler(async (req, res) => {});
+export const updateProfilePicture = asyncHandler(async (req, res) => {
+  const { profilePicture } = handleZodError(validateProfilePicture(req.body));
 
-export const changePassword = asyncHandler(async (req, res) => {});
+  const updatedUser = await User.findByIdAndUpdate(req.user._id, {
+    profilePicture,
+  });
+
+  if (!updatedUser) {
+  }
+
+  const response = new ApiResponse(
+    StatusCodes.OK,
+    "Profile picture updated",
+    updatedUser
+  );
+
+  res.status(response.statusCode).json(response);
+});
+
+export const updateSkills = asyncHandler(async (req, res) => {
+  const { skills } = handleZodError(validateSkills(req.body));
+
+  const updatedUser = await User.findByIdAndUpdate(req.user._id, {
+    skills,
+  });
+
+  if (!updatedUser) {
+  }
+
+  const response = new ApiResponse(StatusCodes.OK, "Updated", updatedUser);
+
+  res.status(response.statusCode).json(response);
+});
+
+export const updateAbout = asyncHandler(async (req, res) => {
+  const { about } = handleZodError(validateAbout(req.body));
+
+  const updatedUser = await User.findByIdAndUpdate(req.user._id, {
+    about,
+  });
+
+  if (!updatedUser) {
+  }
+
+  const response = new ApiResponse(StatusCodes.OK, "Updated", updatedUser);
+
+  res.status(response.statusCode).json(response);
+});
 
 export const getReceivedRequests = asyncHandler(async (req, res) => {
   const userId = req.user._id;
@@ -592,6 +642,16 @@ export const getUserFeed = asyncHandler(async (req, res) => {
         matchScore: 1,
       },
     },
+
+    // Stage 9: Populate skills
+    {
+      $lookup: {
+        from: "skills",
+        localField: "skills",
+        foreignField: "_id",
+        as: "skills",
+      },
+    },
   ]);
 
   const hasMore = users.length > limit;
@@ -603,6 +663,8 @@ export const getUserFeed = asyncHandler(async (req, res) => {
         _id: usersToReturn[usersToReturn.length - 1]._id.toString(),
       })
     : null;
+
+  console.log(users);
 
   const countResult = await User.aggregate([
     {
@@ -620,19 +682,6 @@ export const getUserFeed = asyncHandler(async (req, res) => {
   ]);
 
   const total = countResult[0]?.total || 0;
-
-  // logger.info("User feed fetched", {
-  //   userId,
-  //   count: usersToReturn.length, // ✅ CHANGED: Log actual returned count
-  //   total,
-  //   cursor,
-  //   nextCursor, // ✅ NEW: Log next cursor
-  //   avgMatchScore:
-  //     usersToReturn.length > 0
-  //       ? usersToReturn.reduce((sum, u) => sum + u.matchScore, 0) /
-  //         usersToReturn.length
-  //       : 0,
-  // });
 
   const response = new ApiResponse(
     StatusCodes.OK,

@@ -23,266 +23,346 @@ const generateDOB = () => {
   return randomDOB;
 };
 
-const names = {
-  male: [
-    "Arnav Deshmukh",
-    "Devraj Sinha",
-    "Kiran Reddy",
-    "Shivam Ghosh",
-    "Madhav Iyer",
-    "Ayaan Kapoor",
-    "Ishaan Verma",
-    "Nitesh Pillai",
-    "Rohil Malhotra",
-    "Harsh Taneja",
-    "Vikram Shetty",
-    "Anshul Sharma",
-    "Krishna Bhat",
-    "Jayant Patel",
-    "Ritesh Nambiar",
-    "Chaitanya Rao",
-    "Saurabh Khanna",
-    "Lakshit Mehra",
-    "Ronav Joshi",
-    "Advik Chatterjee",
-    "Tarun Dubey",
-    "Anirudh Raina",
-    "Vihan Agarwal",
-    "Samar Das",
-    "Kailash Chauhan",
-    "Neel Vora",
-    "Om Singh",
-    "Kartikeya Goyal",
-    "Rajdeep Sharma",
-    "Hrishikesh Naidu",
-    "Dev Dey",
-    "Aryan Paul",
-    "Sanket Kulkarni",
-    "Vivek Bhardwaj",
-    "Naman Gupta",
-    "Rajiv Menon",
-    "Rudra Tiwari",
-    "Piyush Basu",
-    "Abhishek Nanda",
-    "Harendra Chauhan",
-    "Manav Krishnan",
-    "Pratik Solanki",
-    "Rohin Sethi",
-    "Tej Joshi",
-    "Amitesh Patel",
-    "Dheeraj Raghavan",
-    "Soham Pillai",
-    "Ranjit Bansal",
-    "Vishal Chawla",
-    "Akash Mahajan",
-    "Arvind Jain",
-    "Aarav Sharma",
-    "Rohan Mehta",
-    "Karthik Reddy",
-    "Arjun Nair",
-    "Devansh Bansal",
-    "Manish Chauhan",
-    "Siddharth Malhotra",
-    "Rahul Deshmukh",
-    "Amit Khanna",
-    "Varun Yadav",
-    "Aditya Roy",
-    "Nikhil Sharma",
-    "Vivek Pandey",
-    "Rajat Tiwari",
-    "Rakesh Kumar",
-    "Sahil Kapoor",
-    "Harshad Joshi",
-    "Parth Bhatia",
-    "Abhinav Goyal",
-    "Rajeev Raina",
-    "Arnav Khurana",
-    "Kunal Chatterjee",
-    "Ishan Saxena",
-    "Yash Chauhan",
-    "Omkar Patil",
-    "Ritvik Anand",
-    "Tushar Jha",
-    "Aman Raj",
-    "Laksh Mittal",
-    "Pranav Sinha",
-    "Rohit Chatterjee",
-    "Hriday Kulkarni",
-    "Deepak Solanki",
-    "Keshav Mishra",
-    "Ayush Shetty",
-    "Gaurav Bhattacharya",
-    "Rohan Pathak",
-    "Aviral Bhatnagar",
-    "Nirav Desai",
-    "Chirag Jain",
-    "Mohit Arora",
-    "Sameer Grover",
-    "Viraj Iyer",
-    "Dhruv Khatri",
-    "Aniket Pillai",
-    "Tejas Menon",
-    "Harshit Rana",
-    "Adarsh Dubey",
-    "Kabir Oberoi",
-    "Tanuj Chawla",
-  ],
-  female: [
-    "Anushka Nair",
-    "Ira Khurana",
-    "Tanishka Reddy",
-    "Sia Kapoor",
-    "Nisha Sinha",
-    "Ahana Chatterjee",
-    "Krisha Mehra",
-    "Meenal Agarwal",
-    "Anvi Desai",
-    "Avisha Iyer",
-    "Reetika Sharma",
-    "Kashish Bhatia",
-    "Vaidehi Rao",
-    "Sanjana Pillai",
-    "Mahima Dutta",
-    "Ishaani Khanna",
-    "Pallavi Joshi",
-    "Ritika Nambiar",
-    "Suhana Lal",
-    "Diya Krishnan",
-    "Aarushi Patel",
-    "Maitri Ghosh",
-    "Chhavi Chauhan",
-    "Samaira Das",
-    "Nivedita Reddy",
-    "Prisha Vora",
-    "Bhavya Kapoor",
-    "Gauri Malhotra",
-    "Anaya Menon",
-    "Harini Suresh",
-    "Ekta Sharma",
-    "Tanisha Mehta",
-    "Triveni Deshmukh",
-    "Aarini Joshi",
-    "Roshika Bansal",
-    "Lavina Dey",
-    "Misha Krishnan",
-    "Snehal Shetty",
-    "Vidhi Chopra",
-    "Avika Shah",
-    "Niyati Pillai",
-    "Tara Nambiar",
-    "Rhea Kapoor",
-    "Vritika Iyer",
-    "Poonam Dubey",
-    "Manisha Basu",
-    "Kavisha Jain",
-    "Myra Solanki",
-    "Nimisha Goyal",
-    "Shaina Fernandes",
-    "Amaya Deshpande",
-    "Priya Patel",
-    "Isha Gupta",
-    "Neha Verma",
-    "Sanya Singh",
-    "Ananya Iyer",
-    "Tanya Kapoor",
-    "Meera Joshi",
-    "Sneha Nair",
-    "Kavya Menon",
-    "Ritika Agarwal",
-    "Pooja Sethi",
-    "Simran Kaur",
-    "Ayesha Khan",
-    "Mitali Rao",
-    "Rhea D’Souza",
-    "Anjali Bhatt",
-    "Divya Sharma",
-    "Ira Mahajan",
-    "Sneha Pillai",
-    "Tanvi Das",
-    "Mira Fernandes",
-    "Diya Narang",
-    "Aarohi Vora",
-    "Naina Malhotra",
-    "Kiara Kapoor",
-    "Aditi Joshi",
-    "Ishita Bhatia",
-    "Riddhi Shah",
-    "Suhani Deshpande",
-    "Avni Chopra",
-    "Myra Khanna",
-    "Tara Dey",
-    "Janhvi Ghosh",
-    "Nikita Bajaj",
-    "Charvi Reddy",
-    "Lavanya Krishnan",
-    "Manvi Sood",
-    "Esha Pillai",
-    "Shreya Anand",
-    "Roshni Lal",
-    "Aaradhya Sharma",
-    "Muskan Parekh",
-    "Trisha Mehta",
-    "Vanya Chawla",
-    "Diya Kapoor",
-    "Aalia Khan",
-    "Kriti Nambiar",
-    "Bhavna Iyer",
-    "Navya Suri",
-    "Niharika Dutta",
-  ],
-};
+const users = [
+  {
+    name: "Liam Anderson",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfnNpTHSqRFAoUzlBVJTpLQORfYPd5ZyjubMgE",
+    about:
+      "Full-stack developer who loves building tools that make life easier.",
+  },
+  {
+    name: "Oliver Martinez",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfAJooyKXzYUDMNphfgQyB15086nZHqc4ej7lC",
+    about: "Turning coffee into clean code and complex APIs.",
+  },
+  {
+    name: "Noah Thompson",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfRZoUVcpNw1LfA04skr7v8WMtPSI9aHDJdeBi",
+    about: "Passionate about frontend architecture and great UX.",
+  },
+  {
+    name: "Elijah Robinson",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LflEnA9eTawtDTq7i5jOlyfv4m1cZXNsebUHzg",
+    about: "Backend engineer obsessed with scalability and clean design.",
+  },
+  {
+    name: "James Carter",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfJKJbLrkuFP8DIayV5YnMlCB3bshcW1JNtiLQ",
+    about: "Exploring AI integrations and NLP for next-gen products.",
+  },
+  {
+    name: "William Johnson",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfNqav8GTebZrSqWXy9d5fepGJzC0alvMuYiOT",
+    about: "I build web apps that are fast, secure, and beautiful.",
+  },
+  {
+    name: "Benjamin Davis",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1Lf1UMG71VJ1MqY6JKkuXbe53wOsn8ACpdZWlL4",
+    about: "Code, design, and debugging — in that exact order.",
+  },
+  {
+    name: "Lucas Garcia",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfB9jyfbrnlo3AqjRCW7rZbdPVsIacO6N4hkzX",
+    about: "Bringing ideas to life through code and collaboration.",
+  },
+  {
+    name: "Henry Wilson",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfXlwdlzJ8xN4knHcqbi5g1SGdDAB6KFCfjyam",
+    about: "React enthusiast who enjoys solving UI challenges.",
+  },
+  {
+    name: "Alexander Moore",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfOJXZJ5lDRx3JT9VSLnP8eq7oYElh4y2pXMcz",
+    about: "Building things for the web since my teenage years.",
+  },
+  {
+    name: "Michael Taylor",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfWImfLByGpLlEVP3t7jYwGBc2dJTAegHZyzsM",
+    about: "Always learning something new about cloud and DevOps.",
+  },
+  {
+    name: "Ethan White",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfRbSwjrpNw1LfA04skr7v8WMtPSI9aHDJdeBi",
+    about: "Frontend developer with a backend mindset.",
+  },
+  {
+    name: "Daniel Harris",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfEUBepAfYVN7iHq95pG8MtnevbThAkX0lW64s",
+    about: "Clean code, clean commits, clean conscience.",
+  },
+  {
+    name: "Logan Walker",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfEUBepAfYVN7iHq95pG8MtnevbThAkX0lW64s",
+    about: "Currently obsessed with TypeScript and performance tuning.",
+  },
+  {
+    name: "Jacob Lewis",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfFVB3PXKYM6Ky0lU9jm2VpDTzBEFbecdoSZOJ",
+    about: "Software engineer who believes good design is invisible.",
+  },
+  {
+    name: "Jackson Hall",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfZHm8CsdI8FGjm6klbxDQVPCi342caJBEXYRW",
+    about: "I like my APIs well-documented and my code readable.",
+  },
+  {
+    name: "Levi Allen",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfQVnPUzaZw1E49bLQJkBMr0DyCGHtmaAj7nPd",
+    about: "Product-minded engineer focused on delivering real value.",
+  },
+  {
+    name: "Sebastian Young",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfP3JjZi1AP97gqWlwC2Ek1tOYV04Gj63ezKH5",
+    about: "Design systems make me happy. So does refactoring.",
+  },
+  {
+    name: "Mateo King",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfAhJkEHXzYUDMNphfgQyB15086nZHqc4ej7lC",
+    about: "Solving problems one pull request at a time.",
+  },
+  {
+    name: "Jack Wright",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1Lfi81XCgVHQmrb0y7pejYTNUcoPlRXJw2fBGIF",
+    about: "Trying to write less code that does more.",
+  },
+  {
+    name: "Owen Scott",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1Lfe0Ns17uP2N9AXWEhtUb0g4kVIOsYwDvJeZoi",
+    about: "Engineer by trade, builder by passion.",
+  },
+  {
+    name: "Theodore Green",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfcC4M8azOlLRZmEGWJwsUtNAq4uIygfMidjBD",
+    about: "I believe good software starts with good conversations.",
+  },
+  {
+    name: "Aiden Adams",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfTJykDwtNXKGwUodlyzBT0PLjHbiuZxDfC5EQ",
+    about: "Code reviewer who gives honest but kind feedback.",
+  },
+  {
+    name: "Samuel Baker",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1Lfdd2E7BCbhecX8Z4lAaf7QitkNjJwvrY13KP5",
+    about: "Always optimizing something — code, workflows, or coffee brewing.",
+  },
+  {
+    name: "Joseph Nelson",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfcSFTuqzOlLRZmEGWJwsUtNAq4uIygfMidjBD",
+    about: "Focused on making developer experience smoother and faster.",
+  },
+  {
+    name: "John Hill",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1Lfn6IPrxRFAoUzlBVJTpLQORfYPd5ZyjubMgEs",
+    about: "Helping startups scale from prototype to production.",
+  },
+  {
+    name: "David Rivera",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfHJsXFK0sJckvrfA68VtPueNZTy04Olp7E1I3",
+    about: "Data-driven developer with a love for clean APIs.",
+  },
+  {
+    name: "Wyatt Campbell",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfLj18JUh48qhgsytM6zVPj10uQ9DZdbFBo2eC",
+    about: "Turning business logic into elegant backend solutions.",
+  },
+  {
+    name: "Matthew Mitchell",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfGebXfeg8JZLvlPR4njgzfKYIHA5Thqboa23U",
+    about: "Writing code that other people actually enjoy reading.",
+  },
+  {
+    name: "Luke Perez",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1Lfm3DvQjZiO2FKrZ6NHCzBIstDUxTkEPJpSq9w",
+    about: "Software developer who enjoys turning chaos into structure.",
+  },
+  {
+    name: "Julian Roberts",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfIyhWyJvclCuOAWNGs2n61oK5bfgUxeIZmkwd",
+    about: "Passionate about automation, testing, and continuous delivery.",
+  },
+  {
+    name: "Isaac Turner",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfNqEUAWKebZrSqWXy9d5fepGJzC0alvMuYiOT",
+    about: "From concept to commit, I like to see things through.",
+  },
+  {
+    name: "Olivia Johnson",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfNPkOxbebZrSqWXy9d5fepGJzC0alvMuYiOTA",
+    about: "Team player who values clarity over cleverness.",
+  },
+  {
+    name: "Emma Brown",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfemNm4JuP2N9AXWEhtUb0g4kVIOsYwDvJeZoi",
+    about: "Currently building tools that empower other developers.",
+  },
+  {
+    name: "Ava Garcia",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfT6I9uutNXKGwUodlyzBT0PLjHbiuZxDfC5EQ",
+    about: "I believe good architecture saves time and sanity.",
+  },
+  {
+    name: "Sophia Martinez",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfT6I9uutNXKGwUodlyzBT0PLjHbiuZxDfC5EQ",
+    about: "Driven by curiosity, grounded in code quality.",
+  },
+  {
+    name: "Isabella Rodriguez",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1Lfes0tE8uP2N9AXWEhtUb0g4kVIOsYwDvJeZoi",
+    about: "Engineer who loves small details and big ideas.",
+  },
+  {
+    name: "Mia Davis",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfeKeim5uP2N9AXWEhtUb0g4kVIOsYwDvJeZoi",
+    about: "Backend dev exploring the world of machine learning.",
+  },
+  {
+    name: "Amelia Lopez",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfNq4Doa0ebZrSqWXy9d5fepGJzC0alvMuYiOT",
+    about: "Focused on performance, maintainability, and developer happiness.",
+  },
+  {
+    name: "Harper Gonzalez",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfH9LSTe0sJckvrfA68VtPueNZTy04Olp7E1I3",
+    about: "JavaScript all day, side projects all night.",
+  },
+  {
+    name: "Evelyn Wilson",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfzaFuqYwMLq6f7o23bRdIeXQHYErmW9NFcnPa",
+    about: "Coding for impact, not just output.",
+  },
+  {
+    name: "Abigail Anderson",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1Lfk4jyKnUW7cV83MFp2tleydbu96NoI5SHfsOD",
+    about: "Engineer who believes design and code are one craft.",
+  },
+  {
+    name: "Ella Thomas",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfUGPb6rcfAdqziM4vkoIS3V91mC7whxNas2ju",
+    about: "Helping teams move fast without breaking things.",
+  },
+  {
+    name: "Scarlett Taylor",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfJcQ50NtkuFP8DIayV5YnMlCB3bshcW1JNtiL",
+    about: "I like debugging almost as much as building.",
+  },
+  {
+    name: "Grace Moore",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1Lfu0VZYsqDxLMtcv2yBUnWr68ShfwaEZmoXF0g",
+    about: "Solving real problems with thoughtful software.",
+  },
+  {
+    name: "Chloe Jackson",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfTqZmrtNXKGwUodlyzBT0PLjHbiuZxDfC5EQv",
+    about: "Lover of open-source and clean documentation.",
+  },
+  {
+    name: "Luna Martin",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfEV4dADfYVN7iHq95pG8MtnevbThAkX0lW64s",
+    about: "Building digital experiences that actually feel good to use.",
+  },
+  {
+    name: "Victoria Lee",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfWC1QFLGpLlEVP3t7jYwGBc2dJTAegHZyzsMu",
+    about: "Striving for elegant solutions to complex challenges.",
+  },
+  {
+    name: "Aria Perez",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfBHpdSXrnlo3AqjRCW7rZbdPVsIacO6N4hkzX",
+    about: "Engineer who enjoys teaching and mentoring juniors.",
+  },
+  {
+    name: "Layla Thompson",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfEnVSe5fYVN7iHq95pG8MtnevbThAkX0lW64s",
+    about: "Focused on simplicity, scalability, and sustainability.",
+  },
+  {
+    name: "Penelope White",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LflrNrQNTawtDTq7i5jOlyfv4m1cZXNsebUHzg",
+    about: "I enjoy refactoring messy code into something beautiful.",
+  },
+  {
+    name: "Riley Harris",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1Lf9Z1h4LmfMR2dnov8m67zaXb4gcHStejTPKDl",
+    about: "Always looking for better ways to build and deploy.",
+  },
+  {
+    name: "Nora Clark",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LfmbgmD7iO2FKrZ6NHCzBIstDUxTkEPJpSq9w8",
+    about: "Product-focused developer who loves user feedback.",
+  },
 
-const abouts = [
-  "Full-stack developer who loves building tools that make life easier.",
-  "Turning coffee into clean code and complex APIs ☕💻",
-  "Passionate about frontend architecture and great UX.",
-  "Backend engineer obsessed with scalability and clean design.",
-  "Exploring AI integrations and NLP for next-gen products.",
-  "I build web apps that are fast, secure, and beautiful.",
-  "Code, design, and debugging — in that exact order.",
-  "Constantly learning new tech and pushing code to production 🚀",
-  "Frontend wizard with a knack for animations and interactivity.",
-  "Building digital products that solve real-world problems.",
-  "Love simplifying complex systems and mentoring junior devs.",
-  "Working on cloud-native apps and open-source projects.",
-  "I’m a lifelong learner with a passion for elegant code.",
-  "Creating scalable APIs and contributing to open source.",
-  "Focused on clean architecture and well-tested codebases.",
-  "Lover of TypeScript, Tailwind, and modern frontend stacks.",
-  "Experimenting with LangChain and AI-driven chatbots 🤖",
-  "Tech explorer passionate about Web3 and blockchain apps.",
-  "Mobile developer crafting cross-platform experiences.",
-  "From hackathons to production — I just love to build.",
-  "Believer in minimalism, testing, and great documentation.",
-  "I enjoy solving hard problems and learning from great devs.",
-  "Turning product ideas into reality with React and Node.",
-  "Open-source contributor and JavaScript nerd 💛",
-  "Currently exploring AI-assisted code generation tools.",
-  "I love pairing good UI with solid backend logic.",
-  "Automating workflows and building internal tools for devs.",
-  "Focused on performance optimization and developer experience.",
-  "Working on scalable backend systems with microservices.",
-  "Frontend engineer with strong eye for design and usability.",
-  "Always up for refactoring legacy code into something elegant.",
-  "Passionate about AI, chatbots, and next-gen tech stacks.",
-  "DevOps enthusiast bringing stability to fast-moving startups.",
-  "Full-stack problem solver with a product-first mindset.",
-  "MERN stack developer who loves fast-paced projects.",
-  "Currently exploring Next.js, server actions, and React 19.",
-  "I code, I learn, I teach — and repeat every single day.",
-  "Focused on accessibility, speed, and user happiness.",
-  "I build apps that scale and code that reads like poetry.",
-  "Backend-focused engineer who loves debugging challenges.",
-  "I believe clean code and good design are two sides of the same coin.",
-  "Developer by profession, builder by passion.",
-  "Exploring AI agents and real-time collaboration tools.",
-  "Frontend dev turning design ideas into pixel-perfect reality.",
-  "Machine learning hobbyist, web developer by day.",
-  "Building modern web apps using the latest JavaScript frameworks.",
-  "Passionate about performance, accessibility, and clean UI.",
-  "Crafting user experiences that just feel right.",
-  "Coding is my art form, and GitHub is my gallery.",
-  "Always improving, always shipping 🚀",
+  {
+    name: "Lily Young",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1LffujEPoLMwQHXiWT74nbhtcopYCuGjvmFkLxR",
+    about: "Turning messy requirements into maintainable systems.",
+  },
+  {
+    name: "Hannah Walker",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1Lfu1EYWZqDxLMtcv2yBUnWr68ShfwaEZmoXF0g",
+    about: "Writing less boilerplate, more business logic.",
+  },
+
+  {
+    name: "Violet Green",
+    picture:
+      "https://sz1jfkffhi.ufs.sh/f/RkjMxMpNw1Lf4S4ZYvFV9NxkfbIcel0ZWHT7GRLd3oAmar8E",
+    about: "Bridging the gap between design and engineering.",
+  },
 ];
 
 const cities = [
@@ -579,1390 +659,1390 @@ const cities = [
   },
 ];
 
-const skills = [
+export const skills = [
   {
     name: "React",
-    _id: "68ebe9eee56be7d4db6a1e64",
+    _id: "6904a969d6f129bb595057ed",
   },
   {
     name: "Next.js",
-    _id: "68ebe9eee56be7d4db6a1e65",
+    _id: "6904a969d6f129bb595057ee",
   },
   {
     name: "Vue.js",
-    _id: "68ebe9eee56be7d4db6a1e66",
+    _id: "6904a969d6f129bb595057ef",
   },
   {
     name: "Nuxt.js",
-    _id: "68ebe9eee56be7d4db6a1e67",
+    _id: "6904a969d6f129bb595057f0",
   },
   {
     name: "Angular",
-    _id: "68ebe9eee56be7d4db6a1e68",
+    _id: "6904a969d6f129bb595057f1",
   },
   {
     name: "Svelte",
-    _id: "68ebe9eee56be7d4db6a1e69",
+    _id: "6904a969d6f129bb595057f2",
   },
   {
     name: "SvelteKit",
-    _id: "68ebe9eee56be7d4db6a1e6a",
+    _id: "6904a969d6f129bb595057f3",
   },
   {
     name: "Solid.js",
-    _id: "68ebe9eee56be7d4db6a1e6b",
+    _id: "6904a969d6f129bb595057f4",
   },
   {
     name: "Qwik",
-    _id: "68ebe9eee56be7d4db6a1e6c",
+    _id: "6904a969d6f129bb595057f5",
   },
   {
     name: "Astro",
-    _id: "68ebe9eee56be7d4db6a1e6d",
+    _id: "6904a969d6f129bb595057f6",
   },
   {
     name: "Remix",
-    _id: "68ebe9eee56be7d4db6a1e6e",
+    _id: "6904a969d6f129bb595057f7",
   },
   {
     name: "Gatsby",
-    _id: "68ebe9eee56be7d4db6a1e6f",
+    _id: "6904a969d6f129bb595057f8",
   },
   {
     name: "Ember.js",
-    _id: "68ebe9eee56be7d4db6a1e70",
+    _id: "6904a969d6f129bb595057f9",
   },
   {
     name: "Backbone.js",
-    _id: "68ebe9eee56be7d4db6a1e71",
+    _id: "6904a969d6f129bb595057fa",
   },
   {
     name: "Alpine.js",
-    _id: "68ebe9eee56be7d4db6a1e72",
+    _id: "6904a969d6f129bb595057fb",
   },
   {
     name: "Preact",
-    _id: "68ebe9eee56be7d4db6a1e73",
+    _id: "6904a969d6f129bb595057fc",
   },
   {
     name: "Lit",
-    _id: "68ebe9eee56be7d4db6a1e74",
+    _id: "6904a969d6f129bb595057fd",
   },
   {
     name: "HTML",
-    _id: "68ebe9eee56be7d4db6a1e75",
+    _id: "6904a969d6f129bb595057fe",
   },
   {
     name: "CSS",
-    _id: "68ebe9eee56be7d4db6a1e76",
+    _id: "6904a969d6f129bb595057ff",
   },
   {
     name: "JavaScript",
-    _id: "68ebe9eee56be7d4db6a1e77",
+    _id: "6904a969d6f129bb59505800",
   },
   {
     name: "TypeScript",
-    _id: "68ebe9eee56be7d4db6a1e78",
+    _id: "6904a969d6f129bb59505801",
   },
   {
     name: "WebAssembly",
-    _id: "68ebe9eee56be7d4db6a1e79",
+    _id: "6904a969d6f129bb59505802",
   },
   {
     name: "jQuery",
-    _id: "68ebe9eee56be7d4db6a1e7a",
+    _id: "6904a969d6f129bb59505803",
   },
   {
     name: "Tailwind CSS",
-    _id: "68ebe9eee56be7d4db6a1e7b",
+    _id: "6904a969d6f129bb59505804",
   },
   {
     name: "Bootstrap",
-    _id: "68ebe9eee56be7d4db6a1e7c",
+    _id: "6904a969d6f129bb59505805",
   },
   {
     name: "Material UI",
-    _id: "68ebe9eee56be7d4db6a1e7d",
+    _id: "6904a969d6f129bb59505806",
   },
   {
     name: "Chakra UI",
-    _id: "68ebe9eee56be7d4db6a1e7e",
+    _id: "6904a969d6f129bb59505807",
   },
   {
     name: "Ant Design",
-    _id: "68ebe9eee56be7d4db6a1e7f",
+    _id: "6904a969d6f129bb59505808",
   },
   {
     name: "Shadcn/ui",
-    _id: "68ebe9eee56be7d4db6a1e80",
+    _id: "6904a969d6f129bb59505809",
   },
   {
     name: "Radix UI",
-    _id: "68ebe9eee56be7d4db6a1e81",
+    _id: "6904a969d6f129bb5950580a",
   },
   {
     name: "Mantine",
-    _id: "68ebe9eee56be7d4db6a1e82",
+    _id: "6904a969d6f129bb5950580b",
   },
   {
     name: "Styled Components",
-    _id: "68ebe9eee56be7d4db6a1e83",
+    _id: "6904a969d6f129bb5950580c",
   },
   {
     name: "CSS Modules",
-    _id: "68ebe9eee56be7d4db6a1e84",
+    _id: "6904a969d6f129bb5950580d",
   },
   {
     name: "Sass",
-    _id: "68ebe9eee56be7d4db6a1e85",
+    _id: "6904a969d6f129bb5950580e",
   },
   {
     name: "SCSS",
-    _id: "68ebe9eee56be7d4db6a1e86",
+    _id: "6904a969d6f129bb5950580f",
   },
   {
     name: "Less",
-    _id: "68ebe9eee56be7d4db6a1e87",
+    _id: "6904a969d6f129bb59505810",
   },
   {
     name: "PostCSS",
-    _id: "68ebe9eee56be7d4db6a1e88",
+    _id: "6904a969d6f129bb59505811",
   },
   {
     name: "Emotion",
-    _id: "68ebe9eee56be7d4db6a1e89",
+    _id: "6904a969d6f129bb59505812",
   },
   {
     name: "Vanilla Extract",
-    _id: "68ebe9eee56be7d4db6a1e8a",
+    _id: "6904a969d6f129bb59505813",
   },
   {
     name: "Node.js",
-    _id: "68ebe9eee56be7d4db6a1e8b",
+    _id: "6904a969d6f129bb59505814",
   },
   {
     name: "Express.js",
-    _id: "68ebe9eee56be7d4db6a1e8c",
+    _id: "6904a969d6f129bb59505815",
   },
   {
     name: "Nest.js",
-    _id: "68ebe9eee56be7d4db6a1e8d",
+    _id: "6904a969d6f129bb59505816",
   },
   {
     name: "Fastify",
-    _id: "68ebe9eee56be7d4db6a1e8e",
+    _id: "6904a969d6f129bb59505817",
   },
   {
     name: "Koa",
-    _id: "68ebe9eee56be7d4db6a1e8f",
+    _id: "6904a969d6f129bb59505818",
   },
   {
     name: "Hapi",
-    _id: "68ebe9eee56be7d4db6a1e90",
+    _id: "6904a969d6f129bb59505819",
   },
   {
     name: "Adonis.js",
-    _id: "68ebe9eee56be7d4db6a1e91",
+    _id: "6904a969d6f129bb5950581a",
   },
   {
     name: "Deno",
-    _id: "68ebe9eee56be7d4db6a1e92",
+    _id: "6904a969d6f129bb5950581b",
   },
   {
     name: "Bun",
-    _id: "68ebe9eee56be7d4db6a1e93",
+    _id: "6904a969d6f129bb5950581c",
   },
   {
     name: "Django",
-    _id: "68ebe9eee56be7d4db6a1e94",
+    _id: "6904a969d6f129bb5950581d",
   },
   {
     name: "Flask",
-    _id: "68ebe9eee56be7d4db6a1e95",
+    _id: "6904a969d6f129bb5950581e",
   },
   {
     name: "FastAPI",
-    _id: "68ebe9eee56be7d4db6a1e96",
+    _id: "6904a969d6f129bb5950581f",
   },
   {
     name: "Pyramid",
-    _id: "68ebe9eee56be7d4db6a1e97",
+    _id: "6904a969d6f129bb59505820",
   },
   {
     name: "Tornado",
-    _id: "68ebe9eee56be7d4db6a1e98",
+    _id: "6904a969d6f129bb59505821",
   },
   {
     name: "Bottle",
-    _id: "68ebe9eee56be7d4db6a1e99",
+    _id: "6904a969d6f129bb59505822",
   },
   {
     name: "Spring Boot",
-    _id: "68ebe9eee56be7d4db6a1e9a",
+    _id: "6904a969d6f129bb59505823",
   },
   {
     name: "Spring Framework",
-    _id: "68ebe9eee56be7d4db6a1e9b",
+    _id: "6904a969d6f129bb59505824",
   },
   {
     name: "Hibernate",
-    _id: "68ebe9eee56be7d4db6a1e9c",
+    _id: "6904a969d6f129bb59505825",
   },
   {
     name: "Micronaut",
-    _id: "68ebe9eee56be7d4db6a1e9d",
+    _id: "6904a969d6f129bb59505826",
   },
   {
     name: "Quarkus",
-    _id: "68ebe9eee56be7d4db6a1e9e",
+    _id: "6904a969d6f129bb59505827",
   },
   {
     name: "Play Framework",
-    _id: "68ebe9eee56be7d4db6a1e9f",
+    _id: "6904a969d6f129bb59505828",
   },
   {
     name: "Vert.x",
-    _id: "68ebe9eee56be7d4db6a1ea0",
+    _id: "6904a969d6f129bb59505829",
   },
   {
     name: ".NET",
-    _id: "68ebe9eee56be7d4db6a1ea1",
+    _id: "6904a969d6f129bb5950582a",
   },
   {
     name: ".NET Core",
-    _id: "68ebe9eee56be7d4db6a1ea2",
+    _id: "6904a969d6f129bb5950582b",
   },
   {
     name: "ASP.NET",
-    _id: "68ebe9eee56be7d4db6a1ea3",
+    _id: "6904a969d6f129bb5950582c",
   },
   {
     name: "ASP.NET Core",
-    _id: "68ebe9eee56be7d4db6a1ea4",
+    _id: "6904a969d6f129bb5950582d",
   },
   {
     name: "Blazor",
-    _id: "68ebe9eee56be7d4db6a1ea5",
+    _id: "6904a969d6f129bb5950582e",
   },
   {
     name: "Entity Framework",
-    _id: "68ebe9eee56be7d4db6a1ea6",
+    _id: "6904a969d6f129bb5950582f",
   },
   {
     name: "C#",
-    _id: "68ebe9eee56be7d4db6a1ea7",
+    _id: "6904a969d6f129bb59505830",
   },
   {
     name: "Laravel",
-    _id: "68ebe9eee56be7d4db6a1ea8",
+    _id: "6904a969d6f129bb59505831",
   },
   {
     name: "Symfony",
-    _id: "68ebe9eee56be7d4db6a1ea9",
+    _id: "6904a969d6f129bb59505832",
   },
   {
     name: "CodeIgniter",
-    _id: "68ebe9eee56be7d4db6a1eaa",
+    _id: "6904a969d6f129bb59505833",
   },
   {
     name: "CakePHP",
-    _id: "68ebe9eee56be7d4db6a1eab",
+    _id: "6904a969d6f129bb59505834",
   },
   {
     name: "Yii",
-    _id: "68ebe9eee56be7d4db6a1eac",
+    _id: "6904a969d6f129bb59505835",
   },
   {
     name: "Slim",
-    _id: "68ebe9eee56be7d4db6a1ead",
+    _id: "6904a969d6f129bb59505836",
   },
   {
     name: "Phalcon",
-    _id: "68ebe9eee56be7d4db6a1eae",
+    _id: "6904a969d6f129bb59505837",
   },
   {
     name: "Ruby on Rails",
-    _id: "68ebe9eee56be7d4db6a1eaf",
+    _id: "6904a969d6f129bb59505838",
   },
   {
     name: "Sinatra",
-    _id: "68ebe9eee56be7d4db6a1eb0",
+    _id: "6904a969d6f129bb59505839",
   },
   {
     name: "Hanami",
-    _id: "68ebe9eee56be7d4db6a1eb1",
+    _id: "6904a969d6f129bb5950583a",
   },
   {
     name: "Gin",
-    _id: "68ebe9eee56be7d4db6a1eb2",
+    _id: "6904a969d6f129bb5950583b",
   },
   {
     name: "Echo",
-    _id: "68ebe9eee56be7d4db6a1eb3",
+    _id: "6904a969d6f129bb5950583c",
   },
   {
     name: "Fiber",
-    _id: "68ebe9eee56be7d4db6a1eb4",
+    _id: "6904a969d6f129bb5950583d",
   },
   {
     name: "Beego",
-    _id: "68ebe9eee56be7d4db6a1eb5",
+    _id: "6904a969d6f129bb5950583e",
   },
   {
     name: "Revel",
-    _id: "68ebe9eee56be7d4db6a1eb6",
+    _id: "6904a969d6f129bb5950583f",
   },
   {
     name: "Actix",
-    _id: "68ebe9eee56be7d4db6a1eb7",
+    _id: "6904a969d6f129bb59505840",
   },
   {
     name: "Rocket",
-    _id: "68ebe9eee56be7d4db6a1eb8",
+    _id: "6904a969d6f129bb59505841",
   },
   {
     name: "Axum",
-    _id: "68ebe9eee56be7d4db6a1eb9",
+    _id: "6904a969d6f129bb59505842",
   },
   {
     name: "Warp",
-    _id: "68ebe9eee56be7d4db6a1eba",
+    _id: "6904a969d6f129bb59505843",
   },
   {
     name: "React Native",
-    _id: "68ebe9eee56be7d4db6a1ebb",
+    _id: "6904a969d6f129bb59505844",
   },
   {
     name: "Flutter",
-    _id: "68ebe9eee56be7d4db6a1ebc",
+    _id: "6904a969d6f129bb59505845",
   },
   {
     name: "Swift",
-    _id: "68ebe9eee56be7d4db6a1ebd",
+    _id: "6904a969d6f129bb59505846",
   },
   {
     name: "SwiftUI",
-    _id: "68ebe9eee56be7d4db6a1ebe",
+    _id: "6904a969d6f129bb59505847",
   },
   {
     name: "Kotlin",
-    _id: "68ebe9eee56be7d4db6a1ebf",
+    _id: "6904a969d6f129bb59505848",
   },
   {
     name: "Jetpack Compose",
-    _id: "68ebe9eee56be7d4db6a1ec0",
+    _id: "6904a969d6f129bb59505849",
   },
   {
     name: "Ionic",
-    _id: "68ebe9eee56be7d4db6a1ec1",
+    _id: "6904a969d6f129bb5950584a",
   },
   {
     name: "Xamarin",
-    _id: "68ebe9eee56be7d4db6a1ec2",
+    _id: "6904a969d6f129bb5950584b",
   },
   {
     name: "Cordova",
-    _id: "68ebe9eee56be7d4db6a1ec3",
+    _id: "6904a969d6f129bb5950584c",
   },
   {
     name: "Capacitor",
-    _id: "68ebe9eee56be7d4db6a1ec4",
+    _id: "6904a969d6f129bb5950584d",
   },
   {
     name: "Expo",
-    _id: "68ebe9eee56be7d4db6a1ec5",
+    _id: "6904a969d6f129bb5950584e",
   },
   {
     name: "PostgreSQL",
-    _id: "68ebe9eee56be7d4db6a1ec6",
+    _id: "6904a969d6f129bb5950584f",
   },
   {
     name: "MySQL",
-    _id: "68ebe9eee56be7d4db6a1ec7",
+    _id: "6904a969d6f129bb59505850",
   },
   {
     name: "MariaDB",
-    _id: "68ebe9eee56be7d4db6a1ec8",
+    _id: "6904a969d6f129bb59505851",
   },
   {
     name: "SQLite",
-    _id: "68ebe9eee56be7d4db6a1ec9",
+    _id: "6904a969d6f129bb59505852",
   },
   {
     name: "Microsoft SQL Server",
-    _id: "68ebe9eee56be7d4db6a1eca",
+    _id: "6904a969d6f129bb59505853",
   },
   {
     name: "Oracle Database",
-    _id: "68ebe9eee56be7d4db6a1ecb",
+    _id: "6904a969d6f129bb59505854",
   },
   {
     name: "CockroachDB",
-    _id: "68ebe9eee56be7d4db6a1ecc",
+    _id: "6904a969d6f129bb59505855",
   },
   {
     name: "MongoDB",
-    _id: "68ebe9eee56be7d4db6a1ecd",
+    _id: "6904a969d6f129bb59505856",
   },
   {
     name: "Redis",
-    _id: "68ebe9eee56be7d4db6a1ece",
+    _id: "6904a969d6f129bb59505857",
   },
   {
     name: "Cassandra",
-    _id: "68ebe9eee56be7d4db6a1ecf",
+    _id: "6904a969d6f129bb59505858",
   },
   {
     name: "DynamoDB",
-    _id: "68ebe9eee56be7d4db6a1ed0",
+    _id: "6904a969d6f129bb59505859",
   },
   {
     name: "Couchbase",
-    _id: "68ebe9eee56be7d4db6a1ed1",
+    _id: "6904a969d6f129bb5950585a",
   },
   {
     name: "CouchDB",
-    _id: "68ebe9eee56be7d4db6a1ed2",
+    _id: "6904a969d6f129bb5950585b",
   },
   {
     name: "Neo4j",
-    _id: "68ebe9eee56be7d4db6a1ed3",
+    _id: "6904a969d6f129bb5950585c",
   },
   {
     name: "ArangoDB",
-    _id: "68ebe9eee56be7d4db6a1ed4",
+    _id: "6904a969d6f129bb5950585d",
   },
   {
     name: "Firebase Realtime Database",
-    _id: "68ebe9eee56be7d4db6a1ed5",
+    _id: "6904a969d6f129bb5950585e",
   },
   {
     name: "Firestore",
-    _id: "68ebe9eee56be7d4db6a1ed6",
+    _id: "6904a969d6f129bb5950585f",
   },
   {
     name: "Prisma",
-    _id: "68ebe9eee56be7d4db6a1ed7",
+    _id: "6904a969d6f129bb59505860",
   },
   {
     name: "TypeORM",
-    _id: "68ebe9eee56be7d4db6a1ed8",
+    _id: "6904a969d6f129bb59505861",
   },
   {
     name: "Sequelize",
-    _id: "68ebe9eee56be7d4db6a1ed9",
+    _id: "6904a969d6f129bb59505862",
   },
   {
     name: "Drizzle",
-    _id: "68ebe9eee56be7d4db6a1eda",
+    _id: "6904a969d6f129bb59505863",
   },
   {
     name: "Mongoose",
-    _id: "68ebe9eee56be7d4db6a1edb",
+    _id: "6904a969d6f129bb59505864",
   },
   {
     name: "Knex.js",
-    _id: "68ebe9eee56be7d4db6a1edc",
+    _id: "6904a969d6f129bb59505865",
   },
   {
     name: "SQLAlchemy",
-    _id: "68ebe9eee56be7d4db6a1edd",
+    _id: "6904a969d6f129bb59505866",
   },
   {
     name: "Eloquent",
-    _id: "68ebe9eee56be7d4db6a1ede",
+    _id: "6904a969d6f129bb59505867",
   },
   {
     name: "AWS",
-    _id: "68ebe9eee56be7d4db6a1edf",
+    _id: "6904a969d6f129bb59505868",
   },
   {
     name: "Google Cloud Platform",
-    _id: "68ebe9eee56be7d4db6a1ee0",
+    _id: "6904a969d6f129bb59505869",
   },
   {
     name: "Microsoft Azure",
-    _id: "68ebe9eee56be7d4db6a1ee1",
+    _id: "6904a969d6f129bb5950586a",
   },
   {
     name: "DigitalOcean",
-    _id: "68ebe9eee56be7d4db6a1ee2",
+    _id: "6904a969d6f129bb5950586b",
   },
   {
     name: "Heroku",
-    _id: "68ebe9eee56be7d4db6a1ee3",
+    _id: "6904a969d6f129bb5950586c",
   },
   {
     name: "Vercel",
-    _id: "68ebe9eee56be7d4db6a1ee4",
+    _id: "6904a969d6f129bb5950586d",
   },
   {
     name: "Netlify",
-    _id: "68ebe9eee56be7d4db6a1ee5",
+    _id: "6904a969d6f129bb5950586e",
   },
   {
     name: "Railway",
-    _id: "68ebe9eee56be7d4db6a1ee6",
+    _id: "6904a969d6f129bb5950586f",
   },
   {
     name: "Render",
-    _id: "68ebe9eee56be7d4db6a1ee7",
+    _id: "6904a969d6f129bb59505870",
   },
   {
     name: "Fly.io",
-    _id: "68ebe9eee56be7d4db6a1ee8",
+    _id: "6904a969d6f129bb59505871",
   },
   {
     name: "Cloudflare",
-    _id: "68ebe9eee56be7d4db6a1ee9",
+    _id: "6904a969d6f129bb59505872",
   },
   {
     name: "Linode",
-    _id: "68ebe9eee56be7d4db6a1eea",
+    _id: "6904a969d6f129bb59505873",
   },
   {
     name: "Vultr",
-    _id: "68ebe9eee56be7d4db6a1eeb",
+    _id: "6904a969d6f129bb59505874",
   },
   {
     name: "AWS Lambda",
-    _id: "68ebe9eee56be7d4db6a1eec",
+    _id: "6904a969d6f129bb59505875",
   },
   {
     name: "AWS EC2",
-    _id: "68ebe9eee56be7d4db6a1eed",
+    _id: "6904a969d6f129bb59505876",
   },
   {
     name: "AWS S3",
-    _id: "68ebe9eee56be7d4db6a1eee",
+    _id: "6904a969d6f129bb59505877",
   },
   {
     name: "AWS RDS",
-    _id: "68ebe9eee56be7d4db6a1eef",
+    _id: "6904a969d6f129bb59505878",
   },
   {
     name: "AWS DynamoDB",
-    _id: "68ebe9eee56be7d4db6a1ef0",
+    _id: "6904a969d6f129bb59505879",
   },
   {
     name: "AWS CloudFront",
-    _id: "68ebe9eee56be7d4db6a1ef1",
+    _id: "6904a969d6f129bb5950587a",
   },
   {
     name: "AWS API Gateway",
-    _id: "68ebe9eee56be7d4db6a1ef2",
+    _id: "6904a969d6f129bb5950587b",
   },
   {
     name: "AWS Cognito",
-    _id: "68ebe9eee56be7d4db6a1ef3",
+    _id: "6904a969d6f129bb5950587c",
   },
   {
     name: "AWS ECS",
-    _id: "68ebe9eee56be7d4db6a1ef4",
+    _id: "6904a969d6f129bb5950587d",
   },
   {
     name: "AWS EKS",
-    _id: "68ebe9eee56be7d4db6a1ef5",
+    _id: "6904a969d6f129bb5950587e",
   },
   {
     name: "Docker",
-    _id: "68ebe9eee56be7d4db6a1ef6",
+    _id: "6904a969d6f129bb5950587f",
   },
   {
     name: "Kubernetes",
-    _id: "68ebe9eee56be7d4db6a1ef7",
+    _id: "6904a969d6f129bb59505880",
   },
   {
     name: "Jenkins",
-    _id: "68ebe9eee56be7d4db6a1ef8",
+    _id: "6904a969d6f129bb59505881",
   },
   {
     name: "GitHub Actions",
-    _id: "68ebe9eee56be7d4db6a1ef9",
+    _id: "6904a969d6f129bb59505882",
   },
   {
     name: "GitLab CI",
-    _id: "68ebe9eee56be7d4db6a1efa",
+    _id: "6904a969d6f129bb59505883",
   },
   {
     name: "CircleCI",
-    _id: "68ebe9eee56be7d4db6a1efb",
+    _id: "6904a969d6f129bb59505884",
   },
   {
     name: "Travis CI",
-    _id: "68ebe9eee56be7d4db6a1efc",
+    _id: "6904a969d6f129bb59505885",
   },
   {
     name: "ArgoCD",
-    _id: "68ebe9eee56be7d4db6a1efd",
+    _id: "6904a969d6f129bb59505886",
   },
   {
     name: "Terraform",
-    _id: "68ebe9eee56be7d4db6a1efe",
+    _id: "6904a969d6f129bb59505887",
   },
   {
     name: "Ansible",
-    _id: "68ebe9eee56be7d4db6a1eff",
+    _id: "6904a969d6f129bb59505888",
   },
   {
     name: "Chef",
-    _id: "68ebe9eee56be7d4db6a1f00",
+    _id: "6904a969d6f129bb59505889",
   },
   {
     name: "Puppet",
-    _id: "68ebe9eee56be7d4db6a1f01",
+    _id: "6904a969d6f129bb5950588a",
   },
   {
     name: "Vagrant",
-    _id: "68ebe9eee56be7d4db6a1f02",
+    _id: "6904a969d6f129bb5950588b",
   },
   {
     name: "Helm",
-    _id: "68ebe9eee56be7d4db6a1f03",
+    _id: "6904a969d6f129bb5950588c",
   },
   {
     name: "Prometheus",
-    _id: "68ebe9eee56be7d4db6a1f04",
+    _id: "6904a969d6f129bb5950588d",
   },
   {
     name: "Grafana",
-    _id: "68ebe9eee56be7d4db6a1f05",
+    _id: "6904a969d6f129bb5950588e",
   },
   {
     name: "Nginx",
-    _id: "68ebe9eee56be7d4db6a1f06",
+    _id: "6904a969d6f129bb5950588f",
   },
   {
     name: "Apache",
-    _id: "68ebe9eee56be7d4db6a1f07",
+    _id: "6904a969d6f129bb59505890",
   },
   {
     name: "Caddy",
-    _id: "68ebe9eee56be7d4db6a1f08",
+    _id: "6904a969d6f129bb59505891",
   },
   {
     name: "Git",
-    _id: "68ebe9eee56be7d4db6a1f09",
+    _id: "6904a969d6f129bb59505892",
   },
   {
     name: "GitHub",
-    _id: "68ebe9eee56be7d4db6a1f0a",
+    _id: "6904a969d6f129bb59505893",
   },
   {
     name: "GitLab",
-    _id: "68ebe9eee56be7d4db6a1f0b",
+    _id: "6904a969d6f129bb59505894",
   },
   {
     name: "Bitbucket",
-    _id: "68ebe9eee56be7d4db6a1f0c",
+    _id: "6904a969d6f129bb59505895",
   },
   {
     name: "Mercurial",
-    _id: "68ebe9eee56be7d4db6a1f0d",
+    _id: "6904a969d6f129bb59505896",
   },
   {
     name: "SVN",
-    _id: "68ebe9eee56be7d4db6a1f0e",
+    _id: "6904a969d6f129bb59505897",
   },
   {
     name: "Jest",
-    _id: "68ebe9eee56be7d4db6a1f0f",
+    _id: "6904a969d6f129bb59505898",
   },
   {
     name: "Vitest",
-    _id: "68ebe9eee56be7d4db6a1f10",
+    _id: "6904a969d6f129bb59505899",
   },
   {
     name: "Mocha",
-    _id: "68ebe9eee56be7d4db6a1f11",
+    _id: "6904a969d6f129bb5950589a",
   },
   {
     name: "Chai",
-    _id: "68ebe9eee56be7d4db6a1f12",
+    _id: "6904a969d6f129bb5950589b",
   },
   {
     name: "Jasmine",
-    _id: "68ebe9eee56be7d4db6a1f13",
+    _id: "6904a969d6f129bb5950589c",
   },
   {
     name: "Cypress",
-    _id: "68ebe9eee56be7d4db6a1f14",
+    _id: "6904a969d6f129bb5950589d",
   },
   {
     name: "Playwright",
-    _id: "68ebe9eee56be7d4db6a1f15",
+    _id: "6904a969d6f129bb5950589e",
   },
   {
     name: "Selenium",
-    _id: "68ebe9eee56be7d4db6a1f16",
+    _id: "6904a969d6f129bb5950589f",
   },
   {
     name: "Puppeteer",
-    _id: "68ebe9eee56be7d4db6a1f17",
+    _id: "6904a969d6f129bb595058a0",
   },
   {
     name: "Testing Library",
-    _id: "68ebe9eee56be7d4db6a1f18",
+    _id: "6904a969d6f129bb595058a1",
   },
   {
     name: "Enzyme",
-    _id: "68ebe9eee56be7d4db6a1f19",
+    _id: "6904a969d6f129bb595058a2",
   },
   {
     name: "JUnit",
-    _id: "68ebe9eee56be7d4db6a1f1a",
+    _id: "6904a969d6f129bb595058a3",
   },
   {
     name: "PyTest",
-    _id: "68ebe9eee56be7d4db6a1f1b",
+    _id: "6904a969d6f129bb595058a4",
   },
   {
     name: "PHPUnit",
-    _id: "68ebe9eee56be7d4db6a1f1c",
+    _id: "6904a969d6f129bb595058a5",
   },
   {
     name: "RSpec",
-    _id: "68ebe9eee56be7d4db6a1f1d",
+    _id: "6904a969d6f129bb595058a6",
   },
   {
     name: "Postman",
-    _id: "68ebe9eee56be7d4db6a1f1e",
+    _id: "6904a969d6f129bb595058a7",
   },
   {
     name: "Insomnia",
-    _id: "68ebe9eee56be7d4db6a1f1f",
+    _id: "6904a969d6f129bb595058a8",
   },
   {
     name: "Redux",
-    _id: "68ebe9eee56be7d4db6a1f20",
+    _id: "6904a969d6f129bb595058a9",
   },
   {
     name: "Redux Toolkit",
-    _id: "68ebe9eee56be7d4db6a1f21",
+    _id: "6904a969d6f129bb595058aa",
   },
   {
     name: "MobX",
-    _id: "68ebe9eee56be7d4db6a1f22",
+    _id: "6904a969d6f129bb595058ab",
   },
   {
     name: "Zustand",
-    _id: "68ebe9eee56be7d4db6a1f23",
+    _id: "6904a969d6f129bb595058ac",
   },
   {
     name: "Recoil",
-    _id: "68ebe9eee56be7d4db6a1f24",
+    _id: "6904a969d6f129bb595058ad",
   },
   {
     name: "Jotai",
-    _id: "68ebe9eee56be7d4db6a1f25",
+    _id: "6904a969d6f129bb595058ae",
   },
   {
     name: "XState",
-    _id: "68ebe9eee56be7d4db6a1f26",
+    _id: "6904a969d6f129bb595058af",
   },
   {
     name: "Context API",
-    _id: "68ebe9eee56be7d4db6a1f27",
+    _id: "6904a969d6f129bb595058b0",
   },
   {
     name: "Pinia",
-    _id: "68ebe9eee56be7d4db6a1f28",
+    _id: "6904a969d6f129bb595058b1",
   },
   {
     name: "Vuex",
-    _id: "68ebe9eee56be7d4db6a1f29",
+    _id: "6904a969d6f129bb595058b2",
   },
   {
     name: "NgRx",
-    _id: "68ebe9eee56be7d4db6a1f2a",
+    _id: "6904a969d6f129bb595058b3",
   },
   {
     name: "REST API",
-    _id: "68ebe9eee56be7d4db6a1f2b",
+    _id: "6904a969d6f129bb595058b4",
   },
   {
     name: "GraphQL",
-    _id: "68ebe9eee56be7d4db6a1f2c",
+    _id: "6904a969d6f129bb595058b5",
   },
   {
     name: "Apollo",
-    _id: "68ebe9eee56be7d4db6a1f2d",
+    _id: "6904a969d6f129bb595058b6",
   },
   {
     name: "tRPC",
-    _id: "68ebe9eee56be7d4db6a1f2e",
+    _id: "6904a969d6f129bb595058b7",
   },
   {
     name: "gRPC",
-    _id: "68ebe9eee56be7d4db6a1f2f",
+    _id: "6904a969d6f129bb595058b8",
   },
   {
     name: "WebSockets",
-    _id: "68ebe9eee56be7d4db6a1f30",
+    _id: "6904a969d6f129bb595058b9",
   },
   {
     name: "Socket.io",
-    _id: "68ebe9eee56be7d4db6a1f31",
+    _id: "6904a969d6f129bb595058ba",
   },
   {
     name: "JSON",
-    _id: "68ebe9eee56be7d4db6a1f32",
+    _id: "6904a969d6f129bb595058bb",
   },
   {
     name: "XML",
-    _id: "68ebe9eee56be7d4db6a1f33",
+    _id: "6904a969d6f129bb595058bc",
   },
   {
     name: "OpenAPI",
-    _id: "68ebe9eee56be7d4db6a1f34",
+    _id: "6904a969d6f129bb595058bd",
   },
   {
     name: "Swagger",
-    _id: "68ebe9eee56be7d4db6a1f35",
+    _id: "6904a969d6f129bb595058be",
   },
   {
     name: "OAuth",
-    _id: "68ebe9eee56be7d4db6a1f36",
+    _id: "6904a969d6f129bb595058bf",
   },
   {
     name: "JWT",
-    _id: "68ebe9eee56be7d4db6a1f37",
+    _id: "6904a969d6f129bb595058c0",
   },
   {
     name: "Auth0",
-    _id: "68ebe9eee56be7d4db6a1f38",
+    _id: "6904a969d6f129bb595058c1",
   },
   {
     name: "Firebase Auth",
-    _id: "68ebe9eee56be7d4db6a1f39",
+    _id: "6904a969d6f129bb595058c2",
   },
   {
     name: "NextAuth",
-    _id: "68ebe9eee56be7d4db6a1f3a",
+    _id: "6904a969d6f129bb595058c3",
   },
   {
     name: "Passport.js",
-    _id: "68ebe9eee56be7d4db6a1f3b",
+    _id: "6904a969d6f129bb595058c4",
   },
   {
     name: "Keycloak",
-    _id: "68ebe9eee56be7d4db6a1f3c",
+    _id: "6904a969d6f129bb595058c5",
   },
   {
     name: "Okta",
-    _id: "68ebe9eee56be7d4db6a1f3d",
+    _id: "6904a969d6f129bb595058c6",
   },
   {
     name: "Kafka",
-    _id: "68ebe9eee56be7d4db6a1f3e",
+    _id: "6904a969d6f129bb595058c7",
   },
   {
     name: "RabbitMQ",
-    _id: "68ebe9eee56be7d4db6a1f3f",
+    _id: "6904a969d6f129bb595058c8",
   },
   {
     name: "MQTT",
-    _id: "68ebe9eee56be7d4db6a1f40",
+    _id: "6904a969d6f129bb595058c9",
   },
   {
     name: "Apache Pulsar",
-    _id: "68ebe9eee56be7d4db6a1f41",
+    _id: "6904a969d6f129bb595058ca",
   },
   {
     name: "Redis Pub/Sub",
-    _id: "68ebe9eee56be7d4db6a1f42",
+    _id: "6904a969d6f129bb595058cb",
   },
   {
     name: "AWS SQS",
-    _id: "68ebe9eee56be7d4db6a1f43",
+    _id: "6904a969d6f129bb595058cc",
   },
   {
     name: "AWS SNS",
-    _id: "68ebe9eee56be7d4db6a1f44",
+    _id: "6904a969d6f129bb595058cd",
   },
   {
     name: "Elasticsearch",
-    _id: "68ebe9eee56be7d4db6a1f45",
+    _id: "6904a969d6f129bb595058ce",
   },
   {
     name: "Algolia",
-    _id: "68ebe9eee56be7d4db6a1f46",
+    _id: "6904a969d6f129bb595058cf",
   },
   {
     name: "Meilisearch",
-    _id: "68ebe9eee56be7d4db6a1f47",
+    _id: "6904a969d6f129bb595058d0",
   },
   {
     name: "Typesense",
-    _id: "68ebe9eee56be7d4db6a1f48",
+    _id: "6904a969d6f129bb595058d1",
   },
   {
     name: "Solr",
-    _id: "68ebe9eee56be7d4db6a1f49",
+    _id: "6904a969d6f129bb595058d2",
   },
   {
     name: "WordPress",
-    _id: "68ebe9eee56be7d4db6a1f4a",
+    _id: "6904a969d6f129bb595058d3",
   },
   {
     name: "Contentful",
-    _id: "68ebe9eee56be7d4db6a1f4b",
+    _id: "6904a969d6f129bb595058d4",
   },
   {
     name: "Strapi",
-    _id: "68ebe9eee56be7d4db6a1f4c",
+    _id: "6904a969d6f129bb595058d5",
   },
   {
     name: "Sanity",
-    _id: "68ebe9eee56be7d4db6a1f4d",
+    _id: "6904a969d6f129bb595058d6",
   },
   {
     name: "Ghost",
-    _id: "68ebe9eee56be7d4db6a1f4e",
+    _id: "6904a969d6f129bb595058d7",
   },
   {
     name: "Prismic",
-    _id: "68ebe9eee56be7d4db6a1f4f",
+    _id: "6904a969d6f129bb595058d8",
   },
   {
     name: "Directus",
-    _id: "68ebe9eee56be7d4db6a1f50",
+    _id: "6904a969d6f129bb595058d9",
   },
   {
     name: "Payload CMS",
-    _id: "68ebe9eee56be7d4db6a1f51",
+    _id: "6904a969d6f129bb595058da",
   },
   {
     name: "Webpack",
-    _id: "68ebe9eee56be7d4db6a1f52",
+    _id: "6904a969d6f129bb595058db",
   },
   {
     name: "Vite",
-    _id: "68ebe9eee56be7d4db6a1f53",
+    _id: "6904a969d6f129bb595058dc",
   },
   {
     name: "Rollup",
-    _id: "68ebe9eee56be7d4db6a1f54",
+    _id: "6904a969d6f129bb595058dd",
   },
   {
     name: "Parcel",
-    _id: "68ebe9eee56be7d4db6a1f55",
+    _id: "6904a969d6f129bb595058de",
   },
   {
     name: "esbuild",
-    _id: "68ebe9eee56be7d4db6a1f56",
+    _id: "6904a969d6f129bb595058df",
   },
   {
     name: "Turbopack",
-    _id: "68ebe9eee56be7d4db6a1f57",
+    _id: "6904a969d6f129bb595058e0",
   },
   {
     name: "SWC",
-    _id: "68ebe9eee56be7d4db6a1f58",
+    _id: "6904a969d6f129bb595058e1",
   },
   {
     name: "Babel",
-    _id: "68ebe9eee56be7d4db6a1f59",
+    _id: "6904a969d6f129bb595058e2",
   },
   {
     name: "Gulp",
-    _id: "68ebe9eee56be7d4db6a1f5a",
+    _id: "6904a969d6f129bb595058e3",
   },
   {
     name: "Grunt",
-    _id: "68ebe9eee56be7d4db6a1f5b",
+    _id: "6904a969d6f129bb595058e4",
   },
   {
     name: "npm",
-    _id: "68ebe9eee56be7d4db6a1f5c",
+    _id: "6904a969d6f129bb595058e5",
   },
   {
     name: "Yarn",
-    _id: "68ebe9eee56be7d4db6a1f5d",
+    _id: "6904a969d6f129bb595058e6",
   },
   {
     name: "pnpm",
-    _id: "68ebe9eee56be7d4db6a1f5e",
+    _id: "6904a969d6f129bb595058e7",
   },
   {
     name: "pip",
-    _id: "68ebe9eee56be7d4db6a1f5f",
+    _id: "6904a969d6f129bb595058e8",
   },
   {
     name: "Composer",
-    _id: "68ebe9eee56be7d4db6a1f60",
+    _id: "6904a969d6f129bb595058e9",
   },
   {
     name: "Maven",
-    _id: "68ebe9eee56be7d4db6a1f61",
+    _id: "6904a969d6f129bb595058ea",
   },
   {
     name: "Gradle",
-    _id: "68ebe9eee56be7d4db6a1f62",
+    _id: "6904a969d6f129bb595058eb",
   },
   {
     name: "NuGet",
-    _id: "68ebe9eee56be7d4db6a1f63",
+    _id: "6904a969d6f129bb595058ec",
   },
   {
     name: "Python",
-    _id: "68ebe9eee56be7d4db6a1f64",
+    _id: "6904a969d6f129bb595058ed",
   },
   {
     name: "Java",
-    _id: "68ebe9eee56be7d4db6a1f65",
+    _id: "6904a969d6f129bb595058ee",
   },
   {
     name: "Go",
-    _id: "68ebe9eee56be7d4db6a1f66",
+    _id: "6904a969d6f129bb595058ef",
   },
   {
     name: "Rust",
-    _id: "68ebe9eee56be7d4db6a1f67",
+    _id: "6904a969d6f129bb595058f0",
   },
   {
     name: "C",
-    _id: "68ebe9eee56be7d4db6a1f68",
+    _id: "6904a969d6f129bb595058f1",
   },
   {
     name: "C++",
-    _id: "68ebe9eee56be7d4db6a1f69",
+    _id: "6904a969d6f129bb595058f2",
   },
   {
     name: "PHP",
-    _id: "68ebe9eee56be7d4db6a1f6a",
+    _id: "6904a969d6f129bb595058f3",
   },
   {
     name: "Ruby",
-    _id: "68ebe9eee56be7d4db6a1f6b",
+    _id: "6904a969d6f129bb595058f4",
   },
   {
     name: "Scala",
-    _id: "68ebe9eee56be7d4db6a1f6c",
+    _id: "6904a969d6f129bb595058f5",
   },
   {
     name: "Elixir",
-    _id: "68ebe9eee56be7d4db6a1f6d",
+    _id: "6904a969d6f129bb595058f6",
   },
   {
     name: "Clojure",
-    _id: "68ebe9eee56be7d4db6a1f6e",
+    _id: "6904a969d6f129bb595058f7",
   },
   {
     name: "Haskell",
-    _id: "68ebe9eee56be7d4db6a1f6f",
+    _id: "6904a969d6f129bb595058f8",
   },
   {
     name: "Dart",
-    _id: "68ebe9eee56be7d4db6a1f70",
+    _id: "6904a969d6f129bb595058f9",
   },
   {
     name: "Objective-C",
-    _id: "68ebe9eee56be7d4db6a1f71",
+    _id: "6904a969d6f129bb595058fa",
   },
   {
     name: "R",
-    _id: "68ebe9eee56be7d4db6a1f72",
+    _id: "6904a969d6f129bb595058fb",
   },
   {
     name: "Julia",
-    _id: "68ebe9eee56be7d4db6a1f73",
+    _id: "6904a969d6f129bb595058fc",
   },
   {
     name: "Lua",
-    _id: "68ebe9eee56be7d4db6a1f74",
+    _id: "6904a969d6f129bb595058fd",
   },
   {
     name: "Perl",
-    _id: "68ebe9eee56be7d4db6a1f75",
+    _id: "6904a969d6f129bb595058fe",
   },
   {
     name: "TensorFlow",
-    _id: "68ebe9eee56be7d4db6a1f76",
+    _id: "6904a969d6f129bb595058ff",
   },
   {
     name: "PyTorch",
-    _id: "68ebe9eee56be7d4db6a1f77",
+    _id: "6904a969d6f129bb59505900",
   },
   {
     name: "Keras",
-    _id: "68ebe9eee56be7d4db6a1f78",
+    _id: "6904a969d6f129bb59505901",
   },
   {
     name: "scikit-learn",
-    _id: "68ebe9eee56be7d4db6a1f79",
+    _id: "6904a969d6f129bb59505902",
   },
   {
     name: "Pandas",
-    _id: "68ebe9eee56be7d4db6a1f7a",
+    _id: "6904a969d6f129bb59505903",
   },
   {
     name: "NumPy",
-    _id: "68ebe9eee56be7d4db6a1f7b",
+    _id: "6904a969d6f129bb59505904",
   },
   {
     name: "Jupyter",
-    _id: "68ebe9eee56be7d4db6a1f7c",
+    _id: "6904a969d6f129bb59505905",
   },
   {
     name: "OpenAI API",
-    _id: "68ebe9eee56be7d4db6a1f7d",
+    _id: "6904a969d6f129bb59505906",
   },
   {
     name: "Langchain",
-    _id: "68ebe9eee56be7d4db6a1f7e",
+    _id: "6904a969d6f129bb59505907",
   },
   {
     name: "Langgraph",
-    _id: "68ebe9eee56be7d4db6a1f7f",
+    _id: "6904a969d6f129bb59505908",
   },
   {
     name: "Langfuse",
-    _id: "68ebe9eee56be7d4db6a1f80",
+    _id: "6904a969d6f129bb59505909",
   },
   {
     name: "Machine Learning",
-    _id: "68ebe9eee56be7d4db6a1f81",
+    _id: "6904a969d6f129bb5950590a",
   },
   {
     name: "Deep Learning",
-    _id: "68ebe9eee56be7d4db6a1f82",
+    _id: "6904a969d6f129bb5950590b",
   },
   {
     name: "Natural Language Processing",
-    _id: "68ebe9eee56be7d4db6a1f83",
+    _id: "6904a969d6f129bb5950590c",
   },
   {
     name: "Computer Vision",
-    _id: "68ebe9eee56be7d4db6a1f84",
+    _id: "6904a969d6f129bb5950590d",
   },
   {
     name: "Data Analysis",
-    _id: "68ebe9eee56be7d4db6a1f85",
+    _id: "6904a969d6f129bb5950590e",
   },
   {
     name: "Qdrant",
-    _id: "68ebe9eee56be7d4db6a1f86",
+    _id: "6904a969d6f129bb5950590f",
   },
   {
     name: "Solidity",
-    _id: "68ebe9eee56be7d4db6a1f87",
+    _id: "6904a969d6f129bb59505910",
   },
   {
     name: "Ethereum",
-    _id: "68ebe9eee56be7d4db6a1f88",
+    _id: "6904a969d6f129bb59505911",
   },
   {
     name: "Web3.js",
-    _id: "68ebe9eee56be7d4db6a1f89",
+    _id: "6904a969d6f129bb59505912",
   },
   {
     name: "Ethers.js",
-    _id: "68ebe9eee56be7d4db6a1f8a",
+    _id: "6904a969d6f129bb59505913",
   },
   {
     name: "Smart Contracts",
-    _id: "68ebe9eee56be7d4db6a1f8b",
+    _id: "6904a969d6f129bb59505914",
   },
   {
     name: "Hardhat",
-    _id: "68ebe9eee56be7d4db6a1f8c",
+    _id: "6904a969d6f129bb59505915",
   },
   {
     name: "Truffle",
-    _id: "68ebe9eee56be7d4db6a1f8d",
+    _id: "6904a969d6f129bb59505916",
   },
   {
     name: "Unity",
-    _id: "68ebe9eee56be7d4db6a1f8e",
+    _id: "6904a969d6f129bb59505917",
   },
   {
     name: "Unreal Engine",
-    _id: "68ebe9eee56be7d4db6a1f8f",
+    _id: "6904a969d6f129bb59505918",
   },
   {
     name: "Godot",
-    _id: "68ebe9eee56be7d4db6a1f90",
+    _id: "6904a969d6f129bb59505919",
   },
   {
     name: "Phaser",
-    _id: "68ebe9eee56be7d4db6a1f91",
+    _id: "6904a969d6f129bb5950591a",
   },
   {
     name: "Three.js",
-    _id: "68ebe9eee56be7d4db6a1f92",
+    _id: "6904a969d6f129bb5950591b",
   },
   {
     name: "Babylon.js",
-    _id: "68ebe9eee56be7d4db6a1f93",
+    _id: "6904a969d6f129bb5950591c",
   },
   {
     name: "PixiJS",
-    _id: "68ebe9eee56be7d4db6a1f94",
+    _id: "6904a969d6f129bb5950591d",
   },
   {
     name: "Electron",
-    _id: "68ebe9eee56be7d4db6a1f95",
+    _id: "6904a969d6f129bb5950591e",
   },
   {
     name: "Tauri",
-    _id: "68ebe9eee56be7d4db6a1f96",
+    _id: "6904a969d6f129bb5950591f",
   },
   {
     name: "Qt",
-    _id: "68ebe9eee56be7d4db6a1f97",
+    _id: "6904a969d6f129bb59505920",
   },
   {
     name: "WPF",
-    _id: "68ebe9eee56be7d4db6a1f98",
+    _id: "6904a969d6f129bb59505921",
   },
   {
     name: "WinForms",
-    _id: "68ebe9eee56be7d4db6a1f99",
+    _id: "6904a969d6f129bb59505922",
   },
   {
     name: "GTK",
-    _id: "68ebe9eee56be7d4db6a1f9a",
+    _id: "6904a969d6f129bb59505923",
   },
   {
     name: "Linux",
-    _id: "68ebe9eee56be7d4db6a1f9b",
+    _id: "6904a969d6f129bb59505924",
   },
   {
     name: "Bash",
-    _id: "68ebe9eee56be7d4db6a1f9c",
+    _id: "6904a969d6f129bb59505925",
   },
   {
     name: "PowerShell",
-    _id: "68ebe9eee56be7d4db6a1f9d",
+    _id: "6904a969d6f129bb59505926",
   },
   {
     name: "Vim",
-    _id: "68ebe9eee56be7d4db6a1f9e",
+    _id: "6904a969d6f129bb59505927",
   },
   {
     name: "VS Code",
-    _id: "68ebe9eee56be7d4db6a1f9f",
+    _id: "6904a969d6f129bb59505928",
   },
   {
     name: "IntelliJ IDEA",
-    _id: "68ebe9eee56be7d4db6a1fa0",
+    _id: "6904a969d6f129bb59505929",
   },
   {
     name: "Eclipse",
-    _id: "68ebe9eee56be7d4db6a1fa1",
+    _id: "6904a969d6f129bb5950592a",
   },
   {
     name: "Xcode",
-    _id: "68ebe9eee56be7d4db6a1fa2",
+    _id: "6904a969d6f129bb5950592b",
   },
   {
     name: "Android Studio",
-    _id: "68ebe9eee56be7d4db6a1fa3",
+    _id: "6904a969d6f129bb5950592c",
   },
   {
     name: "Figma",
-    _id: "68ebe9eee56be7d4db6a1fa4",
+    _id: "6904a969d6f129bb5950592d",
   },
   {
     name: "Adobe XD",
-    _id: "68ebe9eee56be7d4db6a1fa5",
+    _id: "6904a969d6f129bb5950592e",
   },
   {
     name: "Sketch",
-    _id: "68ebe9eee56be7d4db6a1fa6",
+    _id: "6904a969d6f129bb5950592f",
   },
   {
     name: "Jira",
-    _id: "68ebe9eee56be7d4db6a1fa7",
+    _id: "6904a969d6f129bb59505930",
   },
   {
     name: "Confluence",
-    _id: "68ebe9eee56be7d4db6a1fa8",
+    _id: "6904a969d6f129bb59505931",
   },
   {
     name: "Notion",
-    _id: "68ebe9eee56be7d4db6a1fa9",
+    _id: "6904a969d6f129bb59505932",
   },
   {
     name: "Slack",
-    _id: "68ebe9eee56be7d4db6a1faa",
+    _id: "6904a969d6f129bb59505933",
   },
   {
     name: "Discord",
-    _id: "68ebe9eee56be7d4db6a1fab",
+    _id: "6904a969d6f129bb59505934",
   },
   {
     name: "Agile",
-    _id: "68ebe9eee56be7d4db6a1fac",
+    _id: "6904a969d6f129bb59505935",
   },
   {
     name: "Scrum",
-    _id: "68ebe9eee56be7d4db6a1fad",
+    _id: "6904a969d6f129bb59505936",
   },
   {
     name: "Kanban",
-    _id: "68ebe9eee56be7d4db6a1fae",
+    _id: "6904a969d6f129bb59505937",
   },
   {
     name: "Microservices",
-    _id: "68ebe9eee56be7d4db6a1faf",
+    _id: "6904a969d6f129bb59505938",
   },
   {
     name: "Monorepo",
-    _id: "68ebe9eee56be7d4db6a1fb0",
+    _id: "6904a969d6f129bb59505939",
   },
   {
     name: "Serverless",
-    _id: "68ebe9eee56be7d4db6a1fb1",
+    _id: "6904a969d6f129bb5950593a",
   },
   {
     name: "JAMstack",
-    _id: "68ebe9eee56be7d4db6a1fb2",
+    _id: "6904a969d6f129bb5950593b",
   },
   {
     name: "Progressive Web Apps",
-    _id: "68ebe9eee56be7d4db6a1fb3",
+    _id: "6904a969d6f129bb5950593c",
   },
   {
     name: "Responsive Design",
-    _id: "68ebe9eee56be7d4db6a1fb4",
+    _id: "6904a969d6f129bb5950593d",
   },
   {
     name: "Accessibility",
-    _id: "68ebe9eee56be7d4db6a1fb5",
+    _id: "6904a969d6f129bb5950593e",
   },
   {
     name: "SEO",
-    _id: "68ebe9eee56be7d4db6a1fb6",
+    _id: "6904a969d6f129bb5950593f",
   },
   {
     name: "Performance Optimization",
-    _id: "68ebe9eee56be7d4db6a1fb7",
+    _id: "6904a969d6f129bb59505940",
   },
   {
     name: "Code Review",
-    _id: "68ebe9eee56be7d4db6a1fb8",
+    _id: "6904a969d6f129bb59505941",
   },
   {
     name: "Technical Writing",
-    _id: "68ebe9eee56be7d4db6a1fb9",
+    _id: "6904a969d6f129bb59505942",
   },
   {
     name: "System Design",
-    _id: "68ebe9eee56be7d4db6a1fba",
+    _id: "6904a969d6f129bb59505943",
   },
   {
     name: "Design Patterns",
-    _id: "68ebe9eee56be7d4db6a1fbb",
+    _id: "6904a969d6f129bb59505944",
   },
   {
     name: "Data Structures",
-    _id: "68ebe9eee56be7d4db6a1fbc",
+    _id: "6904a969d6f129bb59505945",
   },
   {
     name: "Algorithms",
-    _id: "68ebe9eee56be7d4db6a1fbd",
+    _id: "6904a969d6f129bb59505946",
   },
 ];
 
@@ -1975,44 +2055,28 @@ const generateSkills = () => {
     .map((skill) => ({ _id: skill._id, name: skill.name }));
 };
 
-const maleWithPic = names.male.map((name, index) => ({
-  name,
-  profilePicture: `https://randomuser.me/api/portraits/men/${index}.jpg`,
-  gender: "male",
-}));
+export const dummyUsersData = users.map((user, index) => {
+  const cityIndex = index % cities.length;
 
-const femaleWithPic = names.female.map((name, index) => ({
-  name,
-  profilePicture: `https://randomuser.me/api/portraits/women/${index}.jpg`,
-  gender: "female",
-}));
-
-export const dummyUsersData = [...maleWithPic, ...femaleWithPic].map(
-  (user, index) => {
-    const aboutIndex = Math.floor(Math.random() * 50); // Always 0–49
-    // ensure cityIndex never exceeds cities.length - 1
-    const cityIndex = index % cities.length;
-
-    return {
-      name: user.name,
-      email: `${user.name.replace(" ", "")!.toLowerCase()}@devtinder.com`,
-      password: "$2b$12$l28iPzQcY2rfzxCwTH4JUON1nt4e6j9DHkXTWLgLCFW8q5aCn7sGu",
-      gender: user.gender,
-      isEmailVerified: true,
-      onboardingCompleted: true,
-      about: abouts[aboutIndex],
-      location: {
-        city: cities[cityIndex]?.city,
-        state: cities[cityIndex]?.state,
-        country: cities[cityIndex]?.country,
-        coords: {
-          type: "Point",
-          coordinates: cities[cityIndex]?.coords,
-        },
+  return {
+    name: user.name,
+    email: `${user.name.replace(" ", "")!.toLowerCase()}@devtinder.com`,
+    password: "$2b$12$l28iPzQcY2rfzxCwTH4JUON1nt4e6j9DHkXTWLgLCFW8q5aCn7sGu",
+    gender: index <= 32 ? "male" : "female",
+    isEmailVerified: true,
+    onboardingCompleted: true,
+    about: user.about,
+    location: {
+      city: cities[cityIndex]?.city,
+      state: cities[cityIndex]?.state,
+      country: cities[cityIndex]?.country,
+      coords: {
+        type: "Point",
+        coordinates: cities[cityIndex]?.coords,
       },
-      dateOfBirth: generateDOB(),
-      profilePicture: user.profilePicture,
-      skills: generateSkills(),
-    };
-  }
-);
+    },
+    dateOfBirth: generateDOB(),
+    profilePicture: user.picture,
+    skills: generateSkills(),
+  };
+});

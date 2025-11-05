@@ -7,19 +7,16 @@ import type { User } from "@/types/user";
 import { handleApiError } from "@/utils/error";
 import { tryCatch } from "@/utils/try-catch";
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { Flame, UserX, AlertTriangle } from "lucide-react";
-import {
-  IconAlertCircle,
-  IconAlertHexagon,
-  IconUserX,
-} from "@tabler/icons-react";
+
+import { IconAlertHexagon, IconUserX } from "@tabler/icons-react";
+import { ViewProfileModal } from "@/components/ViewProfileModal";
 
 const Feed = () => {
   const limit = 20;
   const [cursor, setCursor] = useState<string | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [createConnection] = useCreateConnectionMutation();
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
 
   const {
     data: feed,
@@ -117,38 +114,61 @@ const Feed = () => {
   if (users.length === 0) return <AppLoader />;
 
   return (
-    <div className="mt-24 flex items-center justify-center">
-      <Card className="max-w-sm">
-        <CardContent className="flex items-center flex-col">
-          <img
-            src={users[0].profilePicture}
-            alt="user-profile"
-            height={250}
-            width={250}
-          />
-
-          <div className="mt-3 mb-6 text-center">
-            <div className="text-2xl">{users[0].name}</div>
-            <p className="text-center line-clamp-1 text-sm">{users[0].about}</p>
+    <div className="mt-20 flex items-center justify-center px-4">
+      <Card className="max-w-sm w-full bg-card/50 border border-rose-500/10 backdrop-blur-md shadow-[0_0_25px_-8px_rgba(225,29,72,0.2)] rounded-2xl">
+        <CardContent className="flex flex-col items-center p-6">
+          {/* Profile Image */}
+          <div className="relative">
+            <div className="absolute inset-0 blur-2xl bg-rose-500/30 rounded-full scale-110" />
+            <img
+              src={users[0].profilePicture}
+              alt={`${users[0].name}'s profile`}
+              height={167}
+              width={250}
+              className="rounded-xl object-cover object-center shadow-lg relative z-10 h-[167px] w-[250px]"
+              onClick={() => {
+                setSelectedUser(users[0]);
+              }}
+            />
           </div>
 
-          <div className="flex gap-10">
+          {/* Name & Bio */}
+          <div className="mt-6 mb-8 text-center space-y-1">
+            <h2 className="text-2xl font-semibold text-foreground">
+              {users[0].name}
+            </h2>
+            <p className="text-sm text-muted-foreground line-clamp-2 max-w-[220px] mx-auto">
+              {users[0].about || "No bio available"}
+            </p>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex gap-6">
             <Button
               onClick={() => handleAction(users[0]._id, "ignored")}
-              className="cursor-pointer"
-              variant={"secondary"}
+              variant="secondary"
+              className="w-24 h-10 text-sm rounded-full border border-neutral-700 hover:bg-neutral-800 transition-colors"
             >
               Ignore
             </Button>
+
             <Button
               onClick={() => handleAction(users[0]._id, "interested")}
-              className="cursor-pointer"
+              className="w-28 h-10 text-sm rounded-full bg-rose-600 hover:bg-rose-700 text-white shadow-[0_0_12px_rgba(225,29,72,0.3)] transition-all"
             >
               Interested
             </Button>
           </div>
         </CardContent>
       </Card>
+
+      {selectedUser && (
+        <ViewProfileModal
+          open={!!selectedUser}
+          onOpenChange={() => setSelectedUser(null)}
+          user={selectedUser}
+        />
+      )}
     </div>
   );
 };

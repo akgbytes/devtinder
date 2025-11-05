@@ -11,10 +11,7 @@ export const connectDB = async () => {
     });
     logger.info("MongoDB connected successfully");
   } catch (error: any) {
-    logger.error(
-      "Error while connecting to MongoDB: ",
-      error.message || "Unknown error"
-    );
+    logger.error(`Error while connecting to MongoDB: ${error.message}`);
     process.exit(1);
   }
 };

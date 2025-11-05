@@ -1,11 +1,6 @@
 import { logger } from "@/config/logger";
 import { getCache, setCache } from "@/utils/cache";
-import {
-  ApiError,
-  ApiResponse,
-  asyncHandler,
-  handleZodError,
-} from "@/utils/core";
+import { ApiResponse, asyncHandler, handleZodError } from "@/utils/core";
 import { getPlacesAutoComplete } from "@/utils/google-maps";
 import { validateAutocompleteInput } from "@/validations/place.validations";
 

@@ -8,34 +8,24 @@ import {
   passwordSchema,
 } from "./helper";
 
-const completeProfileSchema = z.object({
-  email: emailSchema,
-  name: nameSchema,
-
+const profilePictureSchema = z.object({
   profilePicture: z.url({
     error: (issue) =>
       issue.input === undefined
         ? "Profile picture is required"
         : "Profile picture must be a valid URL",
   }),
+});
 
+const aboutSchema = z.object({
   about: z
     .string(createFieldError("About"))
     .trim()
     .min(10, "About must be at least 10 characters long")
     .max(1000, "About must not exceed 1000 characters"),
+});
 
-  gender: z.enum(Gender, {
-    error: (issue) =>
-      issue.input === undefined
-        ? "Gender is required"
-        : `Invalid gender value. Must be one of: ${Object.values(Gender).join(
-            ", "
-          )}`,
-  }),
-
-  dateOfBirth: dateOfBirthSchema,
-
+const skillsSchema = z.object({
   skills: z.array(
     z.object({
       _id: z
@@ -50,6 +40,26 @@ const completeProfileSchema = z.object({
         .max(100, "Skill name must not exceed 100 characters"),
     })
   ),
+});
+
+const completeProfileSchema = z.object({
+  email: emailSchema,
+  name: nameSchema,
+
+  ...profilePictureSchema.shape,
+  ...aboutSchema.shape,
+  ...skillsSchema.shape,
+
+  gender: z.enum(Gender, {
+    error: (issue) =>
+      issue.input === undefined
+        ? "Gender is required"
+        : `Invalid gender value. Must be one of: ${Object.values(Gender).join(
+            ", "
+          )}`,
+  }),
+
+  dateOfBirth: dateOfBirthSchema,
 
   location: z.object({
     placeId: z
@@ -80,15 +90,7 @@ const completeProfileSchema = z.object({
   }),
 });
 
-type k = z.infer<typeof completeProfileSchema>;
-
-export const updateProfileSchema = completeProfileSchema
-  .omit({
-    email: true,
-  })
-  .partial();
-
-export const changePasswordSchema = z
+const changePasswordSchema = z
   .object({
     currentPassword: z.string().min(1, "Current password is required"),
     newPassword: passwordSchema,
@@ -101,7 +103,9 @@ export const changePasswordSchema = z
 
 export const validateCompleteProfile = (data: unknown) =>
   completeProfileSchema.safeParse(data);
-export const validateUpdateProfile = (data: unknown) =>
-  updateProfileSchema.safeParse(data);
+export const validateProfilePicture = (data: unknown) =>
+  profilePictureSchema.safeParse(data);
+export const validateAbout = (data: unknown) => aboutSchema.safeParse(data);
+export const validateSkills = (data: unknown) => skillsSchema.safeParse(data);
 export const validateChangePassword = (data: unknown) =>
   changePasswordSchema.safeParse(data);

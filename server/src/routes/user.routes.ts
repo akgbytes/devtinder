@@ -2,8 +2,9 @@ import { Router } from "express";
 import { authMiddleware } from "@/middlewares/auth.middleware";
 import {
   getProfile,
-  updateProfile,
-  changePassword,
+  updateProfilePicture,
+  updateSkills,
+  updateAbout,
   getConnections,
   getReceivedRequests,
   getUserFeed,
@@ -12,12 +13,11 @@ import {
 
 const router = Router();
 
-router
-  .route("/profile")
-  .all(authMiddleware)
-  .get(getProfile)
-  .patch(updateProfile);
-router.patch("/profile/password", authMiddleware, changePassword);
+router.route("/profile").all(authMiddleware).get(getProfile);
+
+router.patch("/profile/picture", authMiddleware, updateProfilePicture);
+router.patch("/profile/about", authMiddleware, updateAbout);
+router.patch("/profile/skills", authMiddleware, updateSkills);
 router.post("/profile/complete", completeProfile);
 
 router.get("/connections", authMiddleware, getConnections);

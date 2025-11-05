@@ -15,8 +15,14 @@ import { tryCatch } from "@/utils/try-catch";
 import { handleApiError } from "@/utils/error";
 import { useSnackbar } from "notistack";
 import { clearUser } from "@/store/slices/authSlice";
-import { Gem, HeartHandshake, Home, Mail, User } from "lucide-react";
-import { IconLogout } from "@tabler/icons-react";
+import {
+  IconDiamond,
+  IconHeartHandshake,
+  IconHome,
+  IconLogout,
+  IconMail,
+  IconUser,
+} from "@tabler/icons-react";
 
 const UserButton = () => {
   const navigate = useNavigate();
@@ -76,9 +82,17 @@ const UserButton = () => {
           <DropdownMenuGroup>
             <DropdownMenuItem
               className="cursor-pointer"
+              onClick={() => navigate("/")}
+            >
+              <IconHome className="size-4" aria-hidden="true" />
+              <span>Home</span>
+            </DropdownMenuItem>
+
+            <DropdownMenuItem
+              className="cursor-pointer"
               onClick={() => navigate("/user/profile")}
             >
-              <User className="size-4" aria-hidden="true" />
+              <IconUser className="size-4" aria-hidden="true" />
               <span>Profile</span>
             </DropdownMenuItem>
 
@@ -86,7 +100,7 @@ const UserButton = () => {
               className="cursor-pointer"
               onClick={() => navigate("/pricing")}
             >
-              <Gem className="size-4" aria-hidden="true" />
+              <IconDiamond className="size-4" aria-hidden="true" />
               <span>Premium</span>
             </DropdownMenuItem>
 
@@ -94,7 +108,7 @@ const UserButton = () => {
               className="cursor-pointer"
               onClick={() => navigate("/user/connections")}
             >
-              <HeartHandshake className="size-4" aria-hidden="true" />
+              <IconHeartHandshake className="size-4" aria-hidden="true" />
               <span>Connections</span>
             </DropdownMenuItem>
 
@@ -102,7 +116,7 @@ const UserButton = () => {
               className="cursor-pointer"
               onClick={() => navigate("/user/requests")}
             >
-              <Mail className="size-4" aria-hidden="true" />
+              <IconMail className="size-4" aria-hidden="true" />
               <span>Requests</span>
             </DropdownMenuItem>
           </DropdownMenuGroup>

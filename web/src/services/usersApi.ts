@@ -50,6 +50,36 @@ const userApi = api.injectEndpoints({
         `/users/feed/?cursor=${cursor}&limit=${limit}`,
       providesTags: ["Feed"],
     }),
+
+    updateProfilePicture: builder.mutation<
+      ApiResponse<User>,
+      { profilePicture: string }
+    >({
+      query: (payload) => ({
+        url: "/users/profile/picture",
+        method: "PATCH",
+        body: payload,
+      }),
+      invalidatesTags: ["User"],
+    }),
+
+    updateAbout: builder.mutation<ApiResponse<User>, { about: string }>({
+      query: (payload) => ({
+        url: "/users/profile/about",
+        method: "PATCH",
+        body: payload,
+      }),
+      invalidatesTags: ["User"],
+    }),
+
+    updateSkills: builder.mutation<ApiResponse<User>, { skills: Skill[] }>({
+      query: (payload) => ({
+        url: "/users/profile/skills",
+        method: "PATCH",
+        body: payload,
+      }),
+      invalidatesTags: ["User"],
+    }),
   }),
 });
 
@@ -61,4 +91,7 @@ export const {
   useGetRequestsQuery,
   useGetFeedQuery,
   usePrefetch,
+  useUpdateAboutMutation,
+  useUpdateProfilePictureMutation,
+  useUpdateSkillsMutation,
 } = userApi;

@@ -63,6 +63,7 @@ app.use((req, res) => {
 });
 
 import { errorHandler } from "@/middlewares/error.middleware";
+import { authMiddleware } from "./middlewares/auth.middleware";
 
 app.use(errorHandler);
 

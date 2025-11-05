@@ -17,6 +17,7 @@ import Requests from "@/pages/Requests";
 import AuthRoutes from "./AuthRoutes";
 import Pricing from "@/pages/Pricing";
 import AppLoader from "@/components/AppLoader";
+import ProfilePage from "@/pages/ProfilePage";
 
 const AppRoutes = () => {
   const [getUser, { isLoading }] = useLazyGetUserProfileQuery();
@@ -46,7 +47,7 @@ const AppRoutes = () => {
       <Route element={<MainLayout />}>
         <Route element={<ProtectedRoutes />}>
           <Route path="/" element={<Feed />} />
-          <Route path="/user/profile" element={<Feed />} />
+          <Route path="/user/profile" element={<ProfilePage />} />
           <Route path="/user/connections" element={<Connections />} />
           <Route path="/user/requests" element={<Requests />} />
         </Route>
