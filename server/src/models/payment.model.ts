@@ -7,7 +7,7 @@ export interface IPayment {
   currency: string;
   amount: number;
   receipt: string;
-  metadata: Record<string, string>;
+  metadata: Record<string, any>;
   status: string;
   createdAt: Date;
   updatedAt: Date;
@@ -48,8 +48,8 @@ export const paymentSchema = new Schema<IPayment, PaymentModel>(
       required: true,
     },
     metadata: {
-      type: Map,
-      of: String,
+      type: Schema.Types.Mixed,
+      default: {},
     },
   },
   { timestamps: true }

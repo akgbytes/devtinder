@@ -49,6 +49,7 @@ export const createOrder = asyncHandler(async (req, res) => {
 });
 
 export const paymentWebhook = asyncHandler(async (req, res) => {
+  console.log("webhook called");
   const signature = req.headers["x-razorpay-signature"] as string;
 
   if (!signature) {

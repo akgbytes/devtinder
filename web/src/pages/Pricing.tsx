@@ -5,11 +5,12 @@ import { tryCatch } from "@/utils/try-catch";
 import { handleApiError } from "@/utils/error";
 import { useSnackbar } from "notistack";
 import { RAZORPAY_KEY_ID } from "@/constants";
-import { useAppSelector } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { useNavigate } from "react-router";
 import { useEffect } from "react";
 import confetti from "canvas-confetti";
 import { useLazyGetUserProfileQuery } from "@/services/usersApi";
+import { setUser } from "@/store/slices/authSlice";
 
 const INCLUDED_FEATURES = [
   "Verified blue tick badge",
@@ -20,13 +21,11 @@ const INCLUDED_FEATURES = [
 
 const Pricing = () => {
   const { user } = useAppSelector((state) => state.auth);
+  const dispatch = useAppDispatch();
   const { enqueueSnackbar } = useSnackbar();
   const [createOrder, { isLoading }] = useCreateOrderMutation();
   const [fetchUser, {}] = useLazyGetUserProfileQuery();
-
   const navigate = useNavigate();
-
-  const verifyStatus = async (orderId: string) => {};
 
   const onClick = async () => {
     if (!user) {
@@ -65,10 +64,6 @@ const Pricing = () => {
       const paymentObject = new window.Razorpay({
         ...options,
         handler: async (response) => {
-          // Verify payment status
-          // verifyStatus()
-
-          // if status is completed
           const { data, error } = await tryCatch(fetchUser().unwrap());
 
           if (error) {
@@ -76,6 +71,7 @@ const Pricing = () => {
           }
 
           if (data) {
+            dispatch(setUser(data.data));
             localStorage.setItem("justUpgraded", "true");
           }
         },
@@ -93,7 +89,7 @@ const Pricing = () => {
       });
       localStorage.removeItem("justUpgraded");
     }
-  });
+  }, [user]);
 
   if (user?.isPremium) {
     return (
@@ -107,7 +103,7 @@ const Pricing = () => {
           like verified badge, unlimited connections, and more.
         </p>
         <Button
-          onClick={() => (window.location.href = "/app")}
+          onClick={() => (window.location.href = "/")}
           className="mt-6 bg-rose-600 hover:bg-rose-700 text-white cursor-pointer"
         >
           Go to Home

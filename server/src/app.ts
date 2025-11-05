@@ -7,7 +7,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: env.APP_URL,
+    origin: [env.APP_URL],
     credentials: true,
     allowedHeaders: [
       "Content-Type",

@@ -9,7 +9,8 @@
     "build": "tsc -p tsconfig.json && tsc-alias",
     "start": "node dist/index.js",
     "worker": "tsx watch src/jobs/workers/email.worker.ts",
-    "all": "concurrently -n server,worker -c green,cyan \"pnpm run dev\" \"pnpm run worker\""
+    "webhook": "ngrok http 8080",
+    "all": "concurrently -n server,worker -c green,cyan \"pnpm run dev\" \"pnpm run worker\" \"ngrok http 8080\""
   },
   "keywords": [],
   "author": "",
