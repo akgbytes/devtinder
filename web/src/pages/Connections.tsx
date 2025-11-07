@@ -1,10 +1,13 @@
 import { Card, CardContent } from "@/components/ui/card";
-
 import { HeartHandshake } from "lucide-react";
 import { useGetConnectionsQuery } from "@/services/usersApi";
 import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import type { User } from "@/types/user";
+import { ViewProfileModal } from "@/components/ViewProfileModal";
 
 const Connections = () => {
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const { data, isLoading, isError } = useGetConnectionsQuery();
 
   if (isLoading) {
@@ -26,12 +29,15 @@ const Connections = () => {
         {data.data.length === 0 && <p>No connections yet.</p>}
         {data.data.map((connection) => (
           <Card key={connection._id}>
-            <CardContent className="flex justify-between">
-              <div className="flex items-center gap-3">
+            <CardContent className="flex flex-col sm:flex-row w-full justify-between items-center gap-3">
+              <div className="flex flex-col sm:flex-row gap-4 items-center">
                 <img
                   src={connection.profilePicture}
                   alt={connection.name}
-                  className="h-10 w-10 rounded-full object-cover"
+                  className="size-24 sm:size-10 rounded-full object-cover"
+                  onClick={() => {
+                    setSelectedUser(connection);
+                  }}
                 />
                 <span className="font-medium">{connection.name}</span>
               </div>
@@ -43,6 +49,14 @@ const Connections = () => {
           </Card>
         ))}
       </div>
+
+      {selectedUser && (
+        <ViewProfileModal
+          open={!!selectedUser}
+          onOpenChange={() => setSelectedUser(null)}
+          user={selectedUser}
+        />
+      )}
     </div>
   );
 };

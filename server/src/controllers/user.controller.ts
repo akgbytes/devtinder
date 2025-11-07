@@ -254,7 +254,12 @@ export const getReceivedRequests = asyncHandler(async (req, res) => {
     toUserId: userId,
     status: ConnectionRequestStatus.INTERESTED,
   })
-    .populate("fromUserId")
+    .populate({
+      path: "fromUserId",
+      populate: {
+        path: "skills",
+      },
+    })
     .sort({ createdAt: -1 });
 
   logger.info("Received requests fetched", {
