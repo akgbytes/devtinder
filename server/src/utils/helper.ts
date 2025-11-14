@@ -2,7 +2,6 @@ import { StatusCodes } from "http-status-codes";
 import mongoose from "mongoose";
 import { ApiError } from "./core";
 import crypto from "crypto";
-import { FullUser } from "@/types";
 
 export const validateObjectId = (id: string, entityName: string): void => {
   if (!mongoose.Types.ObjectId.isValid(id)) {

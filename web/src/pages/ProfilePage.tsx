@@ -37,9 +37,7 @@ export default function ProfilePage() {
 
     if (data) {
       setEditingAbout(false);
-      console.log("about update response: ", data);
       enqueueSnackbar({ message: data.message, variant: "success" });
-      // refetch user
     }
   };
 
@@ -64,7 +62,6 @@ export default function ProfilePage() {
 
     if (data) {
       setEditingAbout(false);
-      console.log("skill update response: ", data);
       enqueueSnackbar({ message: data.message, variant: "success" });
     }
   };
@@ -104,8 +101,7 @@ export default function ProfilePage() {
     user?.profilePicture || ""
   );
 
-  const [saveProfilePicture, { isLoading: profilePictureLoading }] =
-    useUpdateProfilePictureMutation();
+  const [saveProfilePicture] = useUpdateProfilePictureMutation();
 
   if (!user) return <p className="text-center mt-20">No profile found.</p>;
 
@@ -123,7 +119,6 @@ export default function ProfilePage() {
           <Uploader
             value={profilePicture}
             onChange={(url) => {
-              console.log("updated pic");
               setProfilePicture(url!);
             }}
             onUpload={(img) => {

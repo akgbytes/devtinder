@@ -77,7 +77,6 @@ const VerifyEmailDialog = ({
     }
 
     if (data) {
-      console.log("Response from resend otp \n", data);
       enqueueSnackbar({ variant: "success", message: data.message });
       startCountdown(60);
     }
@@ -93,7 +92,6 @@ const VerifyEmailDialog = ({
     }
 
     if (data) {
-      console.log("Response from email verify \n", data);
       enqueueSnackbar(data.message, { variant: "success" });
       onOpenChange(false);
       navigate(`/onboarding?name=${user.name}&email=${user.email}`);

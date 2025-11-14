@@ -1,5 +1,5 @@
 import { env } from "@/config/env";
-import { Client, LatLngLiteral } from "@googlemaps/google-maps-services-js";
+import { Client } from "@googlemaps/google-maps-services-js";
 import { ApiError } from "./core";
 import { StatusCodes } from "http-status-codes";
 import { logger } from "@/config/logger";

@@ -61,7 +61,6 @@ const Login = () => {
 
   const onSubmit = async (values: LoginFormValues) => {
     const { data, error } = await tryCatch(login(values).unwrap());
-    console.log("data from login: ", data);
 
     if (error) {
       handleApiError(error);

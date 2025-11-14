@@ -30,7 +30,6 @@ const AppRoutes = () => {
         dispatch(clearUser());
       }
       if (data) {
-        console.log("user profile: ", data);
         dispatch(setUser(data.data));
       }
     };

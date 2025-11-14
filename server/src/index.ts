@@ -1,7 +1,7 @@
 import { env } from "@/config/env";
 import { connectDB } from "@/config/db";
 import { logger } from "@/config/logger";
-import app from "@/app";
+import app from "./app";
 
 connectDB();
 

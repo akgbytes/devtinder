@@ -5,20 +5,24 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import type { User } from "@/types/user";
 import { ViewProfileModal } from "@/components/ViewProfileModal";
+import AppLoader from "@/components/AppLoader";
+import { useSnackbar } from "notistack";
+import { useAppSelector } from "@/store/hooks";
 
 const Connections = () => {
+  const currentUser = useAppSelector((state) => state.auth.user);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const { data, isLoading, isError } = useGetConnectionsQuery();
 
+  const { enqueueSnackbar } = useSnackbar();
+
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <AppLoader />;
   }
 
   if (isError || !data) {
     return <div>Error</div>;
   }
-
-  console.log("connections: ", data);
 
   return (
     <div className="p-4">
@@ -42,8 +46,29 @@ const Connections = () => {
                 <span className="font-medium">{connection.name}</span>
               </div>
 
-              <div>
-                <Button>Chat</Button>
+              <div className="flex items-center gap-2">
+                {/* View Profile button */}
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setSelectedUser(connection);
+                  }}
+                >
+                  View Profile
+                </Button>
+
+                {/* Only for premium users */}
+                {currentUser?.isPremium && (
+                  <Button
+                    onClick={() =>
+                      enqueueSnackbar("Chat feature will be available soon!", {
+                        variant: "info",
+                      })
+                    }
+                  >
+                    Chat
+                  </Button>
+                )}
               </div>
             </CardContent>
           </Card>

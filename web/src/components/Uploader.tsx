@@ -59,7 +59,7 @@ export function Uploader({
       }
     },
 
-    onUploadError: (err) => {
+    onUploadError: () => {
       setFileState((prevState) => {
         const updatedState = { ...prevState };
         return {

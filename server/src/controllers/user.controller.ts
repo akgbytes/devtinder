@@ -2,7 +2,6 @@ import { logger } from "@/config/logger";
 import { ConnectionRequest } from "@/models/connectionRequest.model";
 import { Skill } from "@/models/skill.model";
 import { User } from "@/models/user.model";
-import { FeedCursor, FullUser } from "@/types";
 import { getCache, setCache } from "@/utils/cache";
 import { ConnectionRequestStatus } from "@/utils/constants";
 import { setAuthCookies } from "@/utils/cookies";
@@ -78,7 +77,6 @@ export const completeProfile = asyncHandler(async (req, res) => {
 
   // Verify that skill IDs actually exist in the Skills collection
   const existingSkills = await Skill.find({ _id: { $in: validatedSkills } });
-  console.log("exist", existingSkills);
   if (existingSkills.length !== validatedSkills.length) {
     throw new ApiError(
       StatusCodes.BAD_REQUEST,
@@ -283,8 +281,6 @@ export const getReceivedRequests = asyncHandler(async (req, res) => {
 export const getConnections = asyncHandler(async (req, res) => {
   const userId = req.user._id;
 
-  logger.info("Fetching connections", { userId });
-
   const connections = await ConnectionRequest.find({
     status: ConnectionRequestStatus.ACCEPTED,
     $or: [{ fromUserId: userId }, { toUserId: userId }],
@@ -293,28 +289,24 @@ export const getConnections = asyncHandler(async (req, res) => {
     .populate("toUserId")
     .sort({ updatedAt: -1 });
 
-  logger.info("Connections fetched", {
-    userId,
-  });
+  // Collect all users from both sides
+  const users = connections.flatMap((c) => [
+    c.fromUserId as any,
+    c.toUserId as any,
+  ]);
 
-  const set = new Set([
-    ...connections.map((c: any) => c.fromUserId),
-    ...connections.map((c: any) => c.toUserId),
-  ] as unknown as FullUser[]);
+  // Unique + remove self
+  const uniqueUsers = Array.from(
+    new Map(
+      users.map((u) => [u._id.toString(), u]) // dedupe by userId
+    ).values()
+  ).filter((u) => u._id.toString() !== userId.toString());
 
-  let currentUser = Array.from(set).find(
-    (c) => c._id.toString() === userId.toString()
-  );
-
-  const uniqueUsers = Array.from(set).filter((u) => u._id !== currentUser?._id);
-
-  const response = new ApiResponse(
-    StatusCodes.OK,
-    "Connections retrieved successfully",
-    uniqueUsers
-  );
-
-  res.status(response.statusCode).json(response);
+  res
+    .status(200)
+    .json(
+      new ApiResponse(200, "Connections retrieved successfully", uniqueUsers)
+    );
 });
 
 export const getUserFeed = asyncHandler(async (req, res) => {
@@ -668,8 +660,6 @@ export const getUserFeed = asyncHandler(async (req, res) => {
         _id: usersToReturn[usersToReturn.length - 1]._id.toString(),
       })
     : null;
-
-  console.log(users);
 
   const countResult = await User.aggregate([
     {

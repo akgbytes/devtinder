@@ -16,6 +16,13 @@ export const createOrder = asyncHandler(async (req, res) => {
     throw new ApiError(StatusCodes.UNAUTHORIZED, "User not found");
   }
 
+  if (user.isPremium) {
+    throw new ApiError(
+      StatusCodes.BAD_REQUEST,
+      "You are already a premium user!"
+    );
+  }
+
   const order = await razorpay.orders.create({
     amount: 99900, // amount in paise
     currency: "INR",
@@ -49,7 +56,6 @@ export const createOrder = asyncHandler(async (req, res) => {
 });
 
 export const paymentWebhook = asyncHandler(async (req, res) => {
-  console.log("webhook called");
   const signature = req.headers["x-razorpay-signature"] as string;
 
   if (!signature) {
@@ -113,7 +119,6 @@ export const paymentWebhook = asyncHandler(async (req, res) => {
   } catch (err) {
     await session.abortTransaction();
 
-    console.error("Transaction failed:", err);
     throw new ApiError(StatusCodes.INTERNAL_SERVER_ERROR, "Transaction failed");
   } finally {
     session.endSession();

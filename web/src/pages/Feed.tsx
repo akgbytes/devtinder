@@ -74,8 +74,6 @@ const Feed = () => {
     }
   };
 
-  console.log("feed: ", feed);
-
   if (isError) {
     return (
       <div className="flex flex-col items-center justify-center h-screen text-rose-400">

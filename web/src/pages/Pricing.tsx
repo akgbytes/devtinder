@@ -63,7 +63,7 @@ const Pricing = () => {
 
       const paymentObject = new window.Razorpay({
         ...options,
-        handler: async (response) => {
+        handler: async () => {
           const { data, error } = await tryCatch(fetchUser().unwrap());
 
           if (error) {

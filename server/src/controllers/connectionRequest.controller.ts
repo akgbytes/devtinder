@@ -14,9 +14,6 @@ export const createConnectionRequest = asyncHandler(async (req, res) => {
   const toUserId = req.params.toUserId as string;
   const fromUserId = req.user._id;
 
-  console.log("from : ", fromUserId);
-  console.log("to : ", toUserId);
-
   logger.info("Connection request attempt", { fromUserId, toUserId, status });
 
   // Validate target user ID

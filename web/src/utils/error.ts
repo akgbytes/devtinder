@@ -24,7 +24,7 @@ export function handleApiError(
   error: FetchBaseQueryError | SerializedError | null
 ) {
   if (!error) return;
-  console.log("Error from handler \n", error);
+
   if (isFetchBaseQueryError(error)) {
     const errMsg =
       "error" in error

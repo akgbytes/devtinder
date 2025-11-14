@@ -88,10 +88,6 @@ const CompleteProfile = () => {
   }
 
   const onSubmit = async (values: CompleteProfileFormValues) => {
-    console.log("Form values:", values);
-    console.log("skills: ", skills);
-    console.log("selected location: ", selectedLocation);
-
     const today = new Date();
     const birthDate = new Date(values.dateOfBirth);
 
@@ -110,8 +106,6 @@ const CompleteProfile = () => {
       return;
     }
 
-    console.log("Profile submitted:", values);
-
     const { data, error } = await tryCatch(
       submitProfile({
         email: "akgbytes@gmail.com",
@@ -127,11 +121,9 @@ const CompleteProfile = () => {
 
     if (error) {
       handleApiError(error);
-      console.log("error from complete profile\n ", error);
     }
 
     if (data) {
-      console.log("response from complete profile \n ", data);
       enqueueSnackbar({ variant: "success", message: data.message });
       dispatch(setUser(data.data));
       navigate("/");

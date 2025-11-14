@@ -53,13 +53,11 @@ const LocationInput = ({ form, setSelectedLocation }: LocationInputProps) => {
     );
 
     if (error) {
-      console.error("Error fetching suggestions:", error);
       setSuggestions([]);
       setShowSuggestions(false);
     }
 
     if (data) {
-      console.log("API Response:", data);
       const fetchedSuggestions = data.data || [];
       setSuggestions(fetchedSuggestions);
       setShowSuggestions(fetchedSuggestions.length > 0);

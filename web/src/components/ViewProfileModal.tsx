@@ -6,7 +6,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Calendar, Flame } from "lucide-react";
+import { MapPin, Calendar } from "lucide-react";
 import type { User } from "@/types/user";
 import { capitalize } from "@/utils/capitalize";
 

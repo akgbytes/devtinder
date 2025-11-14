@@ -1,3 +1,4 @@
+import AppLoader from "@/components/AppLoader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ViewProfileModal } from "@/components/ViewProfileModal";
@@ -17,14 +18,12 @@ const Requests = () => {
   const [reviewRequest] = useReviewConnectionMutation();
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <AppLoader />;
   }
 
   if (isError || !data) {
     return <div>Error</div>;
   }
-
-  console.log("requests: ", data);
 
   const handleSubmit = async (
     status: "accepted" | "rejected",
@@ -39,7 +38,6 @@ const Requests = () => {
     }
 
     if (data) {
-      console.log("review response\n", data);
       enqueueSnackbar(data.message, { variant: "success" });
       refetch();
     }
